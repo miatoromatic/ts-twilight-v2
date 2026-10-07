@@ -142,6 +142,12 @@
 .tsHero.is-paused .tsHero-thumb.is-active .tsHero-bar{animation-play-state:paused}
 @keyframes tsHeroBar{from{width:0}to{width:100%}}
 
+/* ---------- hide the wide duplicate ----------
+   Any "new posts" widget on this page is hidden, except the one inside the banner.
+   (Only affects pages where this banner is shown.) */
+.block[data-widget-definition="new_posts"]{display:none !important}
+.tsHero-latest .block[data-widget-definition="new_posts"]{display:block !important}
+
 /* ---------- latest posts panel (restyles XenForo's new_posts widget) ---------- */
 .tsHero-latest{flex:1 1 300px;min-width:0;max-height:470px;overflow-y:auto;padding:16px;border-radius:14px;
 	background:rgba(12,17,28,.82);border:1px solid rgba(127,219,230,.14)}
