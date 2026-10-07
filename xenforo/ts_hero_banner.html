@@ -1,5 +1,5 @@
 <!--
-  TERRASPHERE — ROTATING HERO BANNER + NOTICES  (XenForo 2.2.x)
+  TERRASPHERE — ROTATING HERO BANNER + LATEST POSTS  (XenForo 2.2.x)
   ----------------------------------------------------------------
   Install (easiest):
     Admin CP › Appearance › Widgets › Add widget › "HTML"
@@ -16,7 +16,7 @@
     • The first slide should keep class="tsHero-slide is-active".
     • Tags reuse your forum's existing prefix classes (prefix light-orange, prefix open, prefix private,
       prefix quest, prefix challenge …) so they match your thread prefixes automatically.
-    • Notices: one <li> per notice on the right.
+    • The right-hand panel is your live Latest posts widget, restyled (see LATEST POSTS below).
     • Rotation speed: data-interval on the outer div, in milliseconds (0 = no auto-rotate).
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,34 +94,11 @@
 		<div class="tsHero-thumbs" role="tablist" aria-label="Choose featured story"></div>
 	</section>
 
-	<!-- ============ NOTICES ============ -->
-	<aside class="tsHero-notices">
-		<div class="tsHero-noticesHead">
-			<h3>Notices</h3>
-			<a href="/whats-new/">All</a>
-		</div>
-		<ul>
-			<li><a href="#">
-				<span class="tsHero-date"><small>Oct</small>06</span>
-				<span class="tsHero-ntext"><span class="tsHero-cat tsHero-cat--blue">Services</span>(Rewards) September Monthly (9/26)</span>
-			</a></li>
-			<li><a href="#">
-				<span class="tsHero-date"><small>Oct</small>06</span>
-				<span class="tsHero-ntext"><span class="tsHero-cat">OOC</span>Staff Monthlies</span>
-			</a></li>
-			<li><a href="#">
-				<span class="tsHero-date"><small>Sep</small>20</span>
-				<span class="tsHero-ntext"><span class="tsHero-cat tsHero-cat--red">DM Hub</span>Raid Boss Thread Tracker</span>
-			</a></li>
-			<li><a href="#">
-				<span class="tsHero-date"><small>Sep</small>13</span>
-				<span class="tsHero-ntext"><span class="tsHero-cat tsHero-cat--green">News</span>NPC Adoption Program</span>
-			</a></li>
-			<li><a href="#">
-				<span class="tsHero-date"><small>Apr</small>29</span>
-				<span class="tsHero-ntext"><span class="tsHero-cat tsHero-cat--pink">Archive</span>(Event) Community World-building</span>
-			</a></li>
-		</ul>
+	<!-- ============ LATEST POSTS (live) ============
+	     Renders your existing "Latest posts" widget (key: forum_overview_new_posts) inside the panel.
+	     In Admin CP › Widgets, untick that widget's old position(s) so it doesn't also show above the banner. -->
+	<aside class="tsHero-latest">
+		<xf:widget key="forum_overview_new_posts" />
 	</aside>
 </div>
 
@@ -143,7 +120,8 @@
 .tsHero-kicker{font-weight:700;font-size:15px;line-height:1;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7fdbe6}
 .tsHero .tsHero-title{margin:0;padding:0;border:0;font-weight:800;font-size:64px;line-height:.95;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.02em;color:#eef2f8}
 .tsHero-blurb{margin:0;font-size:17px;line-height:1.45;color:#d6deea}
-.tsHero-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tsHero-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.tsHero-tags .prefix,.tsHero-tags .label{margin:0 !important}
 .tsHero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
 .tsHero a.tsHero-cta,.tsHero a.tsHero-cta2{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 22px;border-radius:10px;
 	font-weight:700;font-size:16px;text-decoration:none;transition:background .15s}
@@ -164,27 +142,42 @@
 .tsHero.is-paused .tsHero-thumb.is-active .tsHero-bar{animation-play-state:paused}
 @keyframes tsHeroBar{from{width:0}to{width:100%}}
 
-/* ---------- notices ---------- */
-.tsHero-notices{flex:1 1 300px;min-width:0;padding:16px;border-radius:14px;background:rgba(12,17,28,.82);
-	border:1px solid rgba(127,219,230,.14);display:flex;flex-direction:column;gap:10px}
-.tsHero-noticesHead{display:flex;justify-content:space-between;align-items:center}
-.tsHero-noticesHead h3{margin:0;padding:0;border:0;font-weight:700;font-size:22px;line-height:1;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;color:#eef2f8}
-.tsHero-noticesHead a{font-weight:600;font-size:14px;color:#7fdbe6;text-decoration:none}
-.tsHero-notices ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.tsHero-notices li a{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,.03);
-	color:#eef2f8;text-decoration:none;transition:background .15s}
-.tsHero-notices li a:hover{background:rgba(127,219,230,.08);color:#fff}
-.tsHero-date{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:46px;height:46px;
-	border-radius:10px;background:#13283a;font-weight:800;font-size:20px;line-height:1;font-family:'Barlow Condensed',sans-serif}
-.tsHero-date small{font-size:12px;font-weight:700;color:#7fdbe6;text-transform:uppercase}
-.tsHero-ntext{min-width:0;font-weight:600;font-size:15px;line-height:1.25}
-.tsHero-cat{display:table;margin-bottom:3px;padding:2px 7px;border-radius:4px;background:#263345;color:#bccada;
-	font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-.tsHero-cat--blue{background:#19305a;color:#a5c8ff}
-.tsHero-cat--red{background:#4a2120;color:#ffb0a2}
-.tsHero-cat--green{background:#163b2b;color:#8be6ab}
-.tsHero-cat--pink{background:#4a1f3d;color:#ffa6d8}
-.tsHero-cat--purple{background:#2d2554;color:#cdbcff}
+/* ---------- latest posts panel (restyles XenForo's new_posts widget) ---------- */
+.tsHero-latest{flex:1 1 300px;min-width:0;max-height:470px;overflow-y:auto;padding:16px;border-radius:14px;
+	background:rgba(12,17,28,.82);border:1px solid rgba(127,219,230,.14)}
+.tsHero-latest .block{margin:0}
+.tsHero-latest .block-container{background:none !important;border:0 !important;box-shadow:none !important;padding:0 !important;margin:0}
+.tsHero-latest .block-minorHeader{margin:0 0 10px;padding:0 !important;border:0 !important;background:none !important}
+.tsHero-latest .block-minorHeader a{display:flex;align-items:center;gap:8px;font-weight:700;font-size:22px;line-height:1;
+	font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;color:#eef2f8 !important;text-decoration:none}
+.tsHero-latest .block-minorHeader i{font-size:16px;color:#7fdbe6}
+.tsHero-latest .block-body{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.tsHero-latest .block-row{margin:0;padding:0 !important;border:0 !important;background:none !important}
+
+/* one post = avatar | prefixes + title (row 1), time · forum (row 2) */
+.tsHero-latest .contentRow{display:grid !important;grid-template-columns:36px auto 1fr;grid-template-rows:auto auto;
+	column-gap:10px;row-gap:3px;align-items:center;padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.03);
+	font-size:14px;line-height:1.3;transition:background .15s}
+.tsHero-latest .contentRow:hover{background:rgba(127,219,230,.08)}
+.tsHero-latest .contentRow a{background:none !important;border:0 !important;box-shadow:none !important;padding:0 !important;margin:0 !important;border-radius:0 !important}
+.tsHero-latest .contentRow-figure{grid-column-start:1;grid-row-start:1;grid-row-end:span 2;margin:0 !important;padding:0;width:36px}
+.tsHero-latest .contentRow-figure .avatar,
+.tsHero-latest .contentRow-figure .avatar img{display:block;width:36px !important;height:36px !important;max-width:none;border-radius:50% !important;font-size:15px}
+.tsHero-latest .contentRow-figure .avatar{overflow:hidden}
+.tsHero-latest .contentRow > a:not(.avatar){grid-column-start:2;grid-column-end:span 2;grid-row-start:1;color:#eef2f8 !important;font-weight:600;text-decoration:none;
+	display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tsHero-latest .contentRow > a:not(.avatar):hover{color:#7fdbe6 !important}
+.tsHero-latest .contentRow .prefix,
+.tsHero-latest .contentRow .label{font-size:10px !important;line-height:1.5;padding:0 5px !important;margin:0 2px 0 0 !important;vertical-align:1px}
+.tsHero-latest .contentRow .label-append{display:none}
+/* time + forum on the second line; hides the "( )" around the time */
+.tsHero-latest .last-post-spacer{grid-column:2;grid-row:2;font-size:0;white-space:nowrap;padding:0 !important;background:none !important}
+.tsHero-latest .last-post-spacer .item-new-date{font-size:12px;color:#9eabbf}
+.tsHero-latest .last-post-spacer .item-new-date::after{content:"·";padding-left:6px;color:#5d6c85}
+.tsHero-latest .last-post-spacer ~ a{grid-column:3 !important;grid-row:2 !important;font-size:12px;font-weight:600;color:#7fdbe6 !important;
+	-webkit-line-clamp:1 !important;justify-self:start}
+.tsHero-latest::-webkit-scrollbar{width:6px}
+.tsHero-latest::-webkit-scrollbar-thumb{background:#263450;border-radius:3px}
 
 /* ---------- phone ---------- */
 @media (max-width:650px){
