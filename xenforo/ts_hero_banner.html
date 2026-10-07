@@ -1,0 +1,299 @@
+<!--
+  TERRASPHERE — ROTATING HERO BANNER + NOTICES  (XenForo 2.2.x)
+  ----------------------------------------------------------------
+  Install (easiest):
+    Admin CP › Appearance › Widgets › Add widget › "HTML"
+      Widget key:  ts_hero_banner
+      Positions:   Forum list: Above nodes   (or "Forum list: Above node list")
+      Template:    paste this whole file
+  Or: create a template "ts_hero_banner" and add <xf:include template="ts_hero_banner" />
+      to the top of forum_list.
+
+  EDITING
+    • One slide = one <article class="tsHero-slide"> … </article>. Copy/paste to add, delete to remove.
+    • data-thumb   = small image for the thumbnail button (can be the same file as the background).
+    • data-label   = name read out by screen readers for that thumbnail.
+    • The first slide should keep class="tsHero-slide is-active".
+    • Tags reuse your forum's existing prefix classes (prefix light-orange, prefix open, prefix private,
+      prefix quest, prefix challenge …) so they match your thread prefixes automatically.
+    • Notices: one <li> per notice on the right.
+    • Rotation speed: data-interval on the outer div, in milliseconds (0 = no auto-rotate).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+
+<div class="tsHero" data-interval="7000">
+
+	<!-- ============ BANNER ============ -->
+	<section class="tsHero-stage" aria-roledescription="carousel" aria-label="Featured">
+
+		<!-- SLIDE 1 -->
+		<article class="tsHero-slide is-active" data-thumb="/styles/terrasphere/banners/campaign.webp" data-label="A Long Fall">
+			<img class="tsHero-bg" src="/styles/terrasphere/banners/campaign.webp" alt="" style="object-position: 70% 30%;">
+			<div class="tsHero-copy">
+				<span class="tsHero-kicker">Campaign · Now playing</span>
+				<h2 class="tsHero-title">A Long Fall</h2>
+				<p class="tsHero-blurb">The main storyline thread is open for new players.</p>
+				<div class="tsHero-tags">
+					<span class="prefix light-orange">CM1</span>
+					<span class="prefix open">Open</span>
+				</div>
+				<div class="tsHero-actions">
+					<a class="tsHero-cta" href="/threads/a-long-fall.2800/unread">Join the scene <span aria-hidden="true">›</span></a>
+					<a class="tsHero-cta2" href="/threads/a-long-fall.2800/">Read from the start</a>
+				</div>
+			</div>
+		</article>
+
+		<!-- SLIDE 2 -->
+		<article class="tsHero-slide" data-thumb="/styles/terrasphere/banners/zalra_banner_forums.webp" data-label="Ossyrath the Tide-Splitter">
+			<img class="tsHero-bg" src="/styles/terrasphere/banners/zalra_banner_forums.webp" alt="" style="object-position: 60% 50%;">
+			<div class="tsHero-copy">
+				<span class="tsHero-kicker">Season 5 · Mega Bounty</span>
+				<h2 class="tsHero-title">Ossyrath the Tide-Splitter</h2>
+				<p class="tsHero-blurb">The season's megathread is complete. Read how it ended.</p>
+				<div class="tsHero-tags">
+					<span class="prefix">Complete</span>
+				</div>
+				<div class="tsHero-actions">
+					<a class="tsHero-cta" href="#">Read the finale <span aria-hidden="true">›</span></a>
+				</div>
+			</div>
+		</article>
+
+		<!-- SLIDE 3 -->
+		<article class="tsHero-slide" data-thumb="/styles/terrasphere/banners/misc.png" data-label="Plu Quest">
+			<img class="tsHero-bg" src="/styles/terrasphere/banners/misc.png" alt="" style="object-position: 60% 40%;">
+			<div class="tsHero-copy">
+				<span class="tsHero-kicker">Looking for group</span>
+				<h2 class="tsHero-title">Plu Quest — Beta Test</h2>
+				<p class="tsHero-blurb">Interest check and sign-ups are open in LFGs.</p>
+				<div class="tsHero-tags">
+					<span class="prefix">Signup</span>
+				</div>
+				<div class="tsHero-actions">
+					<a class="tsHero-cta" href="#">Sign up <span aria-hidden="true">›</span></a>
+				</div>
+			</div>
+		</article>
+
+		<!-- SLIDE 4 -->
+		<article class="tsHero-slide" data-thumb="/styles/terrasphere/banners/astorea-banner.webp" data-label="NPC Adoption Program">
+			<img class="tsHero-bg" src="/styles/terrasphere/banners/astorea-banner.webp" alt="" style="object-position: 50% 40%;">
+			<div class="tsHero-copy">
+				<span class="tsHero-kicker">News</span>
+				<h2 class="tsHero-title">NPC Adoption Program</h2>
+				<p class="tsHero-blurb">[Write a one-line summary here.]</p>
+				<div class="tsHero-actions">
+					<a class="tsHero-cta" href="#">Read announcement <span aria-hidden="true">›</span></a>
+				</div>
+			</div>
+		</article>
+
+		<!-- Thumbnails are generated automatically from the slides above. -->
+		<div class="tsHero-thumbs" role="tablist" aria-label="Choose featured story"></div>
+	</section>
+
+	<!-- ============ NOTICES ============ -->
+	<aside class="tsHero-notices">
+		<div class="tsHero-noticesHead">
+			<h3>Notices</h3>
+			<a href="/whats-new/">All</a>
+		</div>
+		<ul>
+			<li><a href="#">
+				<span class="tsHero-date"><small>Oct</small>06</span>
+				<span class="tsHero-ntext"><span class="tsHero-cat tsHero-cat--blue">Services</span>(Rewards) September Monthly (9/26)</span>
+			</a></li>
+			<li><a href="#">
+				<span class="tsHero-date"><small>Oct</small>06</span>
+				<span class="tsHero-ntext"><span class="tsHero-cat">OOC</span>Staff Monthlies</span>
+			</a></li>
+			<li><a href="#">
+				<span class="tsHero-date"><small>Sep</small>20</span>
+				<span class="tsHero-ntext"><span class="tsHero-cat tsHero-cat--red">DM Hub</span>Raid Boss Thread Tracker</span>
+			</a></li>
+			<li><a href="#">
+				<span class="tsHero-date"><small>Sep</small>13</span>
+				<span class="tsHero-ntext"><span class="tsHero-cat tsHero-cat--green">News</span>NPC Adoption Program</span>
+			</a></li>
+			<li><a href="#">
+				<span class="tsHero-date"><small>Apr</small>29</span>
+				<span class="tsHero-ntext"><span class="tsHero-cat tsHero-cat--pink">Archive</span>(Event) Community World-building</span>
+			</a></li>
+		</ul>
+	</aside>
+</div>
+
+<xf:css>
+.tsHero{display:flex;flex-wrap:wrap;gap:20px;margin:0 0 20px;font-family:'Barlow',sans-serif;color:#eef2f8}
+.tsHero *{box-sizing:border-box}
+
+/* ---------- banner ---------- */
+.tsHero-stage{position:relative;flex:999 1 560px;min-width:0;min-height:420px;border-radius:18px;overflow:hidden;
+	border:1px solid rgba(127,219,230,.18);background:#070a12;display:flex;flex-direction:column;justify-content:flex-end}
+.tsHero-slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+	opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
+.tsHero-slide.is-active{opacity:1;visibility:visible;transition:opacity .6s ease}
+.tsHero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.03);transition:transform 7s ease-out}
+.tsHero-slide.is-active .tsHero-bg{transform:scale(1)}
+.tsHero-slide::after{content:"";position:absolute;inset:0;
+	background:linear-gradient(90deg,rgba(5,8,14,.94) 0%,rgba(5,8,14,.6) 42%,rgba(5,8,14,0) 72%)}
+.tsHero-copy{position:relative;z-index:1;max-width:520px;padding:32px 32px 104px;display:flex;flex-direction:column;gap:10px}
+.tsHero-kicker{font-weight:700;font-size:15px;line-height:1;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7fdbe6}
+.tsHero .tsHero-title{margin:0;padding:0;border:0;font-weight:800;font-size:64px;line-height:.95;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.02em;color:#eef2f8}
+.tsHero-blurb{margin:0;font-size:17px;line-height:1.45;color:#d6deea}
+.tsHero-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tsHero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.tsHero a.tsHero-cta,.tsHero a.tsHero-cta2{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 22px;border-radius:10px;
+	font-weight:700;font-size:16px;text-decoration:none;transition:background .15s}
+.tsHero a.tsHero-cta{background:#3fc6d4;color:#04141a}
+.tsHero a.tsHero-cta:hover{background:#6fdbe6;color:#04141a}
+.tsHero a.tsHero-cta2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#fff;font-weight:600}
+.tsHero a.tsHero-cta2:hover{background:rgba(255,255,255,.18);color:#fff}
+
+.tsHero-thumbs{position:absolute;z-index:2;left:24px;right:24px;bottom:24px;max-width:520px;margin-left:auto;display:flex;gap:10px}
+.tsHero-thumb{position:relative;flex:1 1 0;min-width:0;height:64px;padding:0;border:2px solid transparent;border-radius:10px;
+	overflow:hidden;background:#000;cursor:pointer}
+.tsHero-thumb img{width:100%;height:100%;object-fit:cover;opacity:.75;transition:opacity .15s}
+.tsHero-thumb:hover img,.tsHero-thumb.is-active img{opacity:1}
+.tsHero-thumb.is-active{border-color:#3fc6d4}
+.tsHero-thumb:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.tsHero-thumb .tsHero-bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:#3fc6d4}
+.tsHero-thumb.is-active .tsHero-bar{animation:tsHeroBar var(--tsHero-ms,7000ms) linear forwards}
+.tsHero.is-paused .tsHero-thumb.is-active .tsHero-bar{animation-play-state:paused}
+@keyframes tsHeroBar{from{width:0}to{width:100%}}
+
+/* ---------- notices ---------- */
+.tsHero-notices{flex:1 1 300px;min-width:0;padding:16px;border-radius:14px;background:rgba(12,17,28,.82);
+	border:1px solid rgba(127,219,230,.14);display:flex;flex-direction:column;gap:10px}
+.tsHero-noticesHead{display:flex;justify-content:space-between;align-items:center}
+.tsHero-noticesHead h3{margin:0;padding:0;border:0;font-weight:700;font-size:22px;line-height:1;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;color:#eef2f8}
+.tsHero-noticesHead a{font-weight:600;font-size:14px;color:#7fdbe6;text-decoration:none}
+.tsHero-notices ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.tsHero-notices li a{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,.03);
+	color:#eef2f8;text-decoration:none;transition:background .15s}
+.tsHero-notices li a:hover{background:rgba(127,219,230,.08);color:#fff}
+.tsHero-date{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:46px;height:46px;
+	border-radius:10px;background:#13283a;font-weight:800;font-size:20px;line-height:1;font-family:'Barlow Condensed',sans-serif}
+.tsHero-date small{font-size:12px;font-weight:700;color:#7fdbe6;text-transform:uppercase}
+.tsHero-ntext{min-width:0;font-weight:600;font-size:15px;line-height:1.25}
+.tsHero-cat{display:table;margin-bottom:3px;padding:2px 7px;border-radius:4px;background:#263345;color:#bccada;
+	font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.tsHero-cat--blue{background:#19305a;color:#a5c8ff}
+.tsHero-cat--red{background:#4a2120;color:#ffb0a2}
+.tsHero-cat--green{background:#163b2b;color:#8be6ab}
+.tsHero-cat--pink{background:#4a1f3d;color:#ffa6d8}
+.tsHero-cat--purple{background:#2d2554;color:#cdbcff}
+
+/* ---------- phone ---------- */
+@media (max-width:650px){
+	.tsHero-stage{min-height:460px;border-radius:14px}
+	.tsHero-slide::after{background:linear-gradient(0deg,rgba(5,8,14,.97) 20%,rgba(5,8,14,.25) 70%)}
+	.tsHero-copy{padding:18px 18px 86px}
+	.tsHero .tsHero-title{font-size:44px}
+	.tsHero-blurb{font-size:15px}
+	.tsHero a.tsHero-cta{flex:1;justify-content:center}
+	.tsHero-thumbs{left:18px;right:18px;bottom:18px;max-width:none;gap:6px}
+	.tsHero-thumb{height:48px}
+}
+@media (prefers-reduced-motion:reduce){
+	.tsHero-slide,.tsHero-bg{transition:none}
+	.tsHero-thumb.is-active .tsHero-bar{animation:none;width:100%}
+}
+</xf:css>
+
+<xf:js>
+(function () {
+	var heroes = document.querySelectorAll('.tsHero:not([data-ts-ready])');
+	Array.prototype.forEach.call(heroes, function (hero) {
+		hero.setAttribute('data-ts-ready', '1');
+		var stage = hero.querySelector('.tsHero-stage');
+		var slides = hero.querySelectorAll('.tsHero-slide');
+		var bar = hero.querySelector('.tsHero-thumbs');
+		var ms = parseInt(hero.getAttribute('data-interval'), 10) || 0;
+		var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		var cur = 0, timer = null, thumbs = [];
+
+		if (slides.length < 2) { bar.style.display = 'none'; return; }
+		hero.style.setProperty('--tsHero-ms', ms + 'ms');
+
+		Array.prototype.forEach.call(slides, function (s, i) {
+			if (s.classList.contains('is-active')) cur = i;
+			s.setAttribute('role', 'tabpanel');
+			s.id = s.id || ('tsHero-' + Math.random().toString(36).slice(2, 8) + '-' + i);
+			var b = document.createElement('button');
+			b.type = 'button';
+			b.className = 'tsHero-thumb';
+			b.setAttribute('role', 'tab');
+			b.setAttribute('aria-controls', s.id);
+			b.setAttribute('aria-label', s.getAttribute('data-label') || ('Slide ' + (i + 1)));
+			var img = document.createElement('img');
+			img.src = s.getAttribute('data-thumb') || (s.querySelector('.tsHero-bg') || {}).src || '';
+			img.alt = '';
+			img.loading = 'lazy';
+			var p = document.createElement('span');
+			p.className = 'tsHero-bar';
+			b.appendChild(img);
+			b.appendChild(p);
+			b.addEventListener('click', function () { go(i, true); });
+			bar.appendChild(b);
+			thumbs.push(b);
+		});
+
+		function go(i, user) {
+			cur = (i + slides.length) % slides.length;
+			Array.prototype.forEach.call(slides, function (s, k) {
+				var on = k === cur;
+				s.classList.toggle('is-active', on);
+				s.setAttribute('aria-hidden', on ? 'false' : 'true');
+				Array.prototype.forEach.call(s.querySelectorAll('a,button'), function (el) { el.tabIndex = on ? 0 : -1; });
+				thumbs[k].classList.toggle('is-active', on);
+				thumbs[k].setAttribute('aria-selected', on ? 'true' : 'false');
+				thumbs[k].tabIndex = on ? 0 : -1;
+				// restart the progress bar animation
+				var pb = thumbs[k].querySelector('.tsHero-bar');
+				pb.style.animation = 'none'; void pb.offsetWidth; pb.style.animation = '';
+			});
+			if (user) restart();
+		}
+		function stop() { if (timer) { clearInterval(timer); timer = null; } }
+		function restart() {
+			stop();
+			if (ms > 0 && !reduce && !hero.classList.contains('is-paused')) {
+				timer = setInterval(function () { go(cur + 1); }, ms);
+			}
+		}
+		function pause() { hero.classList.add('is-paused'); stop(); }
+		function resume() { hero.classList.remove('is-paused'); restart(); }
+
+		stage.addEventListener('mouseenter', pause);
+		stage.addEventListener('mouseleave', resume);
+		stage.addEventListener('focusin', pause);
+		stage.addEventListener('focusout', function (e) { if (!stage.contains(e.relatedTarget)) resume(); });
+		document.addEventListener('visibilitychange', function () { document.hidden ? stop() : restart(); });
+
+		bar.addEventListener('keydown', function (e) {
+			if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+				e.preventDefault();
+				go(cur + (e.key === 'ArrowRight' ? 1 : -1), true);
+				thumbs[cur].focus();
+			}
+		});
+
+		// swipe on touch screens
+		var x0 = null;
+		stage.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+		stage.addEventListener('touchend', function (e) {
+			if (x0 === null) return;
+			var dx = e.changedTouches[0].clientX - x0;
+			if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1), true);
+			x0 = null;
+		});
+
+		if (reduce) hero.classList.add('is-paused');
+		go(cur);
+		restart();
+	});
+})();
+</xf:js>
