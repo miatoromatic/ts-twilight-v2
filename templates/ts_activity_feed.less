@@ -284,17 +284,46 @@
 	border-bottom: 1px solid @tsA-border;
 }
 
-// ---------- Per-forum thumbnails ----------
-// Each row's thumbnail gets the class .tsActivity-thumb--node{FORUM_ID}.
-// Point each forum ID at an image (examples, edit IDs/paths to match your site):
-//
-// .tsActivity-thumb--node25 { background-image: url('/db/template/classic/campaign.webp'); }
-// .tsActivity-thumb--node26 { background-image: url('/db/template/classic/real-life.png'); }
-// .tsActivity-thumb--node27 { background-image: url('/db/template/classic/comms.png'); }
-// .tsActivity-thumb--node28 { background-image: url('/db/template/classic/hylands_banner_forums.webp'); }
-// .tsActivity-thumb--node29 { background-image: url('/db/template/classic/astorea-banner.webp'); }
-// .tsActivity-thumb--node41 { background-image: url('/db/template/classic/falderen-banner.webp'); }
-// .tsActivity-thumb--node52 { background-image: url('/db/template/classic/misc.png'); }
+// ---------- Thumbnails ----------
+// Region forums use /db/forums/id_XX.webp (set inline in the template).
+.tsActivity-thumb--image
+{
+	background-color: #161d28;
+}
+
+// Icon tiles (non-region forums)
+.tsActivity-thumb--icon
+{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none !important;
+
+	i
+	{
+		font-size: 16px;
+		line-height: 1;
+	}
+}
+
+.tsActivity-iconTile(@c)
+{
+	background-image: linear-gradient(135deg, fade(@c, 34%) 0%, fade(@c, 12%) 100%);
+	box-shadow: inset 0 0 0 1px fade(@c, 38%);
+	i { color: lighten(@c, 18%); }
+}
+
+// Community
+.tsActivity-thumb--node26 { .tsActivity-iconTile(#e0ac3c); } // Services  - bell
+.tsActivity-thumb--node25 { .tsActivity-iconTile(#4fa3d1); } // Archive   - globe-stand
+.tsActivity-thumb--node52 { .tsActivity-iconTile(#c27a4a); } // OOC       - mug-hot
+// Guild Hall
+.tsActivity-thumb--node6  { .tsActivity-iconTile(#43b97a); } // Trackers  - clipboard-list
+.tsActivity-thumb--node9  { .tsActivity-iconTile(#8f6fe6); } // DM Hub    - book-open-reader
+.tsActivity-thumb--node8  { .tsActivity-iconTile(#e0604f); } // Quest     - mandolin
+.tsActivity-thumb--node7  { .tsActivity-iconTile(#d06fb8); } // LFGs      - user-magnifying-glass
+.tsActivity-thumb--node5  { .tsActivity-iconTile(#4fc3d1); } // Apps      - id-badge
+.tsActivity-thumb--node4  { .tsActivity-iconTile(#5c8fe6); } // News      - bullhorn
 
 // ---------- Mobile ----------
 @media (max-width: @xf-responsiveNarrow)
@@ -304,6 +333,7 @@
 	.tsActivity-item { gap: 10px; padding: 10px 12px 10px 20px; }
 	.tsActivity-dot { left: 8px; }
 	.tsActivity-thumb { width: 46px; height: 30px; }
+	.tsActivity-thumb--icon i { font-size: 13px; }
 	.tsActivity-aside { flex-direction: column-reverse; align-items: flex-end; gap: 4px; }
 	.tsActivity-time { font-size: 10px; }
 }

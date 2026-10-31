@@ -32,7 +32,7 @@
 	<li class="tsActivity-item{{ $isUnread ? ' is-unread' : '' }}" data-node-id="{$thread.node_id}">
 		<span class="tsActivity-dot" aria-hidden="true"></span>
 
-		<a href="{$threadLink}" class="tsActivity-thumb tsActivity-thumb--node{$thread.node_id}" tabindex="-1" aria-hidden="true"></a>
+		<xf:macro name="thumb" arg-thread="{$thread}" arg-href="{$threadLink}" />
 
 		<div class="tsActivity-main">
 			<a href="{$threadLink}" class="tsActivity-title" title="{$thread.title}">{$thread.title}</a>
@@ -55,4 +55,26 @@
 			</span>
 		</div>
 	</li>
+</xf:macro>
+
+<xf:macro name="thumb" arg-thread="!" arg-href="!">
+	<xf:comment>
+		Region forums: show /db/forums/id_XX.webp
+		Other forums:  show a Font Awesome icon on a tinted tile (colours in ts_activity_feed.less)
+		Anything else: plain dark gradient tile
+	</xf:comment>
+	<xf:set var="$tsRegionIds" value="{{ { '11': 1, '56': 1, '12': 1, '13': 1, '15': 1, '16': 1, '17': 1, '19': 1, '57': 1, '20': 1, '21': 1, '22': 1 } }}" />
+	<xf:set var="$tsIcons" value="{{ { '26': 'fa-solid fa-bell', '25': 'fa-solid fa-globe-stand', '52': 'fa-solid fa-mug-hot', '6':  'fa-solid fa-clipboard-list', '9':  'fa-regular fa-book-open-reader', '8':  'fa-solid fa-mandolin ni38', '7':  'fa-solid fa-user-magnifying-glass', '5':  'fa-solid fa-id-badge', '4':  'fa-solid fa-bullhorn' } }}" />
+	<xf:set var="$nodeId" value="{$thread.node_id}" />
+
+	<xf:if is="$tsRegionIds.{$nodeId}">
+		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--image tsActivity-thumb--node{$nodeId}"
+			style="background-image: url('/db/forums/id_{$nodeId}.webp');"
+			tabindex="-1" aria-hidden="true"></a>
+	<xf:elseif is="$tsIcons.{$nodeId}" />
+		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--icon tsActivity-thumb--node{$nodeId}"
+			tabindex="-1" aria-hidden="true"><i class="{$tsIcons.{$nodeId}}"></i></a>
+	<xf:else />
+		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--node{$nodeId}" tabindex="-1" aria-hidden="true"></a>
+	</xf:if>
 </xf:macro>
