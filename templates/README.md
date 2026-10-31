@@ -13,11 +13,19 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
 ## Install
 
 1. **Appearance → Templates**: add or update `ts_activity_feed` and `ts_activity_feed.less`.
-2. **Appearance → Templates → `widget_new_posts`**: replace the entire contents with:
-   ```
-   <xf:macro template="ts_activity_feed" name="list" arg-threads="{$threads}" arg-link="{$link}" arg-hasMore="{$hasMore}" />
-   ```
-   Note that every New posts widget on the site (the What's New page, any sidebars) now uses this layout.
+2. **Appearance → Templates → `widget_new_posts`**: only change how it renders on `forum_list`.
+   - First get the stock template back. If you replaced it, use **Revert** on `widget_new_posts` in the template list for your style.
+   - At the **very top**, before the first line, paste:
+     ```
+     <xf:if is="$xf.reply.template == 'forum_list'">
+     	<xf:macro template="ts_activity_feed" name="list" arg-threads="{$threads}" arg-link="{$link}" arg-hasMore="{$hasMore}" />
+     <xf:else />
+     ```
+   - At the **very bottom**, after the last line, paste:
+     ```
+     </xf:if>
+     ```
+   `$xf.reply.template` is the name of the page being shown. On the forum list every New posts widget uses the feed layout, and on every other page (the What's New page, thread pages, sidebars) the widget stays stock.
 3. **Appearance → Widgets → Add widget → New posts**. Create four widgets with **no display position ticked**:
 
    | Widget key | Maximum entries | Forum limit |
