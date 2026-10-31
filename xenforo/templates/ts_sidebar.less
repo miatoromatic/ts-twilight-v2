@@ -39,10 +39,6 @@
 	.p-pageWrapper {
 		padding-left: var(--ts-rail-offset);
 	}
-	.discord-button {
-		left: ~"calc(var(--ts-rail-offset) + 15px)" !important;
-		z-index: 90; /* below the rail, so rail menus (account, staff) open over it */
-	}
 }
 @media (min-width: 1100px) {
 	html[data-ts-rail="expanded"] {
@@ -549,18 +545,27 @@ html[data-ts-rail="expanded"] .ts-staff {
 	flex-wrap: wrap;
 	gap: 2px;
 }
+html[data-ts-rail="expanded"] .ts-staff .ts-tool {
+	width: 34px;
+}
 
 .ts-rail .ts-account {
 	display: flex;
 	flex-direction: column;
+	align-items: stretch;
 	gap: 6px;
+	width: 100%;
 }
 html[data-ts-rail="expanded"] .ts-rail .ts-account.p-navgroup--guest {
 	flex-direction: row;
 }
 
-.ts-rail .ts-accountLink {
+.ts-rail .ts-foot .ts-account > .ts-accountLink {
 	display: flex;
+	flex: 1 1 auto;
+	align-self: stretch;
+	max-width: none;
+	box-sizing: border-box;
 	align-items: center;
 	gap: 10px;
 	width: 100%;
@@ -767,10 +772,6 @@ html[data-ts-rail="expanded"] .ts-guestLabel {
 	html[data-ts-rail="expanded"] .ts-rail {
 		box-shadow: 18px 0 48px rgba(0, 0, 0, .55);
 	}
-	html[data-ts-rail="expanded"] .discord-button {
-		opacity: 0;
-		pointer-events: none;
-	}
 }
 
 /* ---------- phones: rail becomes a top bar ---------- */
@@ -850,7 +851,8 @@ html[data-ts-rail="expanded"] .ts-guestLabel {
 		flex-direction: row;
 		gap: 4px;
 	}
-	.ts-rail .ts-accountLink {
+	.ts-rail .ts-foot .ts-account > .ts-accountLink {
+		flex: none;
 		width: auto;
 		padding: 3px;
 	}
@@ -886,9 +888,6 @@ html.thread-focus-mode .ts-backdrop {
 html.thread-focus-mode .p-pageWrapper {
 	padding-left: 0 !important;
 	padding-top: 0 !important;
-}
-html.thread-focus-mode .discord-button {
-	left: 15px !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

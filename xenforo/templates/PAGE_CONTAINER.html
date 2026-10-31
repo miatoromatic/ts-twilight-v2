@@ -74,8 +74,6 @@
 	<script>(function(){var d=document.documentElement,s=null;try{s=window.localStorage.getItem('tsRail')}catch(e){}if(window.innerWidth<1100){s='collapsed'}else if(s!=='collapsed'&&s!=='expanded'){s='expanded'}d.setAttribute('data-ts-rail',s)})();</script>
 </head>
 <body data-template="{$template}">
-	<xf:if is="$xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')"><a href="https://terrarp.com/pages/mod-templates/" data-xf-click="overlay" class="discord-button"><img src="/db/ui/mod2.png"></a><xf:else />
-		<a href="https://discord.gg/PztDVreGyr" class="discord-button null"><img src="/db/ui/discord.png"></a></xf:if>
 <!--shine below-->
 <div class="shine">
 
@@ -297,6 +295,30 @@
 		<xf:if contentcheck="true">
 			<div class="ts-staff">
 			<xf:contentcheck>
+				<!-- Mod templates (CM reviewers) or Discord (everyone else) — replaces the old floating button -->
+				<xf:if is="$xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">
+					<a href="https://terrarp.com/pages/mod-templates/" class="ts-tool" data-xf-click="overlay"
+						aria-label="Mod templates"
+						data-ts-tip="Mod templates">
+						<xf:fa icon="far fa-hammer" />
+					</a>
+				<xf:else />
+					<a href="https://discord.gg/PztDVreGyr" class="ts-tool" target="_blank" rel="noopener"
+						aria-label="Discord"
+						data-ts-tip="Discord">
+						<xf:fa icon="fab fa-discord" />
+					</a>
+				</xf:if>
+
+				<!-- User groups 12 & 31 only: forum 65 -->
+				<xf:if is="$xf.visitor.isMemberOf([12, 31])">
+					<a href="{{ link('forums', {'node_id': 65}) }}" class="ts-tool"
+						aria-label="Forum"
+						data-ts-tip="Forum">
+						<xf:fa icon="far fa-book" />
+					</a>
+				</xf:if>
+
 				<xf:if is="$xf.visitor.is_moderator && $xf.session.unapprovedCounts.total">
 					<a href="{{ link('approval-queue') }}" class="ts-tool badgeContainer badgeContainer--highlighted"
 						data-badge="{$xf.session.unapprovedCounts.total|number}"
