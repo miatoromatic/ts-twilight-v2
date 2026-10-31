@@ -57,3 +57,18 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
 
   The icon list is in the `thumb` macro of `ts_activity_feed`, and the tints are at the bottom of `ts_activity_feed.less`.
 - Any other forum gets a plain dark gradient tile.
+
+## Extra tabs (Wiki, Shop, News feed)
+
+Near the top of the feed block in `forum_list` are three switches:
+
+```
+<xf:set var="$tsShowWiki" value="1" />
+<xf:set var="$tsShowShop" value="1" />
+<xf:set var="$tsShowNewsFeed" value="{{ $xf.visitor.user_id ? 1 : 0 }}" />
+```
+
+Set one to `0` to hide that tab and its pane. News feed is hidden for guests automatically.
+
+- **Wiki:** a static list of links. Edit the `<li>` blocks in the Wiki pane: `href`, Font Awesome icon, title and description. The four links in it are placeholders.
+- **Shop / News feed:** these load `whats-new/shop-items` and `whats-new/news-feed` the first time the tab is clicked, so they don't slow down the forum list. The loader follows XenForo's "what's new" redirect to a fresh results page. Each pane also has a link to open the full page.

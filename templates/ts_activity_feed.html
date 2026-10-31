@@ -48,7 +48,10 @@
 		</div>
 
 		<div class="tsActivity-aside">
-			<xf:date time="{$thread.last_post_date}" class="tsActivity-time" />
+			<div class="tsActivity-when">
+				<xf:username user="{$thread.LastPoster}" defaultname="{$thread.last_post_username}" class="tsActivity-poster" />
+				<xf:date time="{$thread.last_post_date}" class="tsActivity-time" />
+			</div>
 			<span class="tsActivity-avatar">
 				<xf:avatar user="{$thread.LastPoster}" size="xxs" defaultname="{$thread.last_post_username}" />
 			</span>

@@ -88,12 +88,28 @@ function checkCookie(name) {
 		ts_activity_guildhall  - 6, 9, 8, 7, 5, 4
 		ts_activity_community  - 26, 25, 52
 </xf:comment>
+<xf:comment>
+	----- Optional tabs: set to 0 to hide a tab (and its pane), 1 to show it -----
+</xf:comment>
+<xf:set var="$tsShowWiki" value="1" />
+<xf:set var="$tsShowShop" value="1" />
+<xf:set var="$tsShowNewsFeed" value="{{ $xf.visitor.user_id ? 1 : 0 }}" />  <xf:comment>news feed is members-only</xf:comment>
+
 <section class="tsActivity">
 	<div class="tsActivity-header" data-xf-init="tabs" role="tablist">
 		<a class="tsActivity-tab tabs-tab is-active" role="tab" tabindex="0" aria-controls="tsActivity-all">All activity</a>
 		<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-regions">Regions</a>
 		<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-guildhall">Guild Hall</a>
 		<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-community">Community</a>
+		<xf:if is="$tsShowWiki">
+			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-wiki">Wiki</a>
+		</xf:if>
+		<xf:if is="$tsShowShop">
+			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-shop">Shop</a>
+		</xf:if>
+		<xf:if is="$tsShowNewsFeed">
+			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-newsfeed">News feed</a>
+		</xf:if>
 		<span class="tsActivity-sort">Sorted by latest post</span>
 	</div>
 	<ul class="tabPanes tsActivity-panes">
@@ -109,8 +125,106 @@ function checkCookie(name) {
 		<li role="tabpanel" id="tsActivity-community">
 			<xf:widget key="ts_activity_community" />
 		</li>
+
+		<xf:if is="$tsShowWiki">
+		<li role="tabpanel" id="tsActivity-wiki">
+			<xf:css src="ts_activity_feed.less" />
+			<xf:comment>
+				Wiki links: copy a <li> block per link.
+				href  = where it goes, icon = any Font Awesome class,
+				title / description = the two lines of text.
+			</xf:comment>
+			<ul class="tsActivity-wiki">
+				<li>
+					<a href="https://terrarp.com/wiki/">
+						<span class="tsActivity-thumb tsActivity-thumb--icon tsActivity-wikiTile"><i class="fa-solid fa-book"></i></span>
+						<span><span class="tsActivity-wikiTitle">Wiki home</span><span class="tsActivity-wikiDesc">Start here</span></span>
+					</a>
+				</li>
+				<li>
+					<a href="https://terrarp.com/wiki/rules/">
+						<span class="tsActivity-thumb tsActivity-thumb--icon tsActivity-wikiTile"><i class="fa-solid fa-scale-balanced"></i></span>
+						<span><span class="tsActivity-wikiTitle">Rules</span><span class="tsActivity-wikiDesc">Community &amp; roleplay rules</span></span>
+					</a>
+				</li>
+				<li>
+					<a href="https://terrarp.com/wiki/getting-started/">
+						<span class="tsActivity-thumb tsActivity-thumb--icon tsActivity-wikiTile"><i class="fa-solid fa-flag-checkered"></i></span>
+						<span><span class="tsActivity-wikiTitle">Getting started</span><span class="tsActivity-wikiDesc">Making your first character</span></span>
+					</a>
+				</li>
+				<li>
+					<a href="https://terrarp.com/wiki/world/">
+						<span class="tsActivity-thumb tsActivity-thumb--icon tsActivity-wikiTile"><i class="fa-solid fa-map"></i></span>
+						<span><span class="tsActivity-wikiTitle">World</span><span class="tsActivity-wikiDesc">Regions, lore &amp; factions</span></span>
+					</a>
+				</li>
+			</ul>
+		</li>
+		</xf:if>
+
+		<xf:if is="$tsShowShop">
+		<li role="tabpanel" id="tsActivity-shop">
+			<div class="tsActivity-remote" data-ts-load="{{ link('whats-new/shop-items') }}">
+				<div class="tsActivity-loading">Loading…</div>
+			</div>
+			<div class="tsActivity-footer"><a href="{{ link('whats-new/shop-items') }}">Show more shop items</a></div>
+		</li>
+		</xf:if>
+
+		<xf:if is="$tsShowNewsFeed">
+		<li role="tabpanel" id="tsActivity-newsfeed">
+			<div class="tsActivity-remote" data-ts-load="{{ link('whats-new/news-feed') }}">
+				<div class="tsActivity-loading">Loading…</div>
+			</div>
+			<div class="tsActivity-footer"><a href="{{ link('whats-new/news-feed') }}">Open your news feed</a></div>
+		</li>
+		</xf:if>
 	</ul>
 </section>
+
+<xf:js>
+// Shop / News feed tabs: fetch the page the first time its tab is opened.
+// Follows XenForo's "what's new" redirect (e.g. whats-new/shop-items -> whats-new/shop-items/12345/).
+$(document).on('click', '.tsActivity-tab', function()
+{
+	var $pane = $('#' + $(this).attr('aria-controls'));
+	var $target = $pane.find('[data-ts-load]');
+	if (!$target.length || $target.data('tsLoaded'))
+	{
+		return;
+	}
+	$target.data('tsLoaded', true);
+
+	var load = function(url, hops)
+	{
+		XF.ajax('get', url, {}, function(data)
+		{
+			if (data.redirect && hops < 3)
+			{
+				load(data.redirect, hops + 1);
+				return;
+			}
+			if (data.html)
+			{
+				XF.setupHtmlInsert(data.html, function($html)
+				{
+					$target.html($html);
+				});
+			}
+			else
+			{
+				$target.html('<div class="tsActivity-loading">Nothing to show right now.</div>');
+			}
+		}, { skipDefaultSuccess: true }).fail(function()
+		{
+			$target.data('tsLoaded', false);
+			$target.html('<div class="tsActivity-loading">Couldn\'t load this tab. Use the link below.</div>');
+		});
+	};
+	load($target.data('ts-load'), 0);
+});
+</xf:js>
 
 <xf:macro name="node_list" arg-children="{$nodeTree}" arg-extras="{$nodeExtras}" />
 <xf:widgetpos id="forum_list_below_nodes" />
