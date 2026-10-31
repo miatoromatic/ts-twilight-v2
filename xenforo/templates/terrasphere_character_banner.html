@@ -9,16 +9,15 @@
 .tsCB *{box-sizing:border-box}
 
 /* ---------- stage + slides ---------- */
-.tsCB-stage{position:relative;height:300px;border-radius:12px;overflow:hidden;overflow:clip;background:#0b1120;
+.tsCB-stage{position:relative;height:360px;border-radius:12px;overflow:hidden;overflow:clip;background:#0b1120;
 	border:1px solid rgba(127,219,230,.12);box-shadow:0 12px 32px rgba(0,0,0,.35)}
-.tsCB-slide{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;justify-content:space-between;
+.tsCB-slide{position:absolute;top:0;right:0;bottom:0;left:0;will-change:opacity;display:flex;flex-direction:column;justify-content:space-between;
 	padding:22px 24px 18px;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
 .tsCB-slide.is-active,
 .tsCB:not([data-ts-ready]) .tsCB-stage > .tsCB-slide:first-child{opacity:1;visibility:visible;transition:opacity .6s ease}
 
 .tsCB-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;background-color:#141c30;
-	background-size:cover;background-repeat:no-repeat;background-position:center top;transform:scale(1.04);transition:transform 8s ease-out}
-.tsCB-slide.is-active .tsCB-bg{transform:scale(1)}
+	background-size:cover;background-repeat:no-repeat;background-position:center top;transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .tsCB-shade{position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;background:
 	linear-gradient(90deg,rgba(9,13,24,.82) 0%,rgba(9,13,24,.42) 42%,rgba(9,13,24,.05) 72%),
 	linear-gradient(0deg,rgba(9,13,24,.92) 0%,rgba(9,13,24,0) 48%),
@@ -60,6 +59,7 @@
 .tsCB-dock{display:flex;gap:8px;min-width:0}
 .tsCB-buttons{display:contents}
 .tsCB-btn{display:block}
+.tsCB .tsCB-buttons > .tsCB-btn.tsCB-btn--hidden{display:none !important}
 .tsCB-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:78px;height:62px;padding:0 12px;
 	border-radius:9px;background:var(--cb-glass);border:1px solid var(--cb-line);color:var(--cb-ink) !important;
 	font:inherit;font-size:12px;font-weight:700;line-height:1;text-decoration:none !important;cursor:pointer;
@@ -131,7 +131,7 @@
 /* ---------- phone ---------- */
 @media (max-width:650px){
 	.tsCB{margin:16px auto}
-	.tsCB-stage{height:350px;border-radius:10px}
+	.tsCB-stage{height:380px;border-radius:10px}
 	.tsCB-slide{padding:16px 16px 52px}
 	.tsCB-top{flex-direction:column;gap:12px}
 	.tsCB-head{max-width:100%}
@@ -151,7 +151,6 @@
 }
 @media (prefers-reduced-motion:reduce){
 	.tsCB-slide,.tsCB-bg,.tsCB-drawer,.tsCB-dot,.tsCB-dot:before{transition:none !important}
-	.tsCB-bg{transform:none !important}
 }
 
 /* ---------- per-group visibility (unchanged logic from the old banner) ---------- */
@@ -187,7 +186,11 @@
 		  arg-icon="!"
 		  arg-label=""
 		  arg-link="!"
-		  arg-behavior="1">
+		  arg-behavior="1"
+		  arg-hidden="{{ false }}">
+	<xf:if is="$hidden">
+	<div class="tsCB-btn tsCB-btn--hidden" aria-hidden="true"></div>
+	<xf:else />
 	<div class="tsCB-btn">
 		<a href="{$link}"
 		   class="tsCB-tile{{ $label ? '' : ' tsCB-tile--icon' }}"
@@ -197,10 +200,13 @@
 			<xf:if is="$label"><span>{$label}</span></xf:if>
 		</a>
 	</div>
+	</xf:if>
 </xf:macro>
 
 <xf:set var="$isGroup4" value="{{ $xf.visitor.user_group_id == 4 || in_array(4, $xf.visitor.secondary_group_ids) }}" />
 <xf:set var="$canSheet" value="{{ !$isGroup4 && $xf.visitor.canShowCharacterElements() }}" />
+<!-- buttons whose icon class includes "only-dm" are only rendered for these groups -->
+<xf:set var="$isDm" value="{{ $xf.visitor.isMemberOf([12, 21, 31]) }}" />
 <xf:set var="$sheetLink" value="{{ link('members/charactersheet', $xf.visitor) }}" />
 
 <div class="tsCB" data-interval="7000">
@@ -254,7 +260,8 @@
 									  arg-icon="{$button.icon_url}"
 									  arg-label="{$label}"
 									  arg-link="{{ $button.getParsedURL($xf.visitor) }}"
-									  arg-behavior="{$button.behavior}" />
+									  arg-behavior="{$button.behavior}"
+									  arg-hidden="{{ !$isDm && in_array('only-dm', $button.icon_url|split(' ')) }}" />
 						</xf:foreach>
 					</div>
 				</nav>
