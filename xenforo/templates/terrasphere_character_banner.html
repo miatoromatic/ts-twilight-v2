@@ -1,0 +1,535 @@
+<xf:css>
+/* =====================================================================
+   TS character banner + featured carousel
+   Slide 0 = the visitor's character card, the rest come from the
+   "ts_banner_slides" template (events / ads).
+   ===================================================================== */
+.tsCB{--cb-ink:#eef2f8;--cb-dim:#b6c1d3;--cb-accent:#3fc6d4;--cb-accent-soft:#7fdbe6;--cb-glass:rgba(9,13,24,.64);--cb-line:rgba(255,255,255,.09);
+	max-width:930px;margin:30px auto;color:var(--cb-ink)}
+.tsCB *{box-sizing:border-box}
+
+/* ---------- stage + slides ---------- */
+.tsCB-stage{position:relative;height:300px;border-radius:12px;overflow:hidden;overflow:clip;background:#0b1120;
+	border:1px solid rgba(127,219,230,.12);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.tsCB-slide{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;justify-content:space-between;
+	padding:22px 24px 18px;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
+.tsCB-slide.is-active,
+.tsCB:not([data-ts-ready]) .tsCB-stage > .tsCB-slide:first-child{opacity:1;visibility:visible;transition:opacity .6s ease}
+
+.tsCB-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;background-color:#141c30;
+	background-size:cover;background-repeat:no-repeat;background-position:center top;transform:scale(1.04);transition:transform 8s ease-out}
+.tsCB-slide.is-active .tsCB-bg{transform:scale(1)}
+.tsCB-shade{position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;background:
+	linear-gradient(90deg,rgba(9,13,24,.82) 0%,rgba(9,13,24,.42) 42%,rgba(9,13,24,.05) 72%),
+	linear-gradient(0deg,rgba(9,13,24,.92) 0%,rgba(9,13,24,0) 48%),
+	linear-gradient(180deg,rgba(9,13,24,.5) 0%,rgba(9,13,24,0) 34%)}
+
+.tsCB-top,.tsCB-bottom{position:relative;z-index:1;display:flex;justify-content:space-between;gap:16px;min-width:0}
+.tsCB-top{align-items:flex-start}
+.tsCB-bottom{align-items:flex-end;padding-right:190px}
+
+/* ---------- name / event title (same spot on every slide) ---------- */
+.tsCB-head{min-width:0;max-width:64%}
+.tsCB .tsCB-name{display:block;margin:0;padding:0;border:0;font-size:2.6rem;font-weight:800;line-height:1.02;letter-spacing:-.5px;
+	color:#f4f7fb;text-decoration:none;text-shadow:0 2px 14px rgba(0,0,0,.55);
+	display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tsCB a.tsCB-name:hover{color:var(--cb-accent-soft);text-decoration:none}
+.tsCB-slide--ad .tsCB-name{font-size:2.2rem;text-transform:uppercase;letter-spacing:-1px}
+
+.tsCB-sub{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:9px 0 0;padding:0;
+	font-size:12px;font-weight:700;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;color:var(--cb-accent-soft)}
+.tsCB-sub .userTitle{margin-right:4px}
+.tsCB-sub .cbg,.tsCB-sub .prefix,.tsCB-sub .label{margin:0 !important;font-size:11px;letter-spacing:0;text-transform:none;
+	padding:2px 7px;border-radius:4px;line-height:1.4}
+.tsCB-kicker{margin-right:4px}
+
+/* ---------- wallet (Gold / Mastery / Valor) ---------- */
+.tsCB-wallet{flex:none;display:flex;flex-direction:column;gap:5px;min-width:160px;padding:11px 14px;border-radius:10px;
+	background:var(--cb-glass);border:1px solid var(--cb-line);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:13px}
+.tsCB-wallet > dl{display:flex !important;flex-direction:row !important;justify-content:space-between;align-items:baseline;gap:22px;
+	margin:0 !important;padding:0 !important;text-align:left !important;width:auto !important}
+.tsCB-wallet dt{margin:0;padding:0;color:var(--cb-dim) !important;font-weight:500}
+.tsCB-wallet dt:after{content:none !important}
+.tsCB-wallet dd{margin:0;padding:0;font-weight:800;font-variant-numeric:tabular-nums;color:var(--cb-ink)}
+.tsCB-wallet dd a{color:inherit !important;text-decoration:none}
+.tsCB-wallet [title=GP] + dd{color:#f5c542 !important}
+.tsCB-wallet [title=MP] + dd{color:var(--cb-accent-soft) !important}
+.tsCB-wallet > dl:nth-of-type(3) dd{color:#b57cff}
+
+/* ---------- dock (bottom buttons) ---------- */
+.tsCB-dock{display:flex;gap:8px;min-width:0}
+.tsCB-buttons{display:contents}
+.tsCB-btn{display:block}
+.tsCB-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:78px;height:62px;padding:0 12px;
+	border-radius:9px;background:var(--cb-glass);border:1px solid var(--cb-line);color:var(--cb-ink) !important;
+	font:inherit;font-size:12px;font-weight:700;line-height:1;text-decoration:none !important;cursor:pointer;
+	-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .15s,border-color .15s,transform .15s}
+.tsCB-tile:hover,.tsCB-tile[aria-expanded=true]{background:rgba(63,198,212,.14);border-color:rgba(127,219,230,.45);transform:translateY(-1px)}
+.tsCB-tile:focus-visible{outline:2px solid var(--cb-accent-soft);outline-offset:2px}
+.tsCB-tile i,.tsCB-tile .char-banner-custom-button-icon{font-size:19px !important;line-height:1 !important;color:inherit}
+.tsCB-tile svg{width:19px;height:19px}
+.tsCB-tile--icon{min-width:54px;padding:0}
+
+/* ---------- ad slides ---------- */
+.tsCB-copy{display:flex;flex-direction:column;gap:10px;max-width:470px}
+.tsCB-blurb{margin:0;font-size:14px;line-height:1.35;color:#d6deea;text-shadow:0 1px 6px rgba(0,0,0,.5);
+	display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tsCB-actions{display:flex;flex-wrap:wrap;gap:8px}
+.tsCB a.tsCB-cta,.tsCB a.tsCB-cta2{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:7px;
+	font-weight:700;font-size:13px;text-decoration:none;transition:background .15s,border-color .15s}
+.tsCB a.tsCB-cta{background:#dc7330;color:#fff}
+.tsCB a.tsCB-cta:hover{background:#e8843f;color:#fff}
+.tsCB a.tsCB-cta2{background:var(--cb-glass);border:1px solid rgba(255,255,255,.22);color:#fff;font-weight:600}
+.tsCB a.tsCB-cta2:hover{background:rgba(255,255,255,.14);color:#fff}
+
+/* ---------- pager: prev · dots · next · stop/play ---------- */
+.tsCB-pager{position:absolute;z-index:3;right:20px;bottom:18px;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;
+	background:var(--cb-glass);border:1px solid var(--cb-line);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.tsCB-pager[hidden]{display:none}
+.tsCB-ctl{-webkit-appearance:none;appearance:none;display:flex;align-items:center;justify-content:center;width:30px;height:30px;
+	margin:0;padding:0;border:0;border-radius:50%;background:none;color:#cfd8e6;cursor:pointer;transition:background .15s,color .15s}
+.tsCB-ctl:hover{background:rgba(255,255,255,.1);color:#fff}
+.tsCB-ctl:focus-visible,.tsCB-dot:focus-visible{outline:2px solid var(--cb-accent-soft);outline-offset:1px}
+.tsCB-ctl svg{width:16px;height:16px;fill:currentColor}
+.tsCB-ctl .is-play{display:none}
+.tsCB.is-stopped .tsCB-ctl .is-play{display:block}
+.tsCB.is-stopped .tsCB-ctl .is-pause{display:none}
+.tsCB.is-stopped [data-cb=toggle]{color:var(--cb-accent-soft)}
+
+.tsCB-dots{display:flex;align-items:center;gap:2px;padding:0 4px}
+.tsCB-dot{-webkit-appearance:none;appearance:none;position:relative;display:flex;align-items:center;justify-content:center;
+	width:14px;height:22px;margin:0;padding:0;border:0;background:none;cursor:pointer;transition:width .25s ease}
+.tsCB-dot:before{content:"";display:block;width:100%;max-width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.32);transition:max-width .25s ease,background .15s}
+.tsCB-dot:hover:before{background:rgba(255,255,255,.6)}
+.tsCB-dot.is-active{width:30px}
+.tsCB-dot.is-active:before{max-width:26px;background:rgba(255,255,255,.22)}
+.tsCB-dot i{position:absolute;left:2px;top:50%;height:7px;width:0;margin-top:-3.5px;border-radius:999px;background:var(--cb-accent);opacity:0}
+.tsCB-dot.is-active i{opacity:1;animation:tsCBfill var(--cb-d,7000ms) linear forwards}
+.tsCB.is-held .tsCB-dot.is-active i{animation-play-state:paused}
+.tsCB.is-stopped .tsCB-dot.is-active i{animation:none;width:26px;opacity:.55}
+@keyframes tsCBfill{from{width:0}to{width:26px}}
+
+/* ---------- stats drawer (masteries / expertises / loadout) ---------- */
+.tsCB-drawer{position:absolute;z-index:4;top:0;right:0;bottom:0;width:410px;max-width:100%;padding:16px 18px;overflow-y:auto;
+	background:rgba(8,12,22,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-left:1px solid rgba(127,219,230,.16);
+	transform:translateX(102%);visibility:hidden;transition:transform .35s ease,visibility 0s linear .35s}
+.tsCB-slide.is-drawer .tsCB-drawer{transform:none;visibility:visible;transition:transform .35s ease}
+.tsCB-drawerHead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tsCB-drawerTitle{flex:1;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cb-accent-soft)}
+.tsCB a.tsCB-sheet{font-size:12px;font-weight:700;color:var(--cb-ink);text-decoration:none;opacity:.85}
+.tsCB a.tsCB-sheet:hover{opacity:1;color:var(--cb-accent-soft)}
+.tsCB-group + .tsCB-group{margin-top:12px}
+.tsCB-groupLabel{margin:0 0 6px;font-size:11px;font-weight:600;color:var(--cb-dim);text-transform:uppercase;letter-spacing:.08em}
+.tsCB-chips{display:flex;flex-wrap:wrap;gap:6px}
+.tsCB a.tsCB-chip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 9px 0 3px;border-radius:999px;
+	background:rgba(255,255,255,.05);border:1px solid var(--cb-line);color:var(--cb-ink);text-decoration:none;transition:border-color .15s,background .15s}
+.tsCB a.tsCB-chip:hover{border-color:rgba(127,219,230,.45);background:rgba(63,198,212,.1)}
+.tsCB-chipIcon{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;flex:none}
+.tsCB-chipIcon img{width:80%;height:80%;object-fit:contain}
+.tsCB-chip b{font-size:13px;font-weight:800;min-width:12px}
+
+/* ---------- phone ---------- */
+@media (max-width:650px){
+	.tsCB{margin:16px auto}
+	.tsCB-stage{height:350px;border-radius:10px}
+	.tsCB-slide{padding:16px 16px 52px}
+	.tsCB-top{flex-direction:column;gap:12px}
+	.tsCB-head{max-width:100%}
+	.tsCB .tsCB-name{font-size:2rem}
+	.tsCB-slide--ad .tsCB-name{font-size:1.7rem}
+	.tsCB-wallet{flex-direction:row;gap:16px;min-width:0;padding:7px 12px}
+	.tsCB-wallet > dl{flex-direction:column !important;gap:1px}
+	.tsCB-wallet dt{font-size:11px}
+	.tsCB-bottom{padding-right:0}
+	.tsCB-dock{width:100%;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+	.tsCB-dock::-webkit-scrollbar{display:none}
+	.tsCB-tile{flex:none;min-width:64px;height:54px;font-size:11px}
+	.tsCB-tile--icon{min-width:50px}
+	.tsCB-pager{right:50%;bottom:10px;transform:translateX(50%)}
+	.tsCB-blurb{font-size:13px}
+	.tsCB-drawer{width:100%;border-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+	.tsCB-slide,.tsCB-bg,.tsCB-drawer,.tsCB-dot,.tsCB-dot:before{transition:none !important}
+	.tsCB-bg{transform:none !important}
+}
+
+/* ---------- per-group visibility (unchanged logic from the old banner) ---------- */
+<xf:if is="!$xf.visitor.canShowCharacterElements() || $xf.visitor.user_group_id == 4 || in_array(4, $xf.visitor.secondary_group_ids)">
+.tsCB-wallet > dl:nth-of-type(3){display:none !important}
+</xf:if>
+<xf:if is="$xf.visitor.user_group_id == 5 || in_array(5, $xf.visitor.secondary_group_ids)">
+.tsCB-buttons > .tsCB-btn:nth-child(7){display:none !important}
+<xf:else />
+.tsCB-buttons > .tsCB-btn:nth-child(8),
+.tsCB-buttons > .tsCB-btn:nth-child(2),
+.tsCB-buttons > .tsCB-btn:nth-child(3),
+.tsCB-buttons > .tsCB-btn:nth-child(7){display:none !important}
+</xf:if>
+<xf:if is="$xf.visitor.user_group_id == 21 || in_array(21, $xf.visitor.secondary_group_ids)">
+.tsCB-buttons > .tsCB-btn:nth-child(7){display:block !important}
+</xf:if>
+</xf:css>
+
+<xf:macro name="chip"
+		  arg-src="!"
+		  arg-name="!"
+		  arg-color="transparent"
+		  arg-rank="!"
+		  arg-link="!">
+	<a class="tsCB-chip" href="{$link}" data-xf-click="overlay" title="{$name}">
+		<span class="tsCB-chipIcon" style="background-color: {$color};"><img src="{$src}" alt="{$name}" loading="lazy"></span>
+		<b>{$rank}</b>
+	</a>
+</xf:macro>
+
+<xf:macro name="dock_button"
+		  arg-icon="!"
+		  arg-label=""
+		  arg-link="!"
+		  arg-behavior="1">
+	<div class="tsCB-btn">
+		<a href="{$link}"
+		   class="tsCB-tile{{ $label ? '' : ' tsCB-tile--icon' }}"
+		   <xf:if is="!$label">title="{{ phrase('menu') }}"</xf:if>
+		   <xf:if is="$behavior == 0">data-xf-click="overlay"<xf:elseif is="$behavior != 1" />target="_blank" rel="noopener"</xf:if>>
+			<i class="char-banner-custom-button-icon {$icon}" aria-hidden="true"></i>
+			<xf:if is="$label"><span>{$label}</span></xf:if>
+		</a>
+	</div>
+</xf:macro>
+
+<xf:set var="$isGroup4" value="{{ $xf.visitor.user_group_id == 4 || in_array(4, $xf.visitor.secondary_group_ids) }}" />
+<xf:set var="$canSheet" value="{{ !$isGroup4 && $xf.visitor.canShowCharacterElements() }}" />
+<xf:set var="$sheetLink" value="{{ link('members/charactersheet', $xf.visitor) }}" />
+
+<div class="tsCB" data-interval="7000">
+	<section class="tsCB-stage" aria-roledescription="carousel" aria-label="Character and featured">
+
+		<xf:if is="$xf.visitor.user_id">
+		<!-- ============ SLIDE 0 : CHARACTER (stays up longer: data-duration) ============ -->
+		<article class="tsCB-slide tsCB-slide--char is-active" data-duration="20000" data-label="{$xf.visitor.username}">
+			<div class="tsCB-bg cbn-{$xf.visitor.user_id}"
+				 style="background-image: url('{{ $xf.visitor.Profile.getBannerURL(null) }}'); background-position: center {$xf.visitor.Profile.banner_position_y}%;"></div>
+			<div class="tsCB-shade"></div>
+
+			<div class="tsCB-top">
+				<header class="tsCB-head">
+					<xf:if is="$canSheet">
+						<a class="tsCB-name" href="{$sheetLink}" data-xf-click="overlay">{$xf.visitor.username}</a>
+					<xf:else />
+						<span class="tsCB-name">{$xf.visitor.username}</span>
+					</xf:if>
+					<p class="tsCB-sub">
+						<xf:usertitle user="{$xf.visitor}" />
+						<xf:foreach loop="{{ $xf.visitor.getUsergroupBanners() }}" key="$id" value="$banner">
+							<span class="character-banner-group-tag cbg {$banner.class}">{{ $banner.text|raw }}</span>
+						</xf:foreach>
+						<xf:if is="$xf.visitor.canShowCharacterElements()">
+							<span class="character-banner-group-tag ug-race cbg">{{ $xf.visitor.getCharacterRank() }}</span>
+						</xf:if>
+					</p>
+				</header>
+
+				<div class="tsCB-wallet">
+					<xf:include template="dbtech_credits_member_stats" />
+				</div>
+			</div>
+
+			<div class="tsCB-bottom">
+				<nav class="tsCB-dock" aria-label="Character menu">
+					<button type="button" class="tsCB-tile" data-cb="drawer-open" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8.7 5v10L12 22l-8.7-5V7z"/><path d="M12 8v8M8.5 10v4M15.5 10v4"/></svg>
+						<span>Stats</span>
+					</button>
+					<div class="tsCB-buttons">
+						<xf:foreach loop="$xf.visitor.getBannerButtons()" value="$button">
+							<xf:set var="$label" value="" />
+							<xf:if is="$button.isValidKey('title')"><xf:set var="$label" value="{$button.title}" />
+							<xf:elseif is="$button.isValidKey('label')" /><xf:set var="$label" value="{$button.label}" />
+							<xf:elseif is="$button.isValidKey('display_name')" /><xf:set var="$label" value="{$button.display_name}" />
+							<xf:elseif is="$button.isValidKey('name')" /><xf:set var="$label" value="{$button.name}" />
+							</xf:if>
+							<xf:macro name="dock_button"
+									  arg-icon="{$button.icon_url}"
+									  arg-label="{$label}"
+									  arg-link="{{ $button.getParsedURL($xf.visitor) }}"
+									  arg-behavior="{$button.behavior}" />
+						</xf:foreach>
+					</div>
+				</nav>
+			</div>
+
+			<!-- Stats drawer: everything that used to crowd the banner lives here now -->
+			<aside class="tsCB-drawer" aria-label="Character stats">
+				<div class="tsCB-drawerHead">
+					<span class="tsCB-drawerTitle">Character</span>
+					<xf:if is="$canSheet"><a class="tsCB-sheet" href="{$sheetLink}" data-xf-click="overlay">Full sheet ›</a></xf:if>
+					<button type="button" class="tsCB-ctl" data-cb="drawer-close" title="Close" aria-label="Close">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7a1 1 0 0 0-1.4 0L12 10.6 7.1 5.7a1 1 0 1 0-1.4 1.4l4.9 4.9-4.9 4.9a1 1 0 1 0 1.4 1.4l4.9-4.9 4.9 4.9a1 1 0 0 0 1.4-1.4L13.4 12l4.9-4.9a1 1 0 0 0 0-1.4z"/></svg>
+					</button>
+				</div>
+
+				<xf:if is="$canSheet">
+				<div class="tsCB-group">
+					<p class="tsCB-groupLabel">Loadout</p>
+					<div class="tsCB-chips">
+						<xf:macro name="chip"
+								  arg-src="{{ base_url($xf.visitor.getOrInitiateWeapon().Equipment.icon_url, true) }}"
+								  arg-name="{$xf.visitor.getOrInitiateWeapon().Equipment.display_name}"
+								  arg-rank="{$xf.visitor.getOrInitiateWeapon().Rank.name}"
+								  arg-link="{$sheetLink}" />
+						<xf:macro name="chip"
+								  arg-src="{{ base_url($xf.visitor.getOrInitiateArmor().Equipment.icon_url, true) }}"
+								  arg-name="{$xf.visitor.getOrInitiateArmor().Equipment.display_name}"
+								  arg-rank="{$xf.visitor.getOrInitiateArmor().Rank.name}"
+								  arg-link="{$sheetLink}" />
+						<xf:macro name="chip"
+								  arg-src="{{ base_url($xf.visitor.getOrInitiateAccessory().Equipment.icon_url, true) }}"
+								  arg-name="{$xf.visitor.getOrInitiateAccessory().Equipment.display_name}"
+								  arg-rank="{$xf.visitor.getOrInitiateAccessory().Rank.name}"
+								  arg-link="{$sheetLink}" />
+					</div>
+				</div>
+				</xf:if>
+
+				<div class="tsCB-group">
+					<p class="tsCB-groupLabel">Masteries</p>
+					<div class="tsCB-chips">
+						<xf:foreach loop="$xf.visitor.getMasteries()" key="$id" value="$masteryEntry">
+							<xf:macro name="chip"
+									  arg-src="{$masteryEntry.Mastery.icon_url}"
+									  arg-name="{$masteryEntry.Mastery.display_name}"
+									  arg-color="{$masteryEntry.Mastery.color}"
+									  arg-rank="{$masteryEntry.Rank.name}"
+									  arg-link="{$sheetLink}" />
+						</xf:foreach>
+					</div>
+				</div>
+
+				<div class="tsCB-group">
+					<p class="tsCB-groupLabel">Expertises</p>
+					<div class="tsCB-chips">
+						<xf:foreach loop="$xf.visitor.getExpertises()" key="$id" value="$expertiseEntry">
+							<xf:macro name="chip"
+									  arg-src="{$expertiseEntry.Expertise.icon_url}"
+									  arg-name="{$expertiseEntry.Expertise.display_name}"
+									  arg-color="{$expertiseEntry.Expertise.color}"
+									  arg-rank="{$expertiseEntry.Rank.name}"
+									  arg-link="{$sheetLink}" />
+						</xf:foreach>
+					</div>
+				</div>
+			</aside>
+		</article>
+		</xf:if>
+
+		<!-- ============ SLIDES 1+ : EVENTS / ADS ============ -->
+		<xf:include template="ts_banner_slides" />
+
+		<!-- ============ CONTROLS (dots are generated from the slides) ============ -->
+		<div class="tsCB-pager" hidden>
+			<button type="button" class="tsCB-ctl" data-cb="prev" title="Previous" aria-label="Previous slide">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.4 5.4a1 1 0 0 1 0 1.4L10.2 12l5.2 5.2a1 1 0 1 1-1.4 1.4l-5.9-5.9a1 1 0 0 1 0-1.4l5.9-5.9a1 1 0 0 1 1.4 0z"/></svg>
+			</button>
+			<div class="tsCB-dots" role="tablist" aria-label="Choose slide"></div>
+			<button type="button" class="tsCB-ctl" data-cb="next" title="Next" aria-label="Next slide">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 5.4a1 1 0 0 1 1.4 0l5.9 5.9a1 1 0 0 1 0 1.4L10 18.6a1 1 0 1 1-1.4-1.4l5.2-5.2-5.2-5.2a1 1 0 0 1 0-1.4z"/></svg>
+			</button>
+			<button type="button" class="tsCB-ctl" data-cb="toggle" title="Stop autoplay" aria-label="Stop autoplay" aria-pressed="false">
+				<svg class="is-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>
+				<svg class="is-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.6v12.8a1 1 0 0 0 1.5.9l10-6.4a1 1 0 0 0 0-1.8l-10-6.4A1 1 0 0 0 8 5.6z"/></svg>
+			</button>
+		</div>
+	</section>
+</div>
+
+<xf:js>
+(function () {
+	var KEY = 'tsCB:autoplay';
+	function readPref() { try { return window.localStorage.getItem(KEY); } catch (e) { return null; } }
+	function savePref(v) { try { if (v) { window.localStorage.setItem(KEY, v); } else { window.localStorage.removeItem(KEY); } } catch (e) {} }
+
+	var roots = document.querySelectorAll('.tsCB:not([data-ts-ready])');
+	Array.prototype.forEach.call(roots, function (root) {
+		root.setAttribute('data-ts-ready', '1');
+
+		var stage = root.querySelector('.tsCB-stage');
+		var slides = Array.prototype.slice.call(stage.querySelectorAll('.tsCB-slide'));
+		var pager = root.querySelector('.tsCB-pager');
+		var dotsBox = root.querySelector('.tsCB-dots');
+		var toggleBtn = root.querySelector('[data-cb=toggle]');
+		var n = slides.length;
+		var base = parseInt(root.getAttribute('data-interval'), 10) || 7000;
+		var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		var cur = 0, timer = null, startedAt = 0, remaining = 0, holds = {}, dots = [];
+
+		function durOf(i) {
+			var d = parseInt(slides[i].getAttribute('data-duration'), 10);
+			return d > 0 ? d : base;
+		}
+
+		/* ---------- autoplay engine: any "hold" pauses it, the timer resumes where it left off ---------- */
+		function isHeld() { for (var k in holds) { if (holds.hasOwnProperty(k)) return true; } return false; }
+		function clear() { if (timer) { clearTimeout(timer); timer = null; } }
+		function schedule() {
+			clear();
+			if (n < 2 || isHeld()) return;
+			startedAt = Date.now();
+			timer = setTimeout(function () { timer = null; go(cur + 1); }, Math.max(remaining, 0));
+		}
+		function sync() {
+			root.classList.toggle('is-held', isHeld());
+			root.classList.toggle('is-stopped', !!holds.user);
+			if (toggleBtn) {
+				var label = holds.user ? 'Resume autoplay' : 'Stop autoplay';
+				toggleBtn.setAttribute('aria-pressed', holds.user ? 'true' : 'false');
+				toggleBtn.setAttribute('aria-label', label);
+				toggleBtn.title = label;
+			}
+		}
+		function hold(reason) {
+			if (holds[reason]) return;
+			if (timer) { remaining -= Date.now() - startedAt; clear(); }
+			holds[reason] = 1;
+			sync();
+		}
+		function release(reason) {
+			if (!holds[reason]) return;
+			delete holds[reason];
+			sync();
+			schedule();
+		}
+		function restartBar() {
+			if (!dots[cur]) return;
+			var bar = dots[cur].querySelector('i');
+			bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
+		}
+
+		/* ---------- stats drawer ---------- */
+		function closeDrawer(slide) {
+			if (!slide.classList.contains('is-drawer')) return;
+			slide.classList.remove('is-drawer');
+			var b = slide.querySelector('[data-cb=drawer-open]');
+			if (b) b.setAttribute('aria-expanded', 'false');
+			release('drawer');
+		}
+		slides.forEach(function (slide) {
+			var openBtn = slide.querySelector('[data-cb=drawer-open]');
+			var closeBtn = slide.querySelector('[data-cb=drawer-close]');
+			if (!openBtn) return;
+			openBtn.addEventListener('click', function () {
+				if (slide.classList.contains('is-drawer')) { closeDrawer(slide); return; }
+				slide.classList.add('is-drawer');
+				openBtn.setAttribute('aria-expanded', 'true');
+				hold('drawer');
+				if (closeBtn) setTimeout(function () { closeBtn.focus({ preventScroll: true }); }, 50);
+			});
+			if (closeBtn) closeBtn.addEventListener('click', function () { closeDrawer(slide); openBtn.focus({ preventScroll: true }); });
+			slide.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape' && slide.classList.contains('is-drawer')) { closeDrawer(slide); openBtn.focus({ preventScroll: true }); }
+			});
+		});
+
+		/* the stage clips its content; never let focus scroll it sideways */
+		stage.addEventListener('scroll', function () { stage.scrollLeft = 0; stage.scrollTop = 0; });
+		slides.forEach(function (s) { s.addEventListener('scroll', function () { s.scrollLeft = 0; s.scrollTop = 0; }); });
+
+		/* ---------- slide switching ---------- */
+		function go(i) {
+			cur = (i + n) % n;
+			slides.forEach(function (s, k) {
+				var on = k === cur;
+				s.classList.toggle('is-active', on);
+				s.setAttribute('aria-hidden', on ? 'false' : 'true');
+				if ('inert' in s) s.inert = !on;
+				if (!on) closeDrawer(s);
+			});
+			dots.forEach(function (d, k) {
+				var on = k === cur;
+				d.classList.toggle('is-active', on);
+				d.setAttribute('aria-selected', on ? 'true' : 'false');
+				d.tabIndex = on ? 0 : -1;
+			});
+			restartBar();
+			remaining = durOf(cur);
+			schedule();
+		}
+
+		if (n < 2) { if (n === 1) slides[0].classList.add('is-active'); return; }
+
+		slides.forEach(function (s, i) {
+			if (s.classList.contains('is-active')) cur = i;
+			s.setAttribute('role', 'tabpanel');
+			s.setAttribute('aria-roledescription', 'slide');
+			s.id = s.id || ('tsCB-' + Math.random().toString(36).slice(2, 8) + '-' + i);
+			var d = document.createElement('button');
+			d.type = 'button';
+			d.className = 'tsCB-dot';
+			d.setAttribute('role', 'tab');
+			d.setAttribute('aria-controls', s.id);
+			d.setAttribute('aria-label', s.getAttribute('data-label') || ('Slide ' + (i + 1)));
+			d.title = s.getAttribute('data-label') || '';
+			d.style.setProperty('--cb-d', durOf(i) + 'ms');
+			d.appendChild(document.createElement('i'));
+			d.addEventListener('click', function () { go(i); });
+			dotsBox.appendChild(d);
+			dots.push(d);
+		});
+		pager.hidden = false;
+
+		root.querySelector('[data-cb=prev]').addEventListener('click', function () { go(cur - 1); });
+		root.querySelector('[data-cb=next]').addEventListener('click', function () { go(cur + 1); });
+		toggleBtn.addEventListener('click', function () {
+			if (holds.user) {
+				delete holds.user;
+				savePref(null);
+				remaining = durOf(cur);
+				restartBar();
+				sync();
+				schedule();
+			} else {
+				hold('user');
+				savePref('off');
+			}
+		});
+
+		/* pause while the pointer is over it / keyboard focus is inside / the tab is hidden */
+		stage.addEventListener('mouseenter', function () { hold('hover'); });
+		stage.addEventListener('mouseleave', function () { release('hover'); });
+		stage.addEventListener('focusin', function (e) {
+			var kb = true;
+			try { kb = e.target.matches(':focus-visible'); } catch (err) {}
+			if (kb) hold('focus');
+		});
+		stage.addEventListener('focusout', function (e) { if (!stage.contains(e.relatedTarget)) release('focus'); });
+		document.addEventListener('visibilitychange', function () { if (document.hidden) { hold('hidden'); } else { release('hidden'); } });
+
+		stage.addEventListener('keydown', function (e) {
+			var t = e.target, tag = (t.tagName || '').toLowerCase();
+			if (tag === 'input' || tag === 'textarea' || t.isContentEditable) return;
+			if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+				e.preventDefault();
+				go(cur + (e.key === 'ArrowRight' ? 1 : -1));
+				if (dotsBox.contains(t)) dots[cur].focus();
+			}
+		});
+
+		/* swipe on touch screens */
+		var x0 = null, y0 = null;
+		stage.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+		stage.addEventListener('touchend', function (e) {
+			if (x0 === null) return;
+			var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+			if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5 && !slides[cur].classList.contains('is-drawer')) {
+				go(cur + (dx < 0 ? 1 : -1));
+			}
+			x0 = y0 = null;
+		});
+
+		if (readPref() === 'off' || reduce) holds.user = 1;
+		sync();
+		go(cur);
+	});
+})();
+</xf:js>
