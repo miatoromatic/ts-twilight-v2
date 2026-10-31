@@ -1,8 +1,7 @@
 <xf:comment>
 	Template: ts_activity_feed  (Appearance > Templates > Add template, type: Public)
 	Renders the "What's new" activity rows on forum_list.
-	It is called from widget_new_posts (via template modification) when the
-	widget is rendered with style="ts_activity".
+	Called from widget_new_posts when the page being shown is forum_list.
 </xf:comment>
 
 <xf:macro name="list" arg-threads="!" arg-link="" arg-hasMore="{{ false }}">
@@ -63,17 +62,26 @@
 		Other forums:  show a Font Awesome icon on a tinted tile (colours in ts_activity_feed.less)
 		Anything else: plain dark gradient tile
 	</xf:comment>
-	<xf:set var="$tsRegionIds" value="{{ { '11': 1, '56': 1, '12': 1, '13': 1, '15': 1, '16': 1, '17': 1, '19': 1, '57': 1, '20': 1, '21': 1, '22': 1 } }}" />
-	<xf:set var="$tsIcons" value="{{ { '26': 'fa-solid fa-bell', '25': 'fa-solid fa-globe-stand', '52': 'fa-solid fa-mug-hot', '6':  'fa-solid fa-clipboard-list', '9':  'fa-regular fa-book-open-reader', '8':  'fa-solid fa-mandolin ni38', '7':  'fa-solid fa-user-magnifying-glass', '5':  'fa-solid fa-id-badge', '4':  'fa-solid fa-bullhorn' } }}" />
 	<xf:set var="$nodeId" value="{$thread.node_id}" />
+	<xf:set var="$icon" value="" />
+	<xf:if is="$nodeId == 26"><xf:set var="$icon" value="fa-solid fa-bell" />
+	<xf:elseif is="$nodeId == 25" /><xf:set var="$icon" value="fa-solid fa-globe-stand" />
+	<xf:elseif is="$nodeId == 52" /><xf:set var="$icon" value="fa-solid fa-mug-hot" />
+	<xf:elseif is="$nodeId == 6" /><xf:set var="$icon" value="fa-solid fa-clipboard-list" />
+	<xf:elseif is="$nodeId == 9" /><xf:set var="$icon" value="fa-regular fa-book-open-reader" />
+	<xf:elseif is="$nodeId == 8" /><xf:set var="$icon" value="fa-solid fa-mandolin ni38" />
+	<xf:elseif is="$nodeId == 7" /><xf:set var="$icon" value="fa-solid fa-user-magnifying-glass" />
+	<xf:elseif is="$nodeId == 5" /><xf:set var="$icon" value="fa-solid fa-id-badge" />
+	<xf:elseif is="$nodeId == 4" /><xf:set var="$icon" value="fa-solid fa-bullhorn" />
+	</xf:if>
 
-	<xf:if is="$tsRegionIds.{$nodeId}">
+	<xf:if is="$nodeId == 11 OR $nodeId == 56 OR $nodeId == 12 OR $nodeId == 13 OR $nodeId == 15 OR $nodeId == 16 OR $nodeId == 17 OR $nodeId == 19 OR $nodeId == 57 OR $nodeId == 20 OR $nodeId == 21 OR $nodeId == 22">
 		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--image tsActivity-thumb--node{$nodeId}"
 			style="background-image: url('/db/forums/id_{$nodeId}.webp');"
 			tabindex="-1" aria-hidden="true"></a>
-	<xf:elseif is="$tsIcons.{$nodeId}" />
+	<xf:elseif is="$icon" />
 		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--icon tsActivity-thumb--node{$nodeId}"
-			tabindex="-1" aria-hidden="true"><i class="{$tsIcons.{$nodeId}}"></i></a>
+			tabindex="-1" aria-hidden="true"><i class="{$icon}"></i></a>
 	<xf:else />
 		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--node{$nodeId}" tabindex="-1" aria-hidden="true"></a>
 	</xf:if>
