@@ -1,0 +1,58 @@
+<xf:comment>
+	Template: ts_activity_feed  (Appearance > Templates > Add template, type: Public)
+	Renders the "What's new" activity rows on forum_list.
+	It is called from widget_new_posts (via template modification) when the
+	widget is rendered with style="ts_activity".
+</xf:comment>
+
+<xf:macro name="list" arg-threads="!" arg-link="" arg-hasMore="{{ false }}">
+	<xf:css src="ts_activity_feed.less" />
+
+	<xf:if is="$threads is not empty">
+		<ol class="tsActivity-list">
+			<xf:foreach loop="$threads" value="$thread">
+				<xf:macro name="row" arg-thread="{$thread}" />
+			</xf:foreach>
+		</ol>
+	<xf:else />
+		<div class="tsActivity-empty">Nothing new here yet.</div>
+	</xf:if>
+
+	<xf:if is="$link">
+		<div class="tsActivity-footer">
+			<a href="{$link}" rel="nofollow">Show more activity</a>
+		</div>
+	</xf:if>
+</xf:macro>
+
+<xf:macro name="row" arg-thread="!">
+	<xf:set var="$isUnread" value="{{ $thread.isUnread() }}" />
+	<xf:set var="$threadLink" value="{{ $isUnread ? link('threads/unread', $thread) : link('threads/latest', $thread) }}" />
+
+	<li class="tsActivity-item{{ $isUnread ? ' is-unread' : '' }}" data-node-id="{$thread.node_id}">
+		<span class="tsActivity-dot" aria-hidden="true"></span>
+
+		<a href="{$threadLink}" class="tsActivity-thumb tsActivity-thumb--node{$thread.node_id}" tabindex="-1" aria-hidden="true"></a>
+
+		<div class="tsActivity-main">
+			<a href="{$threadLink}" class="tsActivity-title" title="{$thread.title}">{$thread.title}</a>
+
+			<div class="tsActivity-meta">
+				<xf:if is="$thread.prefix_id">
+					{{ prefix('thread', $thread, 'html', '') }}
+				</xf:if>
+				<xf:foreach loop="$thread.tags" value="$tag" i="$i" if="$i <= 2">
+					<span class="tsActivity-tag tsActivity-tag--{$i}">{$tag.tag}</span>
+				</xf:foreach>
+				<span class="tsActivity-forum">in <a href="{{ link('forums', $thread.Forum) }}">{$thread.Forum.title}</a></span>
+			</div>
+		</div>
+
+		<div class="tsActivity-aside">
+			<xf:date time="{$thread.last_post_date}" class="tsActivity-time" />
+			<span class="tsActivity-avatar">
+				<xf:avatar user="{$thread.LastPoster}" size="xxs" defaultname="{$thread.last_post_username}" />
+			</span>
+		</div>
+	</li>
+</xf:macro>

@@ -1,0 +1,309 @@
+// Template: ts_activity_feed.less  (Appearance > Templates > Add template, type: Public)
+// Styles for the activity feed shown above the node list on forum_list.
+
+@tsA-bg:        #0d1219;
+@tsA-bgHover:   #121925;
+@tsA-border:    #1c2430;
+@tsA-text:      #e9eef5;
+@tsA-muted:     #7b8b9f;
+@tsA-accent:    #4fc3d1;
+
+.tsActivity
+{
+	margin: 0 0 20px 0;
+	background: @tsA-bg;
+	border: 1px solid @tsA-border;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+// ---------- Header / tabs ----------
+.tsActivity-header
+{
+	display: flex;
+	align-items: stretch;
+	gap: 4px;
+	padding: 0 14px;
+	border-bottom: 1px solid @tsA-border;
+	overflow-x: auto;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar { display: none; }
+}
+
+.tsActivity-tab
+{
+	position: relative;
+	display: flex;
+	align-items: center;
+	padding: 14px 10px 12px;
+	font-size: 13px;
+	font-weight: 600;
+	color: @tsA-muted;
+	white-space: nowrap;
+	cursor: pointer;
+	text-decoration: none !important;
+	transition: color .2s ease;
+
+	&:hover { color: @tsA-text; }
+
+	&::after
+	{
+		content: "";
+		position: absolute;
+		left: 8px;
+		right: 8px;
+		bottom: -1px;
+		height: 2px;
+		border-radius: 2px 2px 0 0;
+		background: transparent;
+		transition: background .2s ease;
+	}
+
+	&.is-active
+	{
+		color: @tsA-text;
+		&::after { background: @tsA-accent; }
+	}
+}
+
+.tsActivity-sort
+{
+	margin-left: auto;
+	align-self: center;
+	padding-left: 12px;
+	font-size: 11px;
+	color: @tsA-muted;
+	white-space: nowrap;
+}
+
+// ---------- Panes ----------
+.tsActivity-panes
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+
+	> li { display: none; }
+	> li.is-active { display: block; }
+}
+
+.tsActivity-list
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+// ---------- Rows ----------
+.tsActivity-item
+{
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 11px 16px 11px 26px;
+	border-bottom: 1px solid @tsA-border;
+	transition: background .2s ease;
+
+	&:hover { background: @tsA-bgHover; }
+}
+
+.tsActivity-dot
+{
+	position: absolute;
+	left: 11px;
+	top: 50%;
+	width: 6px;
+	height: 6px;
+	margin-top: -3px;
+	border-radius: 50%;
+	background: transparent;
+
+	.tsActivity-item.is-unread & { background: @tsA-accent; box-shadow: 0 0 6px fade(@tsA-accent, 60%); }
+}
+
+.tsActivity-thumb
+{
+	flex: 0 0 auto;
+	width: 62px;
+	height: 36px;
+	border-radius: 4px;
+	background-color: #161d28;
+	background-image: linear-gradient(135deg, #1a2331 0%, #0f141c 100%);
+	background-size: cover;
+	background-position: center;
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.tsActivity-main
+{
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.tsActivity-title
+{
+	display: block;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1.3;
+	color: @tsA-text !important;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-decoration: none !important;
+
+	&:hover { color: #fff !important; text-decoration: underline !important; }
+
+	.tsActivity-item:not(.is-unread) & { font-weight: 600; color: #c9d2de !important; }
+}
+
+.tsActivity-meta
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 5px;
+	margin-top: 4px;
+	font-size: 11px;
+	color: @tsA-muted;
+}
+
+.tsActivity-forum
+{
+	margin-left: 1px;
+
+	a
+	{
+		color: #c9d2de !important;
+		font-weight: 700;
+		text-decoration: none !important;
+		&:hover { color: #fff !important; }
+	}
+}
+
+// ---------- Pills (thread prefixes + tags) ----------
+.tsActivity-pill()
+{
+	display: inline-block;
+	padding: 1px 6px;
+	border-radius: 3px;
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 1.5;
+	letter-spacing: .4px;
+	text-transform: uppercase;
+	border: 1px solid transparent;
+}
+.tsActivity-tint(@c)
+{
+	background: fade(@c, 16%);
+	border-color: fade(@c, 32%);
+	color: lighten(@c, 12%);
+}
+
+.tsActivity-meta .label,
+.tsActivity-tag
+{
+	.tsActivity-pill();
+	.tsActivity-tint(#6d84a8);
+	margin: 0;
+}
+
+// XenForo prefix colour classes -> dark tinted pills
+.tsActivity-meta
+{
+	.label--red,       .label--orange    { .tsActivity-tint(#e0604f); }
+	.label--green,     .label--lightGreen,
+	.label--olive                        { .tsActivity-tint(#43b97a); }
+	.label--blue,      .label--royalBlue,
+	.label--skyBlue,   .label--primary   { .tsActivity-tint(#5c8fe6); }
+	.label--accent                       { .tsActivity-tint(#4fc3d1); }
+	.label--yellow                       { .tsActivity-tint(#e0ac3c); }
+	.label--gray,      .label--silver,
+	.label--hidden                       { .tsActivity-tint(#8996a8); }
+}
+
+// Thread tags (first two) rotate colours
+.tsActivity-tag--1 { .tsActivity-tint(#8f6fe6); }
+.tsActivity-tag--2 { .tsActivity-tint(#5c8fe6); }
+
+// ---------- Right side ----------
+.tsActivity-aside
+{
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.tsActivity-time
+{
+	font-size: 11px;
+	color: @tsA-muted;
+	white-space: nowrap;
+}
+
+.tsActivity-avatar .avatar
+{
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	font-size: 12px;
+
+	img { border-radius: 50%; }
+}
+
+// ---------- Footer / empty ----------
+.tsActivity-footer
+{
+	text-align: center;
+
+	a
+	{
+		display: block;
+		padding: 11px;
+		font-size: 12px;
+		font-weight: 700;
+		color: @tsA-accent !important;
+		text-decoration: none !important;
+		transition: background .2s ease;
+
+		&:hover { background: @tsA-bgHover; }
+	}
+}
+
+.tsActivity-empty
+{
+	padding: 22px 16px;
+	text-align: center;
+	font-size: 13px;
+	color: @tsA-muted;
+	border-bottom: 1px solid @tsA-border;
+}
+
+// ---------- Per-forum thumbnails ----------
+// Each row's thumbnail gets the class .tsActivity-thumb--node{FORUM_ID}.
+// Point each forum ID at an image (examples, edit IDs/paths to match your site):
+//
+// .tsActivity-thumb--node25 { background-image: url('/db/template/classic/campaign.webp'); }
+// .tsActivity-thumb--node26 { background-image: url('/db/template/classic/real-life.png'); }
+// .tsActivity-thumb--node27 { background-image: url('/db/template/classic/comms.png'); }
+// .tsActivity-thumb--node28 { background-image: url('/db/template/classic/hylands_banner_forums.webp'); }
+// .tsActivity-thumb--node29 { background-image: url('/db/template/classic/astorea-banner.webp'); }
+// .tsActivity-thumb--node41 { background-image: url('/db/template/classic/falderen-banner.webp'); }
+// .tsActivity-thumb--node52 { background-image: url('/db/template/classic/misc.png'); }
+
+// ---------- Mobile ----------
+@media (max-width: @xf-responsiveNarrow)
+{
+	.tsActivity { border-radius: 0; border-left: 0; border-right: 0; }
+	.tsActivity-sort { display: none; }
+	.tsActivity-item { gap: 10px; padding: 10px 12px 10px 20px; }
+	.tsActivity-dot { left: 8px; }
+	.tsActivity-thumb { width: 46px; height: 30px; }
+	.tsActivity-aside { flex-direction: column-reverse; align-items: flex-end; gap: 4px; }
+	.tsActivity-time { font-size: 10px; }
+}
