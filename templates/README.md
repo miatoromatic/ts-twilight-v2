@@ -26,14 +26,16 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
      </xf:if>
      ```
    `$xf.reply.template` is the name of the page being shown. On the forum list every New posts widget uses the feed layout, and on every other page (the What's New page, thread pages, sidebars) the widget stays stock.
-3. **Appearance → Widgets → Add widget → New posts**. Create four widgets with **no display position ticked**:
+3. **Appearance → Widgets → Add widget → New posts**. Create these widgets with **no display position ticked**:
 
    | Widget key | Maximum entries | Forum limit |
    |---|---|---|
    | `ts_activity_all` | 12 | (none / all forums) |
    | `ts_activity_regions` | 12 | Season 5 (11), Campaign (56), Tangleweaves (12), Zalra (13), Hylands (15), Astorea (16), Falderen (17), Temeria (19), Lament (57), Misc (20), Real Life (21), Comms (22) |
-   | `ts_activity_guildhall` | 12 | Trackers (6), DM Hub (9), Quest (8), LFGs (7), Apps (5), News (4) |
-   | `ts_activity_community` | 12 | Services (26), Archive (25), OOC (52) |
+   | `ts_activity_season` (tab "Season 5") | 12 | Season 5 (11). Repoint at the next season later |
+| `ts_activity_campaign` (tab "Campaign") | 12 | Campaign (56) |
+| `ts_activity_guildhall` (tab "RP") | 12 | Trackers (6), DM Hub (9), Quest (8), LFGs (7), Apps (5), News (4) |
+   | `ts_activity_community` (tab "OOC") | 12 | Services (26), Archive (25), OOC (52) |
 
    Filter: *Latest*. Display style doesn't matter. Forum limit only matches threads posted directly in the selected forums, so also select any sub-forums.
 4. Replace **forum_list** with `forum_list.html`.
@@ -54,6 +56,10 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
   | LFGs 7 | `fa-solid fa-user-magnifying-glass` | pink |
   | Apps 5 | `fa-solid fa-id-badge` | teal |
   | News 4 | `fa-solid fa-bullhorn` | blue |
+  | Rewards 41 | `fa-solid fa-gem` | diamond cyan |
+  | BBcoding 58 | `fa-solid fa-code` | steel blue |
+  | Property 63 | `fa-solid fa-house` | tan |
+  | Gallery 74 | `fa-solid fa-images` | violet |
 
   The icon list is in the `thumb` macro of `ts_activity_feed`, and the tints are at the bottom of `ts_activity_feed.less`.
 - Any other forum gets a plain dark gradient tile.
@@ -66,7 +72,7 @@ Near the top of the feed block in `forum_list`:
 <xf:set var="$tsShowWiki" value="1" />
 ```
 
-Set it to `0` to hide the Wiki tab and its pane.
+`$tsShowSeason`, `$tsShowCampaign` and `$tsShowWiki` sit together there. Set any of them to `0` to hide that tab and its pane.
 
 Each link is one line, drawn exactly like a thread row:
 
