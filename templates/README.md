@@ -58,17 +58,36 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
   The icon list is in the `thumb` macro of `ts_activity_feed`, and the tints are at the bottom of `ts_activity_feed.less`.
 - Any other forum gets a plain dark gradient tile.
 
-## Extra tabs (Wiki, Shop, News feed)
+## Wiki tab
 
-Near the top of the feed block in `forum_list` are three switches:
+Near the top of the feed block in `forum_list`:
 
 ```
 <xf:set var="$tsShowWiki" value="1" />
-<xf:set var="$tsShowShop" value="1" />
-<xf:set var="$tsShowNewsFeed" value="{{ $xf.visitor.user_id ? 1 : 0 }}" />
 ```
 
-Set one to `0` to hide that tab and its pane. News feed is hidden for guests automatically.
+Set it to `0` to hide the Wiki tab and its pane.
 
-- **Wiki:** a static list of links. Edit the `<li>` blocks in the Wiki pane: `href`, Font Awesome icon, title and description. The four links in it are placeholders.
-- **Shop / News feed:** these load `whats-new/shop-items` and `whats-new/news-feed` the first time the tab is clicked, so they don't slow down the forum list. The loader follows XenForo's "what's new" redirect to a fresh results page. Each pane also has a link to open the full page.
+Each link is one line, drawn exactly like a thread row:
+
+```
+<xf:macro template="ts_activity_feed" name="wiki_row"
+	arg-href="https://terrarp.com/wiki/rules/"
+	arg-title="Rules"
+	arg-icon="fa-solid fa-scale-balanced"
+	arg-labels="{{ ['Required'] }}"
+	arg-sub="Community and roleplay" />
+```
+
+Only `href` and `title` are required. Optional arguments:
+
+| Argument | What it does |
+|---|---|
+| `icon` | Font Awesome icon on a teal tile |
+| `image` | Thumbnail URL, replaces the icon |
+| `labels` | Up to three pills |
+| `section` | Text after "in" (default Wiki) |
+| `byline` | Bold name on the right (default Wiki) |
+| `sub` | Small line under the name |
+
+The four links currently in it are placeholders.

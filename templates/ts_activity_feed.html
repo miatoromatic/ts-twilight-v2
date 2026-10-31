@@ -89,3 +89,45 @@
 		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--node{$nodeId}" tabindex="-1" aria-hidden="true"></a>
 	</xf:if>
 </xf:macro>
+
+<xf:comment>
+	A wiki link drawn exactly like a thread row.
+	  href     - where the row links to (required)
+	  title    - bold title line (required)
+	  icon     - Font Awesome class for the thumbnail tile   (used when no image)
+	  image    - optional thumbnail image URL               (overrides icon)
+	  labels   - optional pills, e.g. {{ ['Guide', 'Rules'] }}
+	  section  - text after "in" (default: Wiki)
+	  byline   - bold name on the right (default: Wiki)
+	  sub      - small line under it, where the time normally goes
+</xf:comment>
+<xf:macro name="wiki_row" arg-href="!" arg-title="!" arg-icon="fa-solid fa-book" arg-image="" arg-labels="{{ [] }}" arg-section="Wiki" arg-byline="Wiki" arg-sub="">
+	<li class="tsActivity-item tsActivity-item--wiki">
+		<span class="tsActivity-dot" aria-hidden="true"></span>
+
+		<xf:if is="$image">
+			<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--image" style="background-image: url('{$image}');" tabindex="-1" aria-hidden="true"></a>
+		<xf:else />
+			<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--icon tsActivity-thumb--wiki" tabindex="-1" aria-hidden="true"><i class="{$icon}"></i></a>
+		</xf:if>
+
+		<div class="tsActivity-main">
+			<a href="{$href}" class="tsActivity-title" title="{$title}">{$title}</a>
+
+			<div class="tsActivity-meta">
+				<xf:foreach loop="$labels" value="$label" i="$i" if="$i <= 3">
+					<span class="tsActivity-tag tsActivity-tag--{$i}">{$label}</span>
+				</xf:foreach>
+				<span class="tsActivity-forum">in <a href="{$href}">{$section}</a></span>
+			</div>
+		</div>
+
+		<div class="tsActivity-aside">
+			<div class="tsActivity-when">
+				<span class="tsActivity-poster">{$byline}</span>
+				<xf:if is="$sub"><span class="tsActivity-time">{$sub}</span></xf:if>
+			</div>
+			<span class="tsActivity-wikiBadge" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
+		</div>
+	</li>
+</xf:macro>
