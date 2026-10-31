@@ -81,6 +81,18 @@
 		});
 	});
 
+	// clicking empty space on the collapsed rail expands it
+	var INTERACTIVE = 'a, button, input, select, textarea, label, [role="button"], [data-xf-click], [tabindex], .menu, .ts-sub';
+	rail.addEventListener('click', function (e) {
+		if (!isCollapsedDesktop() || e.defaultPrevented) {
+			return;
+		}
+		if (e.target.closest(INTERACTIVE)) {
+			return;
+		}
+		setState('expanded', true);
+	});
+
 	var backdrop = document.querySelector('.js-tsRailBackdrop');
 	if (backdrop) {
 		backdrop.addEventListener('click', function () {

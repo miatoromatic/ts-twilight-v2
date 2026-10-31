@@ -91,6 +91,12 @@
 html[data-ts-rail="expanded"] .ts-rail {
 	width: var(--ts-rail-expanded);
 }
+/* collapsed: empty rail space is clickable (expands it — see ts-sidebar.js) */
+@media (min-width: 651px) {
+	html:not([data-ts-rail="expanded"]) .ts-rail {
+		cursor: e-resize;
+	}
+}
 
 .ts-rail-ready .ts-rail {
 	transition: width var(--ts-dur) var(--ts-ease), box-shadow var(--ts-dur) var(--ts-ease);
