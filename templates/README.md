@@ -15,23 +15,19 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
 1. **Appearance → Templates → Add template**
    - Type: *Public*, Title: `ts_activity_feed`, paste `ts_activity_feed.html`.
    - Type: *Public*, Title: `ts_activity_feed.less`, paste `ts_activity_feed.less`.
-2. **Appearance → Template modifications → Add template modification** (Public tab)
-   - Template: `widget_new_posts`
-   - Modification key: `ts_activity_feed_style`
-   - Search type: **Regular expression**
-   - Find:
-     ```
-     #^.*$#s
-     ```
-   - Replace:
+2. **Appearance → Templates → `widget_new_posts`**, edited directly. Leave everything already in it as it is and only add lines at the top and bottom:
+   - At the **very top**, before the first line, paste:
      ```
      <xf:if is="$style == 'ts_activity'">
      	<xf:macro template="ts_activity_feed" name="list" arg-threads="{$threads}" arg-link="{$link}" arg-hasMore="{$hasMore}" />
      <xf:else />
-     $0
+     ```
+   - At the **very bottom**, after the last line, paste:
+     ```
      </xf:if>
      ```
-   This leaves every other New posts widget alone. Only widgets rendered with `style="ts_activity"` use the new layout.
+   This leaves every other New posts widget alone, including the What's New page. Only widgets rendered with `style="ts_activity"` use the new layout.
+   (If you have a template modification system available, you can do the same thing there with a regex find of `#^.*$#s` and the wrap above around `$0`, which survives XenForo upgrades.)
 3. Replace **forum_list** with `forum_list.html`.
 
 ## Configure
