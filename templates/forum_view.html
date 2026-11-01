@@ -75,9 +75,12 @@
 				<label class="tsSort-label" for="tsSortSelect">Sort</label>
 				<select id="tsSortSelect" name="order" class="tsSort-select"
 					onchange="this.form.elements.direction.value = this.options[this.selectedIndex].getAttribute('data-dir'); this.form.submit();">
-					<xf:foreach loop="{{ ['last_post_date', 'post_date', 'title', 'reply_count', 'view_count', 'first_post_reaction_score'] }}" value="$tsSort">
-						<option value="{$tsSort}" data-dir="{{ $tsSort == 'title' ? 'asc' : 'desc' }}" {{ $sortInfo.order == $tsSort ? 'selected' : '' }}>{{ phrase_dynamic('forum_sort.' . $tsSort) }}</option>
-					</xf:foreach>
+					<option value="last_post_date" data-dir="desc" {{ $sortInfo.order == 'last_post_date' ? 'selected' : '' }}>{{ phrase('forum_sort.last_post_date') }}</option>
+					<option value="post_date" data-dir="desc" {{ $sortInfo.order == 'post_date' ? 'selected' : '' }}>{{ phrase('forum_sort.post_date') }}</option>
+					<option value="title" data-dir="asc" {{ $sortInfo.order == 'title' ? 'selected' : '' }}>{{ phrase('forum_sort.title') }}</option>
+					<option value="reply_count" data-dir="desc" {{ $sortInfo.order == 'reply_count' ? 'selected' : '' }}>{{ phrase('forum_sort.reply_count') }}</option>
+					<option value="view_count" data-dir="desc" {{ $sortInfo.order == 'view_count' ? 'selected' : '' }}>{{ phrase('forum_sort.view_count') }}</option>
+					<option value="first_post_reaction_score" data-dir="desc" {{ $sortInfo.order == 'first_post_reaction_score' ? 'selected' : '' }}>{{ phrase('forum_sort.first_post_reaction_score') }}</option>
 				</select>
 				<noscript><button type="submit" class="button button--small">{{ phrase('go') }}</button></noscript>
 			</form>
