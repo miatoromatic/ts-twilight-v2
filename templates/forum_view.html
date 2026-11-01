@@ -1,5 +1,10 @@
 <xf:css src="forum_view_extra.less" />
 
+<xf:comment>Character banner is built here (with forum_view's variables) but printed by PAGE_CONTAINER above the breadcrumb.</xf:comment>
+<xf:page option="tsTopBanner">
+	<xf:include template="terrasphere_character_banner" />
+</xf:page>
+
 <xf:title page="{$page}">{$forum.Node.title}</xf:title>
 <xf:description>{$forum.Node.description|raw}</xf:description>
 

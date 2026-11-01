@@ -1,16 +1,17 @@
 <xf:comment>
-	PAGE_CONTAINER edits (two snippets).
+	PAGE_CONTAINER edits (two snippets). Only forum_view sets these variables,
+	so forum_list and every other page are unaffected.
 
-	(1) Banner: paste DIRECTLY ABOVE this existing line:
+	(1) Character banner: paste DIRECTLY ABOVE this existing line:
 		<xf:ad position="container_breadcrumb_top_above" />
+	(replaces the old  <xf:if is="$template == 'forum_view'"> ... </xf:if>  banner snippet)
 </xf:comment>
-<xf:if is="$template == 'forum_view'">
-	<div class="tsTopBanner"><xf:include template="terrasphere_character_banner" /></div>
+<xf:if is="$tsTopBanner">
+	<div class="tsTopBanner">{$tsTopBanner|raw}</div>
 </xf:if>
 
 <xf:comment>
 	(2) Sub-forums: paste DIRECTLY ABOVE the block that outputs <div class="p-body-header">
 	(including the <xf:if ...> that wraps it, if there is one).
-	Only forum_view sets $tsSubforums, so other pages are unaffected.
 </xf:comment>
 {$tsSubforums|raw}
