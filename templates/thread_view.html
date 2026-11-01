@@ -3,10 +3,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 <xf:css src="thread_view_extra.less" />
 <xf:title page="{$page}">{{ prefix('thread', $thread, 'escaped') }}{$thread.title}</xf:title>
-<div class="prefix-container">
-	{{ prefix('thread', $thread) }}
-</div>
 <xf:include template="terrasphere_character_banner" />
+
+<!-- Breadcrumbs are rendered by PAGE_CONTAINER above the page content; this
+     relocates them directly under the character banner while the page parses,
+     so there is no visible jump. Without JS they simply stay in their default spot. -->
+<div class="ts-breadcrumbSlot" id="js-tsBreadcrumbSlot"></div>
+<script>
+(function ()
+{
+	var slot = document.getElementById('js-tsBreadcrumbSlot'),
+		crumbs = document.querySelector('.p-breadcrumbs:not(.p-breadcrumbs--bottom)');
+
+	if (slot && crumbs)
+	{
+		slot.appendChild(crumbs);
+		slot.classList.add('is-filled');
+	}
+})();
+</script>
 
 
 <xf:if is="!$thread.isSearchEngineIndexable()">
@@ -310,7 +325,12 @@
 			arg-forum="{$forum}"
 			arg-wrapperClass="block-outer" />
 	</xf:if>
-<div class="titlebg"><span>{$thread.title}</span></div>
+	<div class="titlebg">
+		<span class="titlebg-title">{$thread.title}</span>
+		<xf:if contentcheck="true">
+			<div class="prefix-container"><xf:contentcheck>{{ prefix('thread', $thread) }}</xf:contentcheck></div>
+		</xf:if>
+	</div>
 	<div class="block-container lbContainer"
 		data-xf-init="lightbox{{ $xf.options.selectQuotable ? ' select-to-quote' : '' }}"
 		data-message-selector=".js-post"

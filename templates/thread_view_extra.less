@@ -9,20 +9,61 @@
 	border: 1px solid #1b2230 !important;
 	border-radius: 8px;
 }
-.bookmarkLink{opacity: 0}
-.actionBar-action--edit,
-.actionBar-action--delete,
-.actionBar-action--quote,
-.actionBar-action--ip,
-.actionBar-action--inlineMod{
+/* Hover-revealed post controls
+   Hidden state: transparent and nudged 3px down. On hover (or keyboard focus
+   inside the post) they fade and settle into place with a slight stagger.
+   Delays live only on the visible state, so they all vanish together on mouse-out.
+   The `transition` itself is declared in extra.less (.message-actionBar block). */
+.message .bookmarkLink{
 	opacity: 0;
+	transition: opacity .3s ease, color .2s ease;
 }
-.message-inner:hover .actionBar-action--edit,
-.message-inner:hover .actionBar-action--delete,
-.message-inner:hover .actionBar-action--quote,
-.message-inner:hover .actionBar-action--ip,
-.message-inner:hover .actionBar-action--inlineMod{
+.message-actionBar .actionBar-action--edit,
+.message-actionBar .actionBar-action--delete,
+.message-actionBar .actionBar-action--quote,
+.message-actionBar .actionBar-action--ip,
+.message-actionBar .actionBar-action--inlineMod{
+	display: inline-block;
+	opacity: 0;
+	transform: translateY(3px);
+}
+.message-inner:hover .bookmarkLink,
+.message-inner:focus-within .bookmarkLink,
+.message-inner:hover .message-actionBar .actionBar-action--edit,
+.message-inner:hover .message-actionBar .actionBar-action--delete,
+.message-inner:hover .message-actionBar .actionBar-action--quote,
+.message-inner:hover .message-actionBar .actionBar-action--ip,
+.message-inner:hover .message-actionBar .actionBar-action--inlineMod,
+.message-inner:focus-within .message-actionBar .actionBar-action--edit,
+.message-inner:focus-within .message-actionBar .actionBar-action--delete,
+.message-inner:focus-within .message-actionBar .actionBar-action--quote,
+.message-inner:focus-within .message-actionBar .actionBar-action--ip,
+.message-inner:focus-within .message-actionBar .actionBar-action--inlineMod{
 	opacity: 1;
+	transform: none;
+}
+.message-inner:hover .message-actionBar .actionBar-action--inlineMod{ transition-delay: 0s; }
+.message-inner:hover .message-actionBar .actionBar-action--edit{ transition-delay: .04s; }
+.message-inner:hover .message-actionBar .actionBar-action--delete{ transition-delay: .08s; }
+.message-inner:hover .message-actionBar .actionBar-action--ip{ transition-delay: .12s; }
+.message-inner:hover .message-actionBar .actionBar-action--quote{ transition-delay: .06s; }
+/* Touch screens can't hover, so keep the controls usable there */
+@media (hover: none){
+	.message .bookmarkLink,
+	.message-actionBar .actionBar-action--edit,
+	.message-actionBar .actionBar-action--delete,
+	.message-actionBar .actionBar-action--quote,
+	.message-actionBar .actionBar-action--ip,
+	.message-actionBar .actionBar-action--inlineMod{
+		opacity: 1;
+		transform: none;
+	}
+}
+@media (prefers-reduced-motion: reduce){
+	.message-actionBar .actionBar-action{
+		transform: none !important;
+		transition-delay: 0s !important;
+	}
 }
 /* V1
 .content-inner, .block--messages .message{
@@ -47,7 +88,7 @@
 	.character-banner-container{
 		margin: 15px -61px;
 	}
-	.block-outer-opposite, .prefix-container, .notice, .p-breadcrumbs{
+	.block-outer-opposite, .notice, .p-breadcrumbs{
 		margin: 0; /*0 -61px*/
 	}
 	.p-breadcrumbs--bottom{
@@ -883,8 +924,9 @@ position: relative!important;
 .p-footer-row{
 	max-width: 815px!important;
 }
-.prefix-container{
-	margin-bottom: 10px;
+/* Breadcrumbs relocated under the character banner (see thread_view template) */
+.ts-breadcrumbSlot.is-filled .p-breadcrumbs{
+	margin: 0 0 10px 0 !important;
 }
 .bbCodeBlock--unfurl .contentRow-header{
 	color: @xf-paletteColor1;
@@ -897,7 +939,7 @@ position: relative!important;
 }
 @media (max-width: 950px){
 	.titlebg{width:100%!important;background-position: 50% 50%!important;left:0!important}
-	.message-avatar-wrapper, [data-template="thread_view"] .block-outer-opposite, [data-template="thread_view"] .prefix-container, [data-template="thread_view"] .notice, [data-template="thread_view"] .p-breadcrumbs{margin:0!important}
+	.message-avatar-wrapper, [data-template="thread_view"] .block-outer-opposite, [data-template="thread_view"] .notice, [data-template="thread_view"] .p-breadcrumbs{margin:0!important}
 	[data-template="thread_view"] .character-banner-container { margin: 0 0 15px 0; }
 }
 @media (max-width: 650px){
@@ -918,9 +960,6 @@ position: relative!important;
 	}
 	.message-inner {
 		margin-bottom: 10px;
-	}
-	[data-template="thread_view"] .prefix-container {
-		margin-bottom: 10px !important;
 	}
 	.p-breadcrumbs {
 		margin-bottom: 0;
@@ -952,8 +991,19 @@ position: relative!important;
 	font-weight: bold !important;
 	line-height: 120% !important;
 	margin-bottom: 10px !important;
-	padding: 0 25px !important;
+	padding: 12px 25px !important;
 	border-radius: 8px !important;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+/* Thread prefix, now sitting under the title inside .titlebg.
+   0.77em cancels the title's 1.3em so the badges keep their usual size. */
+.titlebg .prefix-container{
+	margin: 6px 0 0 0;
+	font-size: 0.77em;
+	font-weight: normal;
+	line-height: 1.4;
 }
 .pageNavSimple-el.pageNavSimple-el--prev, .pageNavSimple-el.pageNavSimple-el--next {
   background: #282f42;

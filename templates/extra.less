@@ -196,6 +196,9 @@
 .bookmarkLink{
 	color: #4d5975;	
 }
+.bookmarkLink:hover{
+	color: #30adbb;
+}
 .message-body{
 	margin: 0;
 	font-size: 1.06em;
@@ -3269,9 +3272,12 @@ li.select2-results__option > span {
     // Everything else (Left meta, bookmark, mod checkbox, report, edit, quote, react, etc.)
     .actionBar-action {
         color: #46607b;
+        transition: color .2s ease, background-color .2s ease, border-color .2s ease, opacity .3s ease, transform .3s ease;
 
-        &:hover {
-            color: lighten(#46607b, 15%);
+        &:hover,
+        &:hover label {
+            color: #30adbb;
+            text-decoration: none;
         }
 
         // Catch nested SVGs or links if applicable
@@ -3320,7 +3326,7 @@ li.select2-results__option > span {
 .structItem-statuses{
 	float:none!important;
 }
-.titlebg span{
+.titlebg > span{
 	display: inline-block;
 	max-width: 795px;
 	width: 100%;	
