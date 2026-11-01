@@ -1,11 +1,10 @@
 <xf:comment>
-	PAGE_CONTAINER edit — paste DIRECTLY ABOVE this existing line:
+	PAGE_CONTAINER edit: paste DIRECTLY ABOVE this existing line:
 
 		<xf:ad position="container_breadcrumb_top_above" />
 
-	Only prints when a page template sets <xf:page option="tsTopBanner">…</xf:page>
-	(currently only forum_view), so forum_list and every other page are unaffected.
+	Only prints on forum_view, so forum_list and every other page are unaffected.
 </xf:comment>
-<xf:if is="$tsTopBanner">
-	<div class="tsTopBanner">{$tsTopBanner|raw}</div>
+<xf:if is="$template == 'forum_view'">
+	<div class="tsTopBanner"><xf:include template="terrasphere_character_banner" /></div>
 </xf:if>
