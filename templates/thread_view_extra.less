@@ -9,52 +9,67 @@
 	border: 1px solid #1b2230 !important;
 	border-radius: 8px;
 }
-/* Hover-revealed post controls
-   Hidden state: transparent and nudged 3px down. On hover (or keyboard focus
-   inside the post) they all fade and settle into place together.
-   The `transition` itself is declared in extra.less (.message-actionBar block). */
-.message .bookmarkLink{
-	opacity: 0;
-	transition: opacity .3s ease, color .2s ease;
-}
+/* Hover-revealed post controls (incl. bookmark + history)
+   One identical transition on every revealed control, so they all fade and
+   settle into place in the same frame. Hidden: transparent, nudged 3px down. */
 .message-actionBar .actionBar-action--edit,
 .message-actionBar .actionBar-action--delete,
+.message-actionBar .actionBar-action--history,
 .message-actionBar .actionBar-action--quote,
 .message-actionBar .actionBar-action--ip,
-.message-actionBar .actionBar-action--inlineMod{
+.message-actionBar .actionBar-action--inlineMod,
+.message-inner .bookmarkLink{
 	display: inline-block;
 	opacity: 0;
 	transform: translateY(3px);
+	transition: opacity .3s ease, transform .3s ease, color .2s ease !important;
+	transition-delay: 0s !important;
 }
-.message-inner:hover .bookmarkLink,
-.message-inner:focus-within .bookmarkLink,
+/* Inline-mod checkbox / bookmark icon carry their own core transitions;
+   limit those to colour so nothing inside lags behind the fade. */
+.message-actionBar .actionBar-action--inlineMod *,
+.message-actionBar .actionBar-action--inlineMod *::before,
+.message-inner .bookmarkLink::before{
+	transition-property: color, background-color, border-color !important;
+}
 .message-inner:hover .message-actionBar .actionBar-action--edit,
 .message-inner:hover .message-actionBar .actionBar-action--delete,
+.message-inner:hover .message-actionBar .actionBar-action--history,
 .message-inner:hover .message-actionBar .actionBar-action--quote,
 .message-inner:hover .message-actionBar .actionBar-action--ip,
 .message-inner:hover .message-actionBar .actionBar-action--inlineMod,
+.message-inner:hover .bookmarkLink,
 .message-inner:focus-within .message-actionBar .actionBar-action--edit,
 .message-inner:focus-within .message-actionBar .actionBar-action--delete,
+.message-inner:focus-within .message-actionBar .actionBar-action--history,
 .message-inner:focus-within .message-actionBar .actionBar-action--quote,
 .message-inner:focus-within .message-actionBar .actionBar-action--ip,
-.message-inner:focus-within .message-actionBar .actionBar-action--inlineMod{
+.message-inner:focus-within .message-actionBar .actionBar-action--inlineMod,
+.message-inner:focus-within .bookmarkLink{
 	opacity: 1;
 	transform: none;
 }
 /* Touch screens can't hover, so keep the controls usable there */
 @media (hover: none){
-	.message .bookmarkLink,
 	.message-actionBar .actionBar-action--edit,
 	.message-actionBar .actionBar-action--delete,
+	.message-actionBar .actionBar-action--history,
 	.message-actionBar .actionBar-action--quote,
 	.message-actionBar .actionBar-action--ip,
-	.message-actionBar .actionBar-action--inlineMod{
+	.message-actionBar .actionBar-action--inlineMod,
+	.message-inner .bookmarkLink{
 		opacity: 1;
 		transform: none;
 	}
 }
 @media (prefers-reduced-motion: reduce){
-	.message-actionBar .actionBar-action{
+	.message-actionBar .actionBar-action--edit,
+	.message-actionBar .actionBar-action--delete,
+	.message-actionBar .actionBar-action--history,
+	.message-actionBar .actionBar-action--quote,
+	.message-actionBar .actionBar-action--ip,
+	.message-actionBar .actionBar-action--inlineMod,
+	.message-inner .bookmarkLink{
 		transform: none !important;
 	}
 }
@@ -914,8 +929,21 @@ position: relative!important;
 .buttonGroup{
 	border: 3px solid rgba(21, 26, 38, 0.5);
 }
-.p-footer-row{
-	max-width: 815px!important;
+/* "All N posts shown" pill: a static label, not a link, so no hover
+   highlight and no "next" caret */
+.tsPageNavNone .tsPageNavNone-label,
+.tsPageNavNone .tsPageNavNone-label:hover{
+	background: #282f42 !important;
+	border-color: #282f42 !important;
+	color: #d5d5d5 !important;
+	cursor: default;
+}
+.tsPageNavNone .tsPageNavNone-label::after{
+	content: none !important;
+	display: none !important;
+}
+.tsPageNavNone .tsPageNavNone-label .fa--xf{
+	margin-right: 4px;
 }
 /* Breadcrumbs relocated under the character banner (see thread_view template) */
 .ts-breadcrumbSlot.is-filled .p-breadcrumbs{
