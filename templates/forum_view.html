@@ -148,11 +148,6 @@
 
 		<xf:set var="$qtPos">{{ ($sortInfo.order == 'last_post_date' && $sortInfo.direction == 'asc') ? 'bottom' : 'top' }}</xf:set>
 
-		<div class="tsThreadHead" aria-hidden="true">
-			<span class="tsThreadHead-main">Thread</span>
-			<span class="tsThreadHead-latest">Last activity</span>
-		</div>
-
 		<div class="block-body">
 			<xf:extension name="thread_list">
 				<div class="structItemContainer">
@@ -163,6 +158,11 @@
 						arg-direction="{$sortInfo.direction}"
 						arg-prefixes="{$quickThreadPrefixes}"
 						args="{$templateOverrides.quick_thread_macro_args}" />
+
+					<div class="tsThreadHead" aria-hidden="true">
+						<span class="tsThreadHead-main">Thread</span>
+						<span class="tsThreadHead-latest">Last activity</span>
+					</div>
 
 					<xf:if is="$stickyThreads is not empty OR $threads is not empty">
 						<xf:if is="$stickyThreads is not empty">

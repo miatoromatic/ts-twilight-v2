@@ -189,19 +189,15 @@
 @ts-accent-soft:    #0f3a40;
 @ts-head-text:      #8a99ae;
 
-/* --- Title row: Post thread sits to the right of title + description --- */
+/* --- Title row: Post thread on the same line as the title --- */
 [data-template="forum_view"] {
-	.p-body-header {
-		position: relative;
-		padding-right: 220px;
-		min-height: 64px;
+	.p-title {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
 	}
 	.p-title-pageAction {
-		position: absolute;
-		right: 0;
-		top: 50%;
-		transform: translateY(-50%);
-		margin: 0;
+		margin-left: auto;
 	}
 	.p-description {
 		margin-top: 4px;
@@ -235,8 +231,10 @@
 
 		/* every chip, incl. "Show all" — keeps the prefix's own border colour */
 		> a,
-		> a.label {
-			display: inline-flex;
+		> a.label,
+		> a.prefix {
+			display: inline-flex !important; /* extra.less forces .prefix to inline-block */
+			vertical-align: middle;
 			align-items: center;
 			height: 34px;
 			padding: 0 14px !important;
@@ -263,6 +261,11 @@
 		/* "Show all" has no prefix colour, give it the neutral border */
 		> a:first-of-type {
 			border-color: @ts-chip-border;
+		}
+
+		/* .discontinued has a transparent border in extra.less → give it one */
+		> a.discontinued {
+			border-color: #4d5875 !important;
 		}
 
 		/* inner label span inside "Show all" — flatten it */
@@ -315,7 +318,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 14px 18px 12px 18px;
+	padding: 10px 8px 12px 8px;
+	margin-bottom: 5px;
 	border-bottom: 1px solid #1b2230;
 	color: @ts-head-text;
 	font-size: 11px;
@@ -324,7 +328,25 @@
 	text-transform: uppercase;
 }
 .tsThreadHead-main {
-	padding-left: 52px;
+	padding-left: 62px;
+}
+
+/* --- Mod/status icons: hidden until the row is hovered (mouse devices only) --- */
+@media (hover: hover) {
+	[data-template="forum_view"] .structItem .structItem-extraInfo {
+		opacity: 0;
+		visibility: hidden;
+		transform: translateX(4px);
+		transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+	}
+	[data-template="forum_view"] .structItem:hover .structItem-extraInfo,
+	[data-template="forum_view"] .structItem:focus-within .structItem-extraInfo,
+	[data-template="forum_view"] .structItem.is-mod-selected .structItem-extraInfo {
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		transition: opacity .25s ease, transform .25s ease, visibility 0s;
+	}
 }
 
 /* --- Remove replies / views column --- */
@@ -335,15 +357,6 @@
 /* --- Mobile --- */
 @media (max-width: 650px) {
 	[data-template="forum_view"] {
-		.p-body-header {
-			padding-right: 0;
-			min-height: 0;
-		}
-		.p-title-pageAction {
-			position: static;
-			transform: none;
-			margin-top: 10px;
-		}
 		.scPrefixList {
 			flex-wrap: nowrap;
 			overflow-x: auto;
