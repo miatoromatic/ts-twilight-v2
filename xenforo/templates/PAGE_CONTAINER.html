@@ -126,6 +126,12 @@
 
 	<!-- Search / inbox / alerts: always visible, in both rail states and on mobile -->
 	<div class="p-navgroup ts-tools">
+		<a href="https://terrarp.com/" class="ts-tool ts-tool--home"
+			aria-label="{{ phrase('home')|for_attr }}"
+			data-ts-tip="{{ phrase('home')|for_attr }}" data-ts-tip-always="">
+			<xf:fa icon="far fa-house" />
+		</a>
+
 		<xf:if is="$xf.visitor.canSearch()">
 			<a href="{{ link('search') }}"
 				class="p-navgroup-link ts-tool p-navgroup-link--search"
@@ -303,6 +309,12 @@
 						<xf:fa icon="far fa-hammer" />
 					</a>
 				</xf:if>
+
+				<a href="https://docs.google.com/" class="ts-tool" target="_blank" rel="noopener"
+					aria-label="Google Drive"
+					data-ts-tip="Google Drive">
+					<xf:fa icon="fa-brands fa-google-drive" />
+				</a>
 
 				<!-- User group 5 only: character builder, opens this user's build in a new tab -->
 				<xf:if is="$xf.visitor.isMemberOf(5)">
@@ -523,6 +535,10 @@
 			<xf:macro template="notice_macros" name="notice_list" arg-type="scrolling" arg-notices="{$notices.scrolling}" />
 		</xf:if>
 
+		<xf:if is="$tsTopBanner">
+			<div class="tsTopBanner">{$tsTopBanner|raw}</div>
+		</xf:if>
+
 		<xf:ad position="container_breadcrumb_top_above" />
 		<xf:macro name="breadcrumbs"
 			arg-breadcrumbs="{$breadcrumbs}"
@@ -532,6 +548,8 @@
 
 		<xf:macro template="browser_warning_macros" name="javascript" />
 		<xf:macro template="browser_warning_macros" name="browser" />
+
+		{$tsSubforums|raw}
 
 		<xf:if is="$headerHtml is not empty">
 			<div class="p-body-header">
