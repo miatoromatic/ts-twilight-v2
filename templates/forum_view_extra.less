@@ -204,6 +204,23 @@
 	}
 }
 
+/* --- Order inside the page content: sub-forums first, then SC prefix pills, then threads ---
+   The SC add-on's template modification inserts its block before the node list; flex order
+   moves the node list (and its ads) back to the top without touching either add-on. */
+[data-template="forum_view"] .p-body-pageContent {
+	display: flex;
+	flex-direction: column;
+
+	> * {
+		min-width: 0;
+	}
+	> .thNodes__nodeList,
+	> .block:has(> .block-container .node-list),
+	> .block:has(.node--forum, .node--category, .node--link, .node--page) {
+		order: -1;
+	}
+}
+
 /* --- SC prefix filter add-on → pill chips (markup/behaviour untouched) --- */
 [data-template="forum_view"] {
 	.scPrefixBlock {
