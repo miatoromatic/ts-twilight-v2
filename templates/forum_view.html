@@ -29,6 +29,8 @@
 
 <xf:extension name="above_node_list"></xf:extension>
 
+<xf:comment>Sub-forum list is built here (TH Nodes modifications still apply) but printed by PAGE_CONTAINER above p-body-header.</xf:comment>
+<xf:page option="tsSubforums">
 <xf:if is="$nodeTree">
 	<xf:ad position="forum_view_above_node_list" arg-forum="{$forum}" />
 	<div class="block">
@@ -43,6 +45,7 @@
 	</div>
 	<xf:ad position="forum_view_below_node_list" arg-forum="{$forum}" />
 </xf:if>
+</xf:page>
 
 <xf:if is="$canInlineMod">
 	<xf:js src="xf/inline_mod.js" min="1" />
