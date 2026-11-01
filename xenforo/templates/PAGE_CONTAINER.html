@@ -295,18 +295,21 @@
 		<xf:if contentcheck="true">
 			<div class="ts-staff">
 			<xf:contentcheck>
-				<!-- Mod templates (CM reviewers) or Discord (everyone else) — replaces the old floating button -->
+				<!-- Mod templates (CM reviewers) -->
 				<xf:if is="$xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">
 					<a href="https://terrarp.com/pages/mod-templates/" class="ts-tool" data-xf-click="overlay"
 						aria-label="Mod templates"
 						data-ts-tip="Mod templates">
 						<xf:fa icon="far fa-hammer" />
 					</a>
-				<xf:else />
-					<a href="https://discord.gg/PztDVreGyr" class="ts-tool" target="_blank" rel="noopener"
-						aria-label="Discord"
-						data-ts-tip="Discord">
-						<xf:fa icon="fab fa-discord" />
+				</xf:if>
+
+				<!-- User group 5 only: character builder, opens this user's build in a new tab -->
+				<xf:if is="$xf.visitor.isMemberOf(5)">
+					<a href="https://build.terrarp.com/#load.{$xf.visitor.user_id}" class="ts-tool" target="_blank" rel="noopener"
+						aria-label="Builder"
+						data-ts-tip="Builder">
+						<xf:fa icon="fa-solid fa-swords" />
 					</a>
 				</xf:if>
 
@@ -732,7 +735,7 @@
 <!--shine below-->
 </div>
 <script src="/js/tsrp/tether/tether-popup.js"></script>
-<script src="/js/tsrp/sidebar/ts-sidebar.js?v=1"></script>
+<script src="/js/tsrp/sidebar/ts-sidebar.js?v=2"></script>
 </body>
 </html>
 

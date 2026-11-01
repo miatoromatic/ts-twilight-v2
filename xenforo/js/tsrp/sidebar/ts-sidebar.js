@@ -81,17 +81,19 @@
 		});
 	});
 
-	// clicking empty space on the collapsed rail expands it
-	var INTERACTIVE = 'a, button, input, select, textarea, label, [role="button"], [data-xf-click], [tabindex], .menu, .ts-sub';
-	rail.addEventListener('click', function (e) {
-		if (!isCollapsedDesktop() || e.defaultPrevented) {
+	// clicking empty space on the collapsed rail expands it.
+	// Window-level capture, so no other script's stopPropagation() can swallow the click.
+	var INTERACTIVE = 'a, button, input, select, textarea, label, [role="button"], [data-xf-click], .menu, .ts-sub';
+	window.addEventListener('click', function (e) {
+		var target = e.target;
+		if (!target || !target.closest || !rail.contains(target) || !isCollapsedDesktop()) {
 			return;
 		}
-		if (e.target.closest(INTERACTIVE)) {
+		if (target.closest(INTERACTIVE)) {
 			return;
 		}
 		setState('expanded', true);
-	});
+	}, true);
 
 	var backdrop = document.querySelector('.js-tsRailBackdrop');
 	if (backdrop) {
@@ -417,6 +419,9 @@
 	   ------------------------------------------------------------------ */
 
 	syncToggles();
+
+	// lets you confirm in the browser console which build is running: TSRail.version
+	window.TSRail = { version: '2', expand: function () { setState('expanded', true); } };
 
 	// late-loaded add-on icons inside the tools cluster
 	if (window.MutationObserver) {
