@@ -11,8 +11,7 @@
 }
 /* Hover-revealed post controls
    Hidden state: transparent and nudged 3px down. On hover (or keyboard focus
-   inside the post) they fade and settle into place with a slight stagger.
-   Delays live only on the visible state, so they all vanish together on mouse-out.
+   inside the post) they all fade and settle into place together.
    The `transition` itself is declared in extra.less (.message-actionBar block). */
 .message .bookmarkLink{
 	opacity: 0;
@@ -42,11 +41,6 @@
 	opacity: 1;
 	transform: none;
 }
-.message-inner:hover .message-actionBar .actionBar-action--inlineMod{ transition-delay: 0s; }
-.message-inner:hover .message-actionBar .actionBar-action--edit{ transition-delay: .04s; }
-.message-inner:hover .message-actionBar .actionBar-action--delete{ transition-delay: .08s; }
-.message-inner:hover .message-actionBar .actionBar-action--ip{ transition-delay: .12s; }
-.message-inner:hover .message-actionBar .actionBar-action--quote{ transition-delay: .06s; }
 /* Touch screens can't hover, so keep the controls usable there */
 @media (hover: none){
 	.message .bookmarkLink,
@@ -62,7 +56,6 @@
 @media (prefers-reduced-motion: reduce){
 	.message-actionBar .actionBar-action{
 		transform: none !important;
-		transition-delay: 0s !important;
 	}
 }
 /* V1
@@ -1042,6 +1035,25 @@ position: relative!important;
 }
 .titlebg-starter .fa--xf{
 	margin-right: 3px;
+}
+/* Prefix badges: small inline chips, side by side. Overrides the old
+   `.titlebg span { width:100%; max-width:795px }` rule if it is still live,
+   which stretched every badge (and the spacer after it) to a full line. */
+.titlebg .titlebg-meta > .prefix-container span:not(.u-srOnly){
+	display: inline-block;
+	width: auto;
+	max-width: none;
+	vertical-align: middle;
+}
+.titlebg .titlebg-meta > .prefix-container .label-append{
+	width: 4px;
+	overflow: hidden;
+}
+/* Same guard for the starter name inside the meta line */
+.titlebg .titlebg-meta .username span{
+	display: inline;
+	width: auto;
+	max-width: none;
 }
 /* The prefix is the first item; drop the bullet that would follow it */
 .titlebg-meta > .prefix-container + li::before{

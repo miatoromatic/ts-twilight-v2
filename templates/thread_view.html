@@ -301,10 +301,22 @@
 	</xf:if>
 
 	<div class="block-outer page-listing"><xf:extension name="messages_block_outer"><xf:trim>
-		<xf:pagenav
-			page="{$page}" perpage="{$perPage}" total="{$totalPosts}"
-			link="threads" data="{$thread}" params="{$pageNavFilters}" hash="{$pageNavHash}"
-			wrapperclass="block-outer-main" />
+		<xf:if is="$totalPosts > $perPage">
+			<xf:pagenav
+				page="{$page}" perpage="{$perPage}" total="{$totalPosts}"
+				link="threads" data="{$thread}" params="{$pageNavFilters}" hash="{$pageNavHash}"
+				wrapperclass="block-outer-main" />
+		<xf:else />
+			<div class="block-outer-main">
+				<div class="pageNavWrapper pageNavWrapper--mixed tsPageNavNone">
+					<div class="pageNav">
+						<span class="pageNav-jump pageNav-jump--next tsPageNavNone-label">
+							<xf:fa icon="fa-check" /> All {{ number($totalPosts) }} {{ $totalPosts == 1 ? 'post' : 'posts' }} shown
+						</span>
+					</div>
+				</div>
+			</div>
+		</xf:if>
 
 			<xf:if is="!$isFirstPostPinned">
 				{$threadActionsHtml}
