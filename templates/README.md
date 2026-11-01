@@ -33,8 +33,8 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
    | `ts_activity_all` | 12 | (none / all forums) |
    | `ts_activity_regions` | 12 | Season 5 (11), Campaign (56), Tangleweaves (12), Zalra (13), Hylands (15), Astorea (16), Falderen (17), Temeria (19), Lament (57), Misc (20), Real Life (21), Comms (22) |
    | `ts_activity_season` (tab "Season 5") | 12 | Season 5 (11). Repoint at the next season later |
-| `ts_activity_campaign` (tab "Campaign") | 12 | Campaign (56) |
-| `ts_activity_guildhall` (tab "RP") | 12 | Trackers (6), DM Hub (9), Quest (8), LFGs (7), Apps (5), News (4) |
+   | `ts_activity_campaign` (tab "Campaign") | 12 | Campaign (56) |
+   | `ts_activity_guildhall` (tab "RP") | 12 | Trackers (6), DM Hub (9), Quest (8), LFGs (7), Apps (5), News (4) |
    | `ts_activity_community` (tab "OOC") | 12 | Services (26), Archive (25), OOC (52) |
 
    Filter: *Latest*. Display style doesn't matter. Forum limit only matches threads posted directly in the selected forums, so also select any sub-forums.
@@ -60,6 +60,7 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
   | BBcoding 58 | `fa-solid fa-code` | steel blue |
   | Property 63 | `fa-solid fa-house` | tan |
   | Gallery 74 | `fa-solid fa-images` | violet |
+  | Active Player 30 | `fa-solid fa-user` | mint green |
 
   The icon list is in the `thumb` macro of `ts_activity_feed`, and the tints are at the bottom of `ts_activity_feed.less`.
 - Any other forum gets a plain dark gradient tile.

@@ -348,9 +348,11 @@
 	}
 }
 
+// Flat tile: the tint colour darkened, at 10% opacity (darker than the 38% edge line).
+// e.g. #e0ac3c -> rgba(197, 146, 37, 0.1)
 .tsActivity-iconTile(@c)
 {
-	background-image: linear-gradient(135deg, fade(@c, 34%) 0%, fade(@c, 12%) 100%);
+	background: fade(darken(@c, 11%), 10%);
 	box-shadow: inset 0 0 0 1px fade(@c, 38%);
 	i { color: lighten(@c, 18%); }
 }
@@ -371,6 +373,7 @@
 .tsActivity-thumb--node58 { .tsActivity-iconTile(#7fa3c4); } // BBcoding  - code
 .tsActivity-thumb--node63 { .tsActivity-iconTile(#b98b5e); } // Property  - house
 .tsActivity-thumb--node74 { .tsActivity-iconTile(#c46fd6); } // Gallery   - images
+.tsActivity-thumb--node30 { .tsActivity-iconTile(#6fcf97); } // Active Player - user
 
 // ---------- Mobile ----------
 @media (max-width: @xf-responsiveNarrow)
