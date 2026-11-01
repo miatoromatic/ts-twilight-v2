@@ -1,0 +1,332 @@
+<xf:include template="terrasphere_character_banner" />
+
+<xf:css src="forum_view_extra.less" />
+
+<xf:title page="{$page}">{$forum.Node.title}</xf:title>
+<xf:description>{$forum.Node.description|raw}</xf:description>
+
+<xf:css src="structured_list.less" />
+
+<xf:if is="!$forum.isSearchEngineIndexable()">
+	<xf:head option="metaNoindex"><meta name="robots" content="noindex" /></xf:head>
+</xf:if>
+
+<xf:macro template="metadata_macros" name="canonical_url"
+	arg-canonicalUrl="{{ link('canonical:forums', $forum, $canonicalFilters + {'page': $page}) }}" />
+
+<xf:head option="rss_forum"><link rel="alternate" type="application/rss+xml" title="{{ phrase('rss_feed_for_x', {'title': $forum.title})|for_attr }}" href="{{ link('forums/index.rss', $forum) }}" /></xf:head>
+
+<xf:macro template="forum_macros" name="forum_page_options" arg-forum="{$forum}" />
+<xf:breadcrumb source="$forum.getBreadcrumbs(false)" />
+
+<xf:pageaction if="$forum.canWatch() OR $forum.canCreateThread() OR $forum.canCreateThreadPreReg()">
+	<div class="tsForumActions">
+		<xf:if is="$forum.canWatch()">
+			<xf:button href="{{ link('forums/watch', $forum) }}" class="tsForumActions-watch"
+				data-xf-click="switch-overlay"
+				data-sk-watch="{{ phrase('watch') }}"
+				data-sk-unwatch="{{ phrase('unwatch') }}">
+				<xf:if is="{$forum.Watch.{$xf.visitor.user_id}}">{{ phrase('unwatch') }}<xf:else />{{ phrase('watch') }}</xf:if>
+			</xf:button>
+		</xf:if>
+		<xf:if is="$forum.canCreateThread() OR $forum.canCreateThreadPreReg()">
+			<xf:button href="{{ link('forums/post-thread', $forum) }}" class="button--cta big-button" icon="write" rel="nofollow">
+				{{ phrase('post_thread') }}
+			</xf:button>
+		</xf:if>
+	</div>
+</xf:pageaction>
+
+<xf:if is="$pendingApproval">
+	<div class="blockMessage blockMessage--important">{{ phrase('content_submitted_displayed_pending_approval') }}</div>
+</xf:if>
+
+<xf:extension name="above_node_list"></xf:extension>
+
+<xf:if is="$nodeTree">
+	<xf:ad position="forum_view_above_node_list" arg-forum="{$forum}" />
+	<div class="block">
+		<div class="block-container">
+			<div class="block-body">
+				<xf:macro template="forum_list" name="node_list"
+					arg-children="{$nodeTree}"
+					arg-extras="{$nodeExtras}"
+					arg-depth="2" />
+			</div>
+		</div>
+	</div>
+	<xf:ad position="forum_view_below_node_list" arg-forum="{$forum}" />
+</xf:if>
+
+<xf:if is="$canInlineMod">
+	<xf:js src="xf/inline_mod.js" min="1" />
+</xf:if>
+
+<xf:extension name="above_thread_list"></xf:extension>
+<xf:ad position="forum_view_above_thread_list" arg-forum="{$forum}" />
+
+<xf:extension name="thread_list_block_classes" value="" />
+<div class="block {{ extension_value('thread_list_block_classes') }}" data-xf-init="{{ $canInlineMod ? 'inline-mod' : '' }}" data-type="thread" data-href="{{ link('inline-mod') }}">
+
+	<!-- Toolbar: prefix chips (left) / sort + mark read (right) -->
+	<div class="tsForumToolbar">
+		<xf:set var="$tsPrefixes" value="{$forum.prefixes}" />
+		<xf:if is="$tsPrefixes is not empty">
+			<ul class="tsChips">
+				<li><a href="{{ link('forums', $forum, $filters|replace('prefix_id', null)) }}"
+					class="tsChip {{ !$filters.prefix_id ? 'is-active' : '' }}">All</a></li>
+				<xf:foreach loop="$tsPrefixes" value="$tsPrefix">
+					<li><a href="{{ link('forums', $forum, $filters|replace('prefix_id', $tsPrefix.prefix_id)) }}"
+						class="tsChip {{ $filters.prefix_id == $tsPrefix.prefix_id ? 'is-active' : '' }}">{{ prefix_title('thread', $tsPrefix.prefix_id) }}</a></li>
+				</xf:foreach>
+			</ul>
+		<xf:else />
+			<div class="tsChips tsChips--empty"></div>
+		</xf:if>
+
+		<div class="tsForumToolbar-opposite">
+			<form action="{{ link('forums', $forum) }}" method="get" class="tsSort">
+				<xf:foreach loop="$filters" key="$tsFilterKey" value="$tsFilterValue">
+					<xf:if is="$tsFilterKey != 'order' AND $tsFilterKey != 'direction'">
+						<input type="hidden" name="{$tsFilterKey}" value="{$tsFilterValue}" />
+					</xf:if>
+				</xf:foreach>
+				<input type="hidden" name="direction" value="{$sortInfo.direction}" />
+				<label class="tsSort-label" for="tsSortSelect">Sort</label>
+				<select id="tsSortSelect" name="order" class="tsSort-select"
+					onchange="this.form.elements.direction.value = this.options[this.selectedIndex].getAttribute('data-dir'); this.form.submit();">
+					<xf:foreach loop="{{ ['last_post_date', 'post_date', 'title', 'reply_count', 'view_count', 'first_post_reaction_score'] }}" value="$tsSort">
+						<option value="{$tsSort}" data-dir="{{ $tsSort == 'title' ? 'asc' : 'desc' }}" {{ $sortInfo.order == $tsSort ? 'selected' : '' }}>{{ phrase_dynamic('forum_sort.' . $tsSort) }}</option>
+					</xf:foreach>
+				</select>
+				<noscript><button type="submit" class="button button--small">{{ phrase('go') }}</button></noscript>
+			</form>
+
+			<xf:if is="$xf.visitor.user_id">
+				<a href="{{ link('forums/mark-read', $forum, {'date': $xf.time}) }}" class="tsMarkRead" data-xf-click="overlay">Mark all read</a>
+			</xf:if>
+		</div>
+	</div>
+
+	<div class="block-outer page-listing"><xf:trim>
+		<xf:pagenav page="{$page}" perpage="{$perPage}" total="{$total}"
+			link="forums" data="{$forum}" params="{$filters}"
+			wrapperclass="block-outer-main" />
+		<xf:if is="$canInlineMod">
+			<div class="block-outer-opposite">
+				<div class="buttonGroup">
+					<xf:macro template="inline_mod_macros" name="button" />
+				</div>
+			</div>
+		</xf:if>
+	</xf:trim></div>
+
+	<div class="block-container">
+
+		<xf:extension name="thread_list_header">
+			<div class="block-filterBar">
+				<div class="filterBar">
+					<xf:if contentcheck="true">
+						<ul class="filterBar-filters">
+						<xf:contentcheck>
+							<xf:extension name="filters">
+								<xf:macro name="filters"
+									arg-forum="{$forum}"
+									arg-filters="{$filters}"
+									arg-starterFilter="{$starterFilter}"
+									arg-threadTypeFilter="{$threadTypeFilter}" />
+							</xf:extension>
+						</xf:contentcheck>
+						</ul>
+					</xf:if>
+
+					<a class="filterBar-menuTrigger" data-xf-click="menu" role="button" tabindex="0" aria-expanded="false" aria-haspopup="true">{{ phrase('filters') }}</a>
+					<div class="menu menu--wide" data-menu="menu" aria-hidden="true"
+						data-href="{{ link('forums/filters', $forum, $filters) }}"
+						data-load-target=".js-filterMenuBody">
+						<div class="menu-content">
+							<h4 class="menu-header">{{ phrase('show_only:') }}</h4>
+							<div class="js-filterMenuBody">
+								<div class="menu-row">{{ phrase('loading...') }}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</xf:extension>
+
+		<xf:set var="$qtPos">{{ ($sortInfo.order == 'last_post_date' && $sortInfo.direction == 'asc') ? 'bottom' : 'top' }}</xf:set>
+
+		<div class="tsThreadHead" aria-hidden="true">
+			<span class="tsThreadHead-main">Thread</span>
+			<span class="tsThreadHead-latest">Last activity</span>
+		</div>
+
+		<div class="block-body">
+			<xf:extension name="thread_list">
+				<div class="structItemContainer">
+					<xf:macro name="{{ $templateOverrides.quick_thread_macro ?: 'thread_list_macros::quick_thread' }}"
+						arg-forum="{$forum}"
+						arg-page="{$page}"
+						arg-order="{$sortInfo.order}"
+						arg-direction="{$sortInfo.direction}"
+						arg-prefixes="{$quickThreadPrefixes}"
+						args="{$templateOverrides.quick_thread_macro_args}" />
+
+					<xf:if is="$stickyThreads is not empty OR $threads is not empty">
+						<xf:if is="$stickyThreads is not empty">
+							<div class="structItemContainer-group structItemContainer-group--sticky">
+								<xf:foreach loop="$stickyThreads" value="$thread">
+									<xf:macro name="{{ $templateOverrides.thread_list_macro ?: 'thread_list_macros::item' }}"
+										arg-thread="{$thread}"
+										arg-forum="{$forum}"
+										args="{$templateOverrides.thread_list_macro_args}" />
+								</xf:foreach>
+							</div>
+
+							<xf:ad position="forum_view_below_stickies" arg-forum="{$forum}" />
+						</xf:if>
+
+						<div class="structItemContainer-group js-threadList">
+							<xf:if is="$threads is not empty">
+								<xf:foreach loop="$threads" value="$thread">
+									<xf:macro name="{{ $templateOverrides.thread_list_macro ?: 'thread_list_macros::item' }}"
+										arg-thread="{$thread}"
+										arg-forum="{$forum}"
+										args="{$templateOverrides.thread_list_macro_args}"  />
+								</xf:foreach>
+								<xf:if is="$showDateLimitDisabler">
+									<xf:macro name="date_limit_disabler" arg-forum="{$forum}" arg-page="{$page}" arg-filters="{$filters}" />
+								</xf:if>
+							</xf:if>
+						</div>
+					<xf:elseif is="$filters" />
+						<div class="structItemContainer-group js-threadList">
+							<div class="structItem js-emptyThreadList">
+								<div class="structItem-cell">{{ phrase('there_no_threads_matching_your_filters') }}</div>
+							</div>
+							<xf:if is="$showDateLimitDisabler">
+								<xf:macro name="date_limit_disabler" arg-forum="{$forum}" arg-page="{$page}" arg-filters="{$filters}" />
+							</xf:if>
+						</div>
+					<xf:else />
+						<div class="structItemContainer-group js-threadList">
+							<xf:if is="$showDateLimitDisabler">
+								<div class="structItem js-emptyThreadList">
+									<div class="structItem-cell">{{ phrase('there_no_threads_to_display') }}</div>
+								</div>
+								<xf:macro name="date_limit_disabler" arg-forum="{$forum}" arg-page="{$page}" arg-filters="{$filters}" />
+							<xf:else />
+								<div class="structItem js-emptyThreadList">
+									<div class="structItem-cell">{{ phrase('there_no_threads_in_this_forum') }}</div>
+								</div>
+							</xf:if>
+						</div>
+					</xf:if>
+				</div>
+			</xf:extension>
+		</div>
+	</div>
+
+	<div class="block-outer block-outer--after page-listing">
+		<xf:pagenav
+			page="{$page}" perpage="{$perPage}" total="{$total}"
+			link="forums" data="{$forum}" params="{$filters}"
+			wrapperclass="block-outer-main" />
+		<xf:showignored wrapperclass="block-outer-opposite" />
+		<xf:if is="!$forum.canCreateThread() AND !$forum.canCreateThreadPreReg()">
+			<div class="block-outer-opposite">
+				<xf:if is="$xf.visitor.user_id">
+					<span class="button button--wrap is-disabled">
+						{{ phrase('no_permission_to_post') }}
+						<!-- this is not interactive so shouldn't be a button element -->
+					</span>
+				<xf:else />
+					<xf:button href="{{ link('login') }}" class="button--link button--wrap" overlay="true">
+						{{ phrase('log_in_or_register_to_post') }}
+					</xf:button>
+				</xf:if>
+			</div>
+		</xf:if>
+	</div>
+</div>
+
+<xf:ad position="forum_view_below_thread_list" arg-forum="{$forum}" />
+<xf:extension name="below_thread_list"></xf:extension>
+
+<xf:widgetpos id="forum_view_sidebar" context-forum="{$forum}" position="sidebar" />
+
+<xf:macro name="filters" arg-forum="!" arg-filters="!" arg-starterFilter="{{ null }}" arg-threadTypeFilter="{{ null }}">
+	<xf:set var="$dateLimits" value="{{ {
+		'-1': phrase('any_time'),
+		'7': phrase('x_days', {'days': '7'}),
+		'14': phrase('x_days', {'days': '14'}),
+		'30': phrase('x_days', {'days': '30'}),
+		'60': phrase('x_months', {'months': '2'}),
+		'90': phrase('x_months', {'months': '3'}),
+		'182': phrase('x_months', {'months': '6'}),
+		'365': phrase('1_year')
+	} }}" />
+
+	<xf:extension name="start"></xf:extension>
+
+	<xf:extension name="prefix_id">
+		<xf:if is="$filters.prefix_id">
+			<li><a href="{{ link('forums', $forum, $filters|replace('prefix_id', null)) }}"
+				class="filterBar-filterToggle" data-xf-init="tooltip" title="{{ phrase('remove_this_filter')|for_attr }}">
+				<span class="filterBar-filterToggle-label">{{ phrase('prefix:') }}</span>
+				{{ prefix_title('thread', $filters.prefix_id) }}</a></li>
+		</xf:if>
+	</xf:extension>
+
+	<xf:extension name="starter_id">
+		<xf:if is="$filters.starter_id AND $starterFilter">
+			<li><a href="{{ link('forums', $forum, $filters|replace('starter_id', null)) }}"
+				class="filterBar-filterToggle" data-xf-init="tooltip" title="{{ phrase('remove_this_filter')|for_attr }}">
+				<span class="filterBar-filterToggle-label">{{ phrase('started_by:') }}</span>
+				{$starterFilter.username}</a></li>
+		</xf:if>
+	</xf:extension>
+
+	<xf:extension name="thread_type">
+		<xf:if is="$filters.thread_type && $threadTypeFilter">
+			<li><a href="{{ link('forums', $forum, $filters|replace('thread_type', null)) }}"
+				class="filterBar-filterToggle" data-xf-init="tooltip" title="{{ phrase('remove_this_filter')|for_attr }}">
+				<span class="filterBar-filterToggle-label">{{ phrase('thread_type_filter:') }}</span>
+				{{ $threadTypeFilter.getTypeTitle() }}</a></li>
+		</xf:if>
+	</xf:extension>
+
+	<xf:extension name="last_days">
+		<xf:if is="$filters.last_days AND {$dateLimits.{$filters.last_days}}">
+			<li><a href="{{ link('forums', $forum, $filters|replace('last_days', null)) }}"
+				class="filterBar-filterToggle" data-xf-init="tooltip" title="{{ phrase('remove_this_filter')|for_attr }}">
+				<span class="filterBar-filterToggle-label">{{ phrase('last_updated:') }}</span>
+				{$dateLimits.{$filters.last_days}}</a></li>
+		</xf:if>
+	</xf:extension>
+
+	<xf:extension name="order">
+		<xf:if is="$filters.order">
+			<li><a href="{{ link('forums', $forum, $filters|replace({'order': null, 'direction': null})) }}"
+				class="filterBar-filterToggle" data-xf-init="tooltip" title="{{ phrase('return_to_default_order')|for_attr }}">
+				<span class="filterBar-filterToggle-label">{{ phrase('sort_by:') }}</span>
+				{{ phrase_dynamic('forum_sort.' . $filters.order) }}
+				<xf:fa icon="{{ $filters.direction == 'asc' ? 'fa-angle-up' : 'fa-angle-down' }}" />
+				<span class="u-srOnly"><xf:if is="$filters.direction == 'asc'">{{ phrase('ascending') }}<xf:else />{{ phrase('descending') }}</xf:if></span>
+			</a></li>
+		</xf:if>
+	</xf:extension>
+
+	<xf:extension name="end"></xf:extension>
+</xf:macro>
+
+<xf:macro name="date_limit_disabler" arg-forum="!" arg-page="!" arg-filters="!">
+	<div class="structItem structItem--note">
+		<div class="structItem-cell">
+			<a href="{{ link('forums', $forum, {'page': $page, 'no_date_limit': 1} + $filters) }}">
+				{{ phrase('show_older_items') }}
+			</a>
+		</div>
+	</div>
+</xf:macro>

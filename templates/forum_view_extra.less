@@ -1,0 +1,409 @@
+:root {
+  --input-border-heavy: #222c3c;
+  --input-border-light: #222c3c;
+}
+.formRow.formRow--fullWidth + .formRow, .menu .formRow + .formRow, .formRow + .formRow.formRow--fullWidth, .formRow + .menu .formRow, .formRow.formRow--fullWidth + * > .formRow:first-of-type, .menu .formRow + * > .formRow:first-of-type, .formRow + * > .formRow.formRow--fullWidth:first-of-type, .formRow + * > .menu .formRow:first-of-type{
+	border:none;
+}
+.input{
+	transition: none;
+	background: #0e1013 !important;
+}
+.formRow .input{
+	background: #11111163 !important;
+}
+.inputTypes{
+	border-bottom:none!important;
+	padding: 0!important;
+	color: inherit!important;
+}
+.inputTypes-input:checked + .inputTypes-display, .inputTypes-display:hover{
+	border-color: transparent!important;
+	background: #282f42 !important;
+	color: #d5d5d5 !important;
+	border-radius: 4px!important;
+}
+.input{background:#00D}
+.formRow.formRow--fullWidth.formRow--noLabel > dd, .menu .formRow.formRow--noLabel > dd{
+	margin: 0!important;
+}
+.thNodes__nodeList .block-container .node-body{
+	background: #232b3530!important;
+	border-bottom: 2px solid #191e2c!important;
+	border-left: 0!important;
+	border-top: 0!important;
+	border-right: 0!important;
+	border-radius: 4px!important;
+}
+.thNodes__nodeList .block-container .node-body:hover{
+	border-bottom: 2px solid #ac5631!important;
+}
+.thNodes__nodeList .block-container .node{
+	padding: 0 5px!important;
+}
+.node-statsMeta{
+	display: none!important;
+}
+.node-title {
+    font-size: 1.6em!important;
+    text-transform: uppercase;
+    font-weight: 700!important;
+}
+.big-button span, .node-body, .node-main a{
+	transition: all 0.3s ease;
+}
+.forum-location{
+    height: 100px!important;
+}
+.forum-location-height{
+	height: 250px!important;
+}
+.forum-icon{
+    font-size: 3em;
+    position: relative;
+    color: #fff;
+    text-shadow: 5px 5px 3px rgba(17,17,17,0.3);
+	opacity: 1!important;
+    top: 30px;
+    left: 48%;
+}
+.bg-banner{
+	padding: 5px 10px!important;
+}
+.fit-header{
+	margin: 0 0 0 0!important;
+}
+.node-body .thNodes__nodeHeader .node-icon .fa-users, .node-body .thNodes__nodeHeader .node-icon .fa-dice{
+	font-size: 32px!important;
+}
+.thNodes__nodeList.block-container{background:transparent!important;}
+.block-container{
+	/*background: linear-gradient(0deg, rgba(17,20,28,0.95) 0%, rgba(17,20,28,0.85) 100%)!important;*/
+	background: rgba(17,20,28,0.6) !important;
+	border: 1px solid #1b2230 !important;
+	color: rgb(109, 128, 153);
+}
+.structItem{
+	transition: all 0.3s ease;
+	margin-bottom: 5px !important;
+	border-bottom: 1px solid #181e2b;
+}
+.structItemContainer-group--sticky{
+	background-color: rgba(30, 40, 56, 0.3);/*3e8acc8a*/
+	border-radius: 8px;
+	padding-top: 5px;
+}
+.structItemContainer-group--sticky > .structItem{
+	border-bottom: 5px solid #13151e!important;
+}
+.structItem--quickCreate, .structItem:last-child{
+	border:0!important;
+}
+.structItemContainer>.structItem:first-child, .structItemContainer>.structItemContainer-group:first-child>.structItem:first-child {
+    border-top: none!important;
+}
+.structItem-cell.structItem-cell--latest {
+    width: 25%!important;
+}
+.block-container .node.th_node--hasBackgroundImage .node-body:before {
+    background: rgba(0,0,0,0)!important;
+}
+.structItem-title a{
+	margin: 0;
+	color: #eee;
+	font-size: 1.1em;
+	font-weight: 500;
+}
+.prefix{
+	font-size: 0.6em!important;
+}
+.structItem-cell--main .structItem-minor{
+	position: relative;
+	top: -5px;
+}
+.structItem-title{
+	position: relative;
+	top: -7px;
+}
+.thread-tags{
+	margin-bottom: 3px;
+}
+.structItem-cell{
+	padding: 12px 8px;
+}
+.pairs > dt{
+	color: inherit;
+}
+.structItemContainer-group--sticky .nofas{
+	display: none;
+}
+.structItemContainer-group--sticky .structItem-cell{
+    padding-bottom: 20px!important;
+}
+.block1{
+	color: @xf-paletteAccent2;
+	font-size: 9px;
+}
+.node-extra-row{
+	color: #58708f!important;
+}
+.node-extra-title .prefix{
+	padding-bottom: 1px;
+	font-size: 0.7em!important;
+}
+.thNodes__nodeList .block-container .node{
+    padding: 10px 10px 5px 10px !important;
+}
+@media (max-width: 650px){
+	.node-extra {
+		width: 100% !important;
+	}
+	.node-extra-row {
+    	display: block !important;
+	}
+	.block-container:first-child {
+		background: transparent !important;
+	}
+	.thNodes__nodeList .block-container .node {
+		padding: 5px !important;
+	}
+	.structItem-cell + .structItem-cell.structItem-cell--main {
+		padding-left: 10px !important;
+    	padding-right: 10px !important;
+	}
+	.structItem-cell.structItem-cell--meta {
+		padding-left: 10px !important;
+	}
+	  .structItem-cell.structItem-cell--latest {
+		display: inline !important;
+		float: none !important;
+	}
+}
+/* ==========================================================================
+   FORUM VIEW — prototype layout
+   (title + actions / prefix chips + sort / single "last activity" column)
+   ========================================================================== */
+@ts-chip-bg:        #121826;
+@ts-chip-border:    #263045;
+@ts-chip-text:      #cdd6e2;
+@ts-accent:         #2bb6c6;
+@ts-accent-soft:    #0f3a40;
+@ts-head-text:      #8a99ae;
+
+/* --- Title row: Watch + Post thread sit to the right of title/description --- */
+[data-template="forum_view"] {
+	.p-body-header {
+		position: relative;
+		padding-right: 300px;
+		min-height: 64px;
+	}
+	.p-title-pageAction {
+		position: absolute;
+		right: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		margin: 0;
+	}
+	.p-description {
+		margin-top: 4px;
+	}
+}
+
+.tsForumActions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+
+	.button {
+		height: 44px;
+		padding: 0 18px;
+		border-radius: 8px;
+		font-weight: 600;
+		font-size: 14px;
+		box-shadow: none;
+	}
+	.tsForumActions-watch {
+		background: transparent;
+		color: #e6ebf2;
+		border: 1px solid @ts-chip-border;
+
+		&:hover {
+			background: @ts-chip-bg;
+			border-color: #34405a;
+			color: #fff;
+		}
+	}
+	.button--cta {
+		background: @ts-accent;
+		border: 1px solid @ts-accent;
+		color: #0b1a1d;
+		padding: 0 22px;
+
+		&:hover {
+			background: lighten(@ts-accent, 6%);
+			border-color: lighten(@ts-accent, 6%);
+		}
+	}
+}
+
+/* --- Toolbar: chips / sort / mark read --- */
+.tsForumToolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin: 0 0 18px 0;
+}
+
+.tsChips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.tsChip {
+	display: inline-flex;
+	align-items: center;
+	height: 34px;
+	padding: 0 14px;
+	border-radius: 999px;
+	background: @ts-chip-bg;
+	border: 1px solid @ts-chip-border;
+	color: @ts-chip-text !important;
+	font-size: 13px;
+	font-weight: 600;
+	text-decoration: none !important;
+	white-space: nowrap;
+	transition: background .2s ease, border-color .2s ease, color .2s ease;
+
+	&:hover {
+		border-color: #3a4763;
+		color: #fff !important;
+	}
+	&.is-active {
+		background: @ts-accent-soft;
+		border-color: @ts-accent;
+		color: #fff !important;
+	}
+}
+
+.tsForumToolbar-opposite {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	flex: 0 0 auto;
+	margin-left: auto;
+}
+
+.tsSort {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0;
+}
+.tsSort-label {
+	color: @ts-head-text;
+	font-size: 12px;
+}
+.tsSort-select {
+	height: 36px;
+	padding: 0 10px;
+	border-radius: 8px;
+	background: #0e1320;
+	border: 1px solid @ts-chip-border;
+	color: #e6ebf2;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+
+	&:focus {
+		outline: 0;
+		border-color: @ts-accent;
+	}
+	option {
+		background: #0e1320;
+		color: #e6ebf2;
+	}
+}
+.tsMarkRead {
+	color: @ts-accent !important;
+	font-size: 13px;
+	font-weight: 600;
+	white-space: nowrap;
+
+	&:hover {
+		color: lighten(@ts-accent, 12%) !important;
+		text-decoration: none;
+	}
+}
+
+/* old prefix-filter block from the SC addon is replaced by the chips above */
+[data-template="forum_view"] .scPrefixBlock {
+	display: none;
+}
+
+/* pagination / inline-mod row collapses when it has nothing to show */
+[data-template="forum_view"] .block-outer:empty {
+	display: none;
+}
+
+/* --- Column header --- */
+.tsThreadHead {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 18px 12px 18px;
+	border-bottom: 1px solid #1b2230;
+	color: @ts-head-text;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 1.2px;
+	text-transform: uppercase;
+}
+.tsThreadHead-main {
+	padding-left: 52px;
+}
+
+/* --- Remove replies / views column --- */
+[data-template="forum_view"] .structItem-cell--meta {
+	display: none !important;
+}
+
+/* --- Mobile --- */
+@media (max-width: 650px) {
+	[data-template="forum_view"] {
+		.p-body-header {
+			padding-right: 0;
+			min-height: 0;
+		}
+		.p-title-pageAction {
+			position: static;
+			transform: none;
+			margin-top: 10px;
+		}
+	}
+	.tsForumToolbar {
+		margin-bottom: 12px;
+	}
+	.tsChips {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		padding-bottom: 4px;
+		flex-basis: 100%;
+	}
+	.tsForumToolbar-opposite {
+		width: 100%;
+		justify-content: space-between;
+		margin-left: 0;
+	}
+	.tsThreadHead {
+		display: none;
+	}
+}
