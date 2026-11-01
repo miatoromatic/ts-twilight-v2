@@ -951,6 +951,12 @@ position: relative!important;
 	}
 	.titlebg {
 		font-size: 1.2em!important;
+		padding: 10px 15px !important;
+		gap: 10px;
+	}
+	.titlebg-avatar .avatar {
+		width: 36px;
+		height: 36px;
 	}
 	.message-userDetails {
 		margin-left: 15px !important;
@@ -991,19 +997,58 @@ position: relative!important;
 	font-weight: bold !important;
 	line-height: 120% !important;
 	margin-bottom: 10px !important;
-	padding: 12px 25px !important;
+	padding: 12px 20px !important;
 	border-radius: 8px !important;
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	align-items: center;
+	gap: 14px;
 }
-/* Thread prefix, now sitting under the title inside .titlebg.
-   0.77em cancels the title's 1.3em so the badges keep their usual size. */
-.titlebg .prefix-container{
-	margin: 6px 0 0 0;
+/* Title bar: avatar | title over a "starter · date · posts" line */
+.titlebg-avatar{
+	flex: 0 0 auto;
+	line-height: 0;
+}
+.titlebg-avatar .avatar{
+	width: 44px;
+	height: 44px;
+	border-radius: 6px;
+	font-size: 22px; /* letter avatars */
+}
+.titlebg-main{
+	flex: 1 1 auto;
+	min-width: 0; /* lets long titles wrap instead of overflowing */
+}
+.titlebg-title{
+	display: block;
+	max-width: 795px;
+}
+/* Meta line. 0.77em cancels the title's 1.3em, so this sits at body size
+   and prefix badges keep their usual size. */
+.titlebg-meta{
+	margin-top: 4px;
 	font-size: 0.77em;
 	font-weight: normal;
 	line-height: 1.4;
+	color: #7d8aa3;
+}
+.titlebg-meta a,
+.titlebg-meta .username{
+	color: #9aa6bd;
+}
+.titlebg-meta a:hover,
+.titlebg-meta .username:hover{
+	color: #30adbb;
+	text-decoration: none;
+}
+.titlebg-starter .fa--xf{
+	margin-right: 3px;
+}
+/* The prefix is the first item; drop the bullet that would follow it */
+.titlebg-meta > .prefix-container + li::before{
+	content: none;
+}
+.titlebg-meta > .prefix-container{
+	margin-right: 6px;
 }
 .pageNavSimple-el.pageNavSimple-el--prev, .pageNavSimple-el.pageNavSimple-el--next {
   background: #282f42;

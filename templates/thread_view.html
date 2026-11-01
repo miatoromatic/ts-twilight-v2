@@ -326,10 +326,28 @@
 			arg-wrapperClass="block-outer" />
 	</xf:if>
 	<div class="titlebg">
-		<span class="titlebg-title">{$thread.title}</span>
-		<xf:if contentcheck="true">
-			<div class="prefix-container"><xf:contentcheck>{{ prefix('thread', $thread) }}</xf:contentcheck></div>
-		</xf:if>
+		<div class="titlebg-avatar">
+			<xf:avatar user="{$thread.User}" size="s" defaultname="{$thread.username}" />
+		</div>
+		<div class="titlebg-main">
+			<span class="titlebg-title">{$thread.title}</span>
+			<ul class="titlebg-meta listInline listInline--bullet">
+				<xf:if contentcheck="true">
+					<li class="prefix-container"><xf:contentcheck>{{ prefix('thread', $thread) }}</xf:contentcheck></li>
+				</xf:if>
+				<li class="titlebg-starter">
+					<xf:fa icon="fa-comment" title="{{ phrase('thread_starter')|for_attr }}" />
+					<span class="u-srOnly">{{ phrase('thread_starter') }}</span>
+					<xf:username user="{$thread.User}" defaultname="{$thread.username}" />
+				</li>
+				<li>
+					<a href="{{ link('threads', $thread) }}" class="u-concealed"><xf:date time="{$thread.post_date}" /></a>
+				</li>
+				<li>
+					{{ number($thread.reply_count + 1) }} {{ $thread.reply_count == 0 ? 'post' : 'posts' }}
+				</li>
+			</ul>
+		</div>
 	</div>
 	<div class="block-container lbContainer"
 		data-xf-init="lightbox{{ $xf.options.selectQuotable ? ' select-to-quote' : '' }}"
