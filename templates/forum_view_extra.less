@@ -181,7 +181,6 @@
 }
 /* ==========================================================================
    FORUM VIEW — prototype layout
-   (title + actions / prefix chips + sort / single "last activity" column)
    ========================================================================== */
 @ts-chip-bg:        #121826;
 @ts-chip-border:    #263045;
@@ -190,11 +189,11 @@
 @ts-accent-soft:    #0f3a40;
 @ts-head-text:      #8a99ae;
 
-/* --- Title row: Watch + Post thread sit to the right of title/description --- */
+/* --- Title row: Post thread sits to the right of title + description --- */
 [data-template="forum_view"] {
 	.p-body-header {
 		position: relative;
-		padding-right: 300px;
+		padding-right: 220px;
 		min-height: 64px;
 	}
 	.p-title-pageAction {
@@ -209,112 +208,91 @@
 	}
 }
 
-.tsForumActions {
-	display: flex;
-	align-items: center;
-	gap: 8px;
+/* --- SC prefix filter add-on → pill chips (markup/behaviour untouched) --- */
+[data-template="forum_view"] {
+	.scPrefixBlock {
+		margin: 0 0 14px 0;
 
-	.button {
-		height: 44px;
-		padding: 0 18px;
-		border-radius: 8px;
-		font-weight: 600;
-		font-size: 14px;
-		box-shadow: none;
-	}
-	.tsForumActions-watch {
-		background: transparent;
-		color: #e6ebf2;
-		border: 1px solid @ts-chip-border;
-
-		&:hover {
-			background: @ts-chip-bg;
-			border-color: #34405a;
-			color: #fff;
+		> .block-container {
+			background: transparent !important;
+			border: 0 !important;
+			box-shadow: none;
+			padding: 0;
 		}
 	}
-	.button--cta {
-		background: @ts-accent;
-		border: 1px solid @ts-accent;
-		color: #0b1a1d;
-		padding: 0 22px;
 
-		&:hover {
-			background: lighten(@ts-accent, 6%);
-			border-color: lighten(@ts-accent, 6%);
+	.scPrefixList {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		padding: 0 !important;
+
+		/* "Specific prefix :" text */
+		> span:first-child {
+			display: none;
+		}
+
+		/* every chip, incl. "Show all" — keeps the prefix's own border colour */
+		> a,
+		> a.label {
+			display: inline-flex;
+			align-items: center;
+			height: 34px;
+			padding: 0 14px !important;
+			margin: 0 !important;
+			border-radius: 999px !important;
+			border-width: 1px;
+			border-style: solid;
+			background: @ts-chip-bg !important;
+			color: @ts-chip-text !important;
+			font-size: 13px !important;
+			font-weight: 600;
+			line-height: 1;
+			text-transform: none;
+			text-decoration: none !important;
+			white-space: nowrap;
+			transition: background .2s ease, border-color .2s ease, color .2s ease;
+
+			&:hover {
+				background: #18202f !important;
+				color: #fff !important;
+			}
+		}
+
+		/* "Show all" has no prefix colour, give it the neutral border */
+		> a:first-of-type {
+			border-color: @ts-chip-border;
+		}
+
+		/* inner label span inside "Show all" — flatten it */
+		> a .label {
+			background: none !important;
+			border: 0 !important;
+			padding: 0 !important;
+			color: inherit !important;
+			font: inherit !important;
 		}
 	}
+	/* the active chip is highlighted by a tiny <style> emitted from forum_view */
 }
 
-/* --- Toolbar: chips / sort / mark read --- */
-.tsForumToolbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 12px;
-	margin: 0 0 18px 0;
-}
-
-.tsChips {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 8px;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	flex: 1 1 auto;
-	min-width: 0;
-}
-
-.tsChip {
+/* --- Sort dropdown (left of Mark read / Watch) --- */
+.tsSort {
 	display: inline-flex;
 	align-items: center;
-	height: 34px;
-	padding: 0 14px;
-	border-radius: 999px;
-	background: @ts-chip-bg;
-	border: 1px solid @ts-chip-border;
-	color: @ts-chip-text !important;
-	font-size: 13px;
-	font-weight: 600;
-	text-decoration: none !important;
-	white-space: nowrap;
-	transition: background .2s ease, border-color .2s ease, color .2s ease;
-
-	&:hover {
-		border-color: #3a4763;
-		color: #fff !important;
-	}
-	&.is-active {
-		background: @ts-accent-soft;
-		border-color: @ts-accent;
-		color: #fff !important;
-	}
-}
-
-.tsForumToolbar-opposite {
-	display: flex;
-	align-items: center;
-	gap: 14px;
-	flex: 0 0 auto;
-	margin-left: auto;
-}
-
-.tsSort {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin: 0;
+	gap: 8px;
+	margin: 0 10px 0 0;
+	vertical-align: middle;
 }
 .tsSort-label {
 	color: @ts-head-text;
 	font-size: 12px;
 }
 .tsSort-select {
-	height: 36px;
+	height: 34px;
 	padding: 0 10px;
-	border-radius: 8px;
+	border-radius: 6px;
 	background: #0e1320;
 	border: 1px solid @ts-chip-border;
 	color: #e6ebf2;
@@ -330,27 +308,6 @@
 		background: #0e1320;
 		color: #e6ebf2;
 	}
-}
-.tsMarkRead {
-	color: @ts-accent !important;
-	font-size: 13px;
-	font-weight: 600;
-	white-space: nowrap;
-
-	&:hover {
-		color: lighten(@ts-accent, 12%) !important;
-		text-decoration: none;
-	}
-}
-
-/* old prefix-filter block from the SC addon is replaced by the chips above */
-[data-template="forum_view"] .scPrefixBlock {
-	display: none;
-}
-
-/* pagination / inline-mod row collapses when it has nothing to show */
-[data-template="forum_view"] .block-outer:empty {
-	display: none;
 }
 
 /* --- Column header --- */
@@ -387,21 +344,15 @@
 			transform: none;
 			margin-top: 10px;
 		}
+		.scPrefixList {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			padding-bottom: 4px !important;
+		}
 	}
-	.tsForumToolbar {
-		margin-bottom: 12px;
-	}
-	.tsChips {
-		flex-wrap: nowrap;
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
-		padding-bottom: 4px;
-		flex-basis: 100%;
-	}
-	.tsForumToolbar-opposite {
-		width: 100%;
-		justify-content: space-between;
-		margin-left: 0;
+	.tsSort {
+		margin: 0 0 8px 0;
 	}
 	.tsThreadHead {
 		display: none;

@@ -1,0 +1,11 @@
+<xf:comment>
+	PAGE_CONTAINER edit — paste DIRECTLY ABOVE this existing line:
+
+		<xf:ad position="container_breadcrumb_top_above" />
+
+	Only prints when a page template sets <xf:page option="tsTopBanner">…</xf:page>
+	(currently only forum_view), so forum_list and every other page are unaffected.
+</xf:comment>
+<xf:if is="$tsTopBanner">
+	<div class="tsTopBanner">{$tsTopBanner|raw}</div>
+</xf:if>
