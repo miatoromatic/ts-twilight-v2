@@ -330,6 +330,28 @@
 	}
 }
 
+/* --- Placeholder shown where the pagination would be (single page of threads) --- */
+.tsPageNavNone .tsPageNavNone-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	cursor: default;
+	pointer-events: none;
+	opacity: .85;
+
+	/* no "next" chevron, this isn't a link */
+	&:before,
+	&:after {
+		display: none !important;
+		content: none !important;
+	}
+	.fa--xf,
+	i {
+		font-size: .9em;
+		opacity: .8;
+	}
+}
+
 /* --- Column header --- */
 .tsThreadHead {
 	display: flex;

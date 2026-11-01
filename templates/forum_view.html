@@ -74,6 +74,21 @@
 		<xf:pagenav page="{$page}" perpage="{$perPage}" total="{$total}"
 			link="forums" data="{$forum}" params="{$filters}"
 			wrapperclass="block-outer-main" />
+		<xf:if is="$total <= $perPage">
+			<div class="block-outer-main">
+				<div class="pageNavWrapper pageNavWrapper--mixed tsPageNavNone">
+					<div class="pageNav">
+						<span class="pageNav-jump pageNav-jump--next tsPageNavNone-label">
+							<xf:if is="$total">
+								<xf:fa icon="far fa-check" /> All {$total|number} {{ $total == 1 ? 'thread' : 'threads' }} shown
+							<xf:else />
+								<xf:fa icon="far fa-feather" /> No threads yet
+							</xf:if>
+						</span>
+					</div>
+				</div>
+			</div>
+		</xf:if>
 		<div class="block-outer-opposite">
 			<form action="{{ link('forums', $forum) }}" method="get" class="tsSort">
 				<xf:foreach loop="$filters" key="$tsFilterKey" value="$tsFilterValue">
