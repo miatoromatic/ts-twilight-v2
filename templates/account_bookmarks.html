@@ -1,0 +1,81 @@
+<xf:title>{{ phrase('bookmarks') }}</xf:title>
+
+<xf:wrap template="account_wrapper" />
+
+<div class="block">
+	<div class="block-container">
+		<div class="block-filterBar">
+			<div class="filterBar">
+				<xf:if contentcheck="true">
+					<ul class="filterBar-filters">
+						<xf:contentcheck>
+							<xf:if is="$label">
+								<li><a href="{{ link('account/bookmarks') }}"
+									class="filterBar-filterToggle" data-xf-init="tooltip" title="{{ phrase('remove_this_filter')|for_attr }}">
+									<span class="filterBar-filterToggle-label">{{ phrase('label:') }}</span>
+									{$label}</a></li>
+							</xf:if>
+						</xf:contentcheck>
+					</ul>
+				</xf:if>
+
+				<a class="filterBar-menuTrigger" data-xf-click="menu" role="button" tabindex="0" aria-expanded="false" aria-haspopup="true">{{ phrase('filters') }}</a>
+				<div class="menu menu--wide" data-menu="menu" aria-hidden="true">
+					<div class="menu-content">
+						<h4 class="menu-header">{{ phrase('filter_by_label:') }}</h4>
+						<xf:form action="{{ link('account/bookmarks') }}">
+							<div class="menu-row menu-row--separated">
+								<xf:macro template="bookmark_macros" name="filter"
+									arg-name="label"
+									arg-label="{$label}"
+									arg-allLabels="{$allLabels}"
+									arg-placeholder="" />
+							</div>
+							<div class="menu-footer">
+								<span class="menu-footer-controls">
+									<xf:button type="submit" class="button--primary">{{ phrase('filter') }}</xf:button>
+								</span>
+							</div>
+						</xf:form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="block-body">
+			<xf:if is="$bookmarks is not empty">
+				<ol class="listPlain">
+					<xf:foreach loop="$bookmarks" value="$bookmark">
+						<li class="block-row block-row--separated">
+							<xf:macro template="bookmark_macros" name="row" arg-bookmark="{$bookmark}" arg-content="{$bookmark.Content}" />
+						</li>
+					</xf:foreach>
+				</ol>
+			<xf:else />
+				<xf:if is="$label">
+					<div class="block-row">{{ phrase('no_items_matched_your_filter') }}</div>
+				<xf:else />
+					<div class="block-row">{{ phrase('you_have_not_added_any_bookmarks_yet') }}</div>
+				</xf:if>
+			</xf:if>
+		</div>
+	</div>
+
+	<xf:pagenav link="account/bookmarks" params="{{ {'label': $label, 'difference': $paginationDifference} }}" page="{$page}" perpage="{$perPage}" total="{$totalBookmarks}"
+		wrapperclass="block-outer block-outer--after" />
+</div>
+<xf:comment>
+	===== Activity feed copy (forum_list "Bookmarks" tab) =====
+	Hidden on this page. The Bookmarks tab on the forum list loads this page
+	and shows only this block, drawn in the activity-row style.
+</xf:comment>
+<div class="tsBookmarkFeed" style="display: none;">
+	<xf:if is="$bookmarks is not empty">
+		<ol class="tsActivity-list">
+			<xf:foreach loop="$bookmarks" value="$bookmark">
+				<xf:macro template="ts_activity_feed" name="bookmark_row" arg-bookmark="{$bookmark}" />
+			</xf:foreach>
+		</ol>
+	<xf:else />
+		<div class="tsActivity-empty">You haven't bookmarked anything yet.</div>
+	</xf:if>
+</div>

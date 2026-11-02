@@ -261,7 +261,19 @@ $(document).on('click', '.tsActivity-tab', function()
 	{
 		if (data.html)
 		{
-			XF.setupHtmlInsert(data.html, function($html) { $target.html($html); });
+			XF.setupHtmlInsert(data.html, function($html)
+			{
+				// account_bookmarks carries a hidden copy in the activity-row style; show just that
+				var $feed = $html.find('.tsBookmarkFeed').addBack('.tsBookmarkFeed').first();
+				if ($feed.length)
+				{
+					$target.removeClass('tsActivity-remote').html($feed.contents());
+				}
+				else
+				{
+					$target.html($html);
+				}
+			});
 		}
 		else
 		{

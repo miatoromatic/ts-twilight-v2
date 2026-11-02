@@ -136,3 +136,59 @@
 		</div>
 	</li>
 </xf:macro>
+<xf:comment>
+	A bookmark drawn like a thread row. Used by account_bookmarks (hidden copy that the
+	Bookmarks tab on forum_list picks up).
+	Thread / post bookmarks resolve to their thread, so they get the forum thumbnail,
+	prefix and "in Forum" like a normal row. Anything else gets a bookmark tile.
+</xf:comment>
+<xf:macro name="bookmark_row" arg-bookmark="!">
+	<xf:set var="$content" value="{$bookmark.Content}" />
+	<xf:if is="$bookmark.content_type == 'thread'">
+		<xf:set var="$thread" value="{$content}" />
+	<xf:elseif is="$bookmark.content_type == 'post'" />
+		<xf:set var="$thread" value="{$content.Thread}" />
+	<xf:else />
+		<xf:set var="$thread" value="{{ null }}" />
+	</xf:if>
+
+	<li class="tsActivity-item tsActivity-item--bookmark">
+		<span class="tsActivity-dot" aria-hidden="true"></span>
+
+		<xf:if is="$thread">
+			<xf:macro name="thumb" arg-thread="{$thread}" arg-href="{$bookmark.content_link}" />
+		<xf:else />
+			<a href="{$bookmark.content_link}" class="tsActivity-thumb tsActivity-thumb--icon tsActivity-thumb--bookmark" tabindex="-1" aria-hidden="true"><i class="fa-solid fa-bookmark"></i></a>
+		</xf:if>
+
+		<div class="tsActivity-main">
+			<a href="{$bookmark.content_link}" class="tsActivity-title" title="{$bookmark.content_title}">{$bookmark.content_title}</a>
+
+			<div class="tsActivity-meta">
+				<xf:if is="$thread AND $thread.prefix_id">
+					{{ prefix('thread', $thread, 'html', '') }}
+				</xf:if>
+				<xf:foreach loop="$bookmark.labels" value="$label" i="$i" if="$i <= 2">
+					<a href="{{ link('account/bookmarks', null, {'label': $label.label}) }}" class="tsActivity-tag tsActivity-tag--{$i}">{$label.label}</a>
+				</xf:foreach>
+				<xf:if is="$thread">
+					<span class="tsActivity-forum">in <a href="{{ link('forums', $thread.Forum) }}">{$thread.Forum.title}</a></span>
+				</xf:if>
+			</div>
+		</div>
+
+		<div class="tsActivity-aside">
+			<div class="tsActivity-when">
+				<xf:if is="$bookmark.content_user">
+					<xf:username user="{$bookmark.content_user}" class="tsActivity-poster" />
+				</xf:if>
+				<span class="tsActivity-time"><i class="fa-solid fa-bookmark tsActivity-bookmarkedIcon"></i> <xf:date time="{$bookmark.bookmark_date}" /></span>
+			</div>
+			<xf:if is="$bookmark.content_user">
+				<span class="tsActivity-avatar">
+					<xf:avatar user="{$bookmark.content_user}" size="xxs" />
+				</span>
+			</xf:if>
+		</div>
+	</li>
+</xf:macro>

@@ -9,6 +9,7 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
 | `forum_list.html` | Replace the contents of the **forum_list** template |
 | `ts_activity_feed.html` | Public template **ts_activity_feed** |
 | `ts_activity_feed.less` | Public template **ts_activity_feed.less** |
+| `account_bookmarks.html` | Replace the contents of the **account_bookmarks** template (your copy plus a hidden block at the end) |
 
 ## Install
 
@@ -103,7 +104,7 @@ The four links currently in it are placeholders.
 ## Watched and Bookmarks tabs (members only)
 
 - **Watched:** a New posts widget with key `ts_activity_watched` and its Filter set to *Watched* (see the table above).
-- **Bookmarks:** loads `/account/bookmarks` the first time the tab is clicked, and shows it with the page chrome stripped.
+- **Bookmarks:** loads `/account/bookmarks` the first time the tab is clicked. `account_bookmarks` has a hidden block at the end that renders each bookmark with `ts_activity_feed::bookmark_row`, and the tab shows only that block. Thread and post bookmarks get their thread's thumbnail, prefix and "in Forum". Your bookmark labels become the pills, and the right side shows the content's author with the date you bookmarked it. Other bookmark types (profile posts and so on) get a gold bookmark tile.
 
 Both are hidden for guests. Switches: `$tsShowWatched`, `$tsShowBookmarks`. Season 5 and Campaign are currently switched off (`0`).
 
