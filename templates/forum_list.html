@@ -273,6 +273,30 @@ $(document).on('click', '.tsActivity-tab', function()
 	});
 });
 
+// ===== Bookmarks tab: remove a bookmark (with Undo) without leaving the page =====
+$(document).on('click', '.tsActivity-unbookmark, .tsActivity-rebookmark', function(e)
+{
+	e.preventDefault();
+	var $btn = $(this);
+	var $row = $btn.closest('.tsActivity-item');
+	if ($row.hasClass('is-busy')) { return; }
+
+	var undo = $btn.hasClass('tsActivity-rebookmark');
+	var url = undo ? $btn.data('undo-url') : $btn.data('delete-url');
+	var data = undo ? {} : { 'delete': 1 };
+
+	$row.addClass('is-busy');
+	XF.ajax('post', url, data, function(response)
+	{
+		$row.removeClass('is-busy');
+		if (response.errors || response.exception) { return; }
+		$row.toggleClass('is-unbookmarked', !undo);
+	}, { skipDefaultSuccess: true }).fail(function()
+	{
+		$row.removeClass('is-busy');
+	});
+});
+
 // ===== Remember the last active tab (per browser) =====
 (function()
 {

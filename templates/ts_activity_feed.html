@@ -178,6 +178,14 @@
 		</div>
 
 		<div class="tsActivity-aside">
+			<span class="tsActivity-bmActions">
+				<button type="button" class="tsActivity-unbookmark"
+					data-delete-url="{$bookmark.delete_link}"
+					title="Remove bookmark" aria-label="Remove bookmark"><i class="fa-solid fa-bookmark-slash"></i></button>
+				<button type="button" class="tsActivity-rebookmark"
+					data-undo-url="{$bookmark.edit_link}"
+					title="Bookmark it again">Undo</button>
+			</span>
 			<div class="tsActivity-when">
 				<xf:if is="$bookmark.content_user">
 					<xf:username user="{$bookmark.content_user}" class="tsActivity-poster" />

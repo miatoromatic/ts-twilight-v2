@@ -420,6 +420,69 @@
 }
 a.tsActivity-tag { text-decoration: none !important; }
 
+// Remove bookmark / Undo
+.tsActivity-bmActions
+{
+	display: inline-flex;
+	align-items: center;
+}
+
+.tsActivity-unbookmark,
+.tsActivity-rebookmark
+{
+	border: 0;
+	background: transparent;
+	font: inherit;
+	cursor: pointer;
+	transition: color .2s ease, background .2s ease, opacity .2s ease;
+}
+
+.tsActivity-unbookmark
+{
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	font-size: 12px;
+	color: @tsA-muted;
+	opacity: 0; // shows on row hover (always visible on touch screens, see below)
+
+	.tsActivity-item:hover &,
+	&:focus-visible { opacity: 1; }
+	&:hover { color: #f08a7a; background: fade(#e0604f, 14%); }
+}
+
+.tsActivity-rebookmark
+{
+	display: none;
+	padding: 3px 9px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: 700;
+	color: @tsA-accent;
+	&:hover { background: fade(@tsA-accent, 14%); }
+}
+
+.tsActivity-item.is-busy .tsActivity-bmActions { opacity: .5; pointer-events: none; }
+
+.tsActivity-item.is-unbookmarked
+{
+	.tsActivity-thumb,
+	.tsActivity-main,
+	.tsActivity-when,
+	.tsActivity-avatar { opacity: .35; }
+	.tsActivity-title { text-decoration: line-through !important; }
+	.tsActivity-unbookmark { display: none; }
+	.tsActivity-rebookmark { display: inline-block; }
+}
+
+@media (hover: none)
+{
+	.tsActivity-unbookmark { opacity: 1; }
+}
+
 // ---------- Bookmarks tab (content loaded from /account/bookmarks) ----------
 .tsActivity-remote
 {
