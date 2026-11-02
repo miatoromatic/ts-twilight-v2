@@ -115,8 +115,12 @@ function checkCookie(name) {
 			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-wiki">Wiki</a>
 		</xf:if>
 		<span class="tsActivity-sort">Sorted by latest post</span>
-		<button type="button" class="tsActivity-sortToggle" title="Change how bookmarks are sorted">
+		<button type="button" class="tsActivity-sortToggle tsActivity-sortToggle--bookmarks" title="Change how bookmarks are sorted">
 			Sorted by <span class="tsActivity-sortToggle-lastPost">latest post</span><span class="tsActivity-sortToggle-added">date added</span>
+			<i class="fa-solid fa-arrow-down-arrow-up"></i>
+		</button>
+		<button type="button" class="tsActivity-sortToggle tsActivity-sortToggle--watched" title="Change how watched threads are sorted">
+			Sorted by <span class="tsActivity-watchSort-label">latest post</span>
 			<i class="fa-solid fa-arrow-down-arrow-up"></i>
 		</button>
 		<button type="button" class="tsActivity-ctrl tsActivity-showBtn" data-ts-size="show"><i class="fa-solid fa-chevron-down"></i><span>Show</span></button>
@@ -304,17 +308,66 @@ function tsBookmarkSort()
 }
 tsBookmarkSort();
 
-$(document).on('click', '.tsActivity-sortToggle', function()
+$(document).on('click', '.tsActivity-sortToggle--bookmarks', function()
 {
 	var next = tsBookmarkSortMode() === 'added' ? 'lastPost' : 'added';
 	try { localStorage.setItem(TS_BM_SORT_KEY, next); } catch (e) {}
 	tsBookmarkSort();
 });
 
-// Show the toggle only while the Bookmarks tab is the active one
+// Show each toggle only while its tab (Bookmarks / Watched) is the active one
 $(document).on('click', '.tsActivity-tab', function()
 {
-	$('.tsActivity').toggleClass('is-bookmarksTab', $(this).attr('aria-controls') === 'tsActivity-bookmarks');
+	var tab = $(this).attr('aria-controls');
+	$('.tsActivity')
+		.toggleClass('is-bookmarksTab', tab === 'tsActivity-bookmarks')
+		.toggleClass('is-watchedTab', tab === 'tsActivity-watched');
+});
+
+// ===== Watched tab: sort by latest post (default) / unread first / newest thread =====
+// Clicking the toggle cycles through the three. Sorts the threads the Watched widget loaded.
+var TS_W_SORT_KEY = 'tsActivityWatchedSort';
+var TS_W_MODES = ['lastPost', 'unread', 'started'];
+var TS_W_LABELS = { lastPost: 'latest post', unread: 'unread first', started: 'newest thread' };
+function tsWatchedSortMode()
+{
+	var m = null;
+	try { m = localStorage.getItem(TS_W_SORT_KEY); } catch (e) {}
+	return TS_W_MODES.indexOf(m) >= 0 ? m : 'lastPost';
+}
+function tsWatchedSort()
+{
+	var mode = tsWatchedSortMode();
+	var num = function(el, attr) { return parseInt(el.getAttribute(attr), 10) || 0; };
+	$('.tsActivity').toggleClass('is-watchStarted', mode === 'started');
+	$('.tsActivity-watchSort-label').text(TS_W_LABELS[mode]);
+	$('#tsActivity-watched .tsActivity-list').each(function()
+	{
+		var $list = $(this);
+		var rows = $list.children('.tsActivity-item').get();
+		rows.sort(function(a, b)
+		{
+			if (mode === 'started')
+			{
+				return num(b, 'data-started') - num(a, 'data-started');
+			}
+			if (mode === 'unread')
+			{
+				var u = (b.classList.contains('is-unread') ? 1 : 0) - (a.classList.contains('is-unread') ? 1 : 0);
+				if (u) { return u; }
+			}
+			return num(b, 'data-last-post') - num(a, 'data-last-post');
+		});
+		$list.append(rows);
+	});
+}
+tsWatchedSort();
+
+$(document).on('click', '.tsActivity-sortToggle--watched', function()
+{
+	var next = TS_W_MODES[(TS_W_MODES.indexOf(tsWatchedSortMode()) + 1) % TS_W_MODES.length];
+	try { localStorage.setItem(TS_W_SORT_KEY, next); } catch (e) {}
+	tsWatchedSort();
 });
 
 // ===== Bookmarks tab: remove a bookmark (with Undo) without leaving the page =====

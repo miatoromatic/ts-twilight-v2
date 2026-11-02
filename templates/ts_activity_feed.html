@@ -28,7 +28,8 @@
 	<xf:set var="$isUnread" value="{{ $thread.isUnread() }}" />
 	<xf:set var="$threadLink" value="{{ $isUnread ? link('threads/unread', $thread) : link('threads/latest', $thread) }}" />
 
-	<li class="tsActivity-item{{ $isUnread ? ' is-unread' : '' }}" data-node-id="{$thread.node_id}">
+	<li class="tsActivity-item{{ $isUnread ? ' is-unread' : '' }}" data-node-id="{$thread.node_id}"
+		data-last-post="{$thread.last_post_date}" data-started="{$thread.post_date}">
 		<span class="tsActivity-dot" aria-hidden="true"></span>
 
 		<xf:macro name="thumb" arg-thread="{$thread}" arg-href="{$threadLink}" />
@@ -59,7 +60,9 @@
 			</span>
 			<div class="tsActivity-when">
 				<xf:username user="{$thread.LastPoster}" defaultname="{$thread.last_post_username}" class="tsActivity-poster" />
-				<xf:date time="{$thread.last_post_date}" class="tsActivity-time" />
+				<xf:date time="{$thread.last_post_date}" class="tsActivity-time tsActivity-time--last" />
+				<xf:comment>Shown instead of the last post time when the Watched tab is sorted by "newest thread"</xf:comment>
+				<span class="tsActivity-time tsActivity-time--started">Started <xf:date time="{$thread.post_date}" /></span>
 			</div>
 			<span class="tsActivity-avatar">
 				<xf:avatar user="{$thread.LastPoster}" size="xxs" defaultname="{$thread.last_post_username}" />

@@ -444,13 +444,28 @@ a.tsActivity-tag { text-decoration: none !important; }
 	i { font-size: 10px; font-style: normal; color: @tsA-accent; }
 }
 .tsActivity-sortToggle-lastPost,
-.tsActivity-sortToggle-added { font-style: normal; font-weight: 700; color: @tsA-text; }
+.tsActivity-sortToggle-added,
+.tsActivity-watchSort-label { font-style: normal; font-weight: 700; color: @tsA-text; }
 .tsActivity-sortToggle-added { display: none; }
 
 .tsActivity.is-bookmarksTab
 {
 	.tsActivity-sort { display: none; }
-	.tsActivity-sortToggle { display: inline-flex; }
+	.tsActivity-sortToggle--bookmarks { display: inline-flex; }
+}
+
+.tsActivity.is-watchedTab
+{
+	.tsActivity-sort { display: none; }
+	.tsActivity-sortToggle--watched { display: inline-flex; }
+}
+
+// Watched tab sorted by "newest thread": show when each thread was started instead
+.tsActivity-time--started { display: none; }
+.tsActivity.is-watchStarted #tsActivity-watched
+{
+	.tsActivity-time--started { display: inline; }
+	.tsActivity-time--last { display: none; }
 }
 
 .tsActivity.is-sortAdded
