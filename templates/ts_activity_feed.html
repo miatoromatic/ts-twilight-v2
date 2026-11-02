@@ -152,7 +152,9 @@
 		<xf:set var="$thread" value="{{ null }}" />
 	</xf:if>
 
-	<li class="tsActivity-item tsActivity-item--bookmark">
+	<li class="tsActivity-item tsActivity-item--bookmark"
+		data-bookmarked="{$bookmark.bookmark_date}"
+		data-last-post="{{ $thread ? $thread.last_post_date : $bookmark.bookmark_date }}">
 		<span class="tsActivity-dot" aria-hidden="true"></span>
 
 		<xf:if is="$thread">
@@ -190,7 +192,13 @@
 				<xf:if is="$bookmark.content_user">
 					<xf:username user="{$bookmark.content_user}" class="tsActivity-poster" />
 				</xf:if>
-				<span class="tsActivity-time"><i class="fa-solid fa-bookmark tsActivity-bookmarkedIcon"></i> <xf:date time="{$bookmark.bookmark_date}" /></span>
+				<xf:comment>Which date shows follows the Bookmarks sort toggle on forum_list</xf:comment>
+				<span class="tsActivity-time tsActivity-time--added"><i class="fa-solid fa-bookmark tsActivity-bookmarkedIcon"></i> <xf:date time="{$bookmark.bookmark_date}" /></span>
+				<xf:if is="$thread">
+					<span class="tsActivity-time tsActivity-time--lastPost"><xf:date time="{$thread.last_post_date}" /></span>
+				<xf:else />
+					<span class="tsActivity-time tsActivity-time--lastPost"><i class="fa-solid fa-bookmark tsActivity-bookmarkedIcon"></i> <xf:date time="{$bookmark.bookmark_date}" /></span>
+				</xf:if>
 			</div>
 			<xf:if is="$bookmark.content_user">
 				<span class="tsActivity-avatar">

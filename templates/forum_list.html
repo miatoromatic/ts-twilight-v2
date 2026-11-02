@@ -115,6 +115,10 @@ function checkCookie(name) {
 			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-wiki">Wiki</a>
 		</xf:if>
 		<span class="tsActivity-sort">Sorted by latest post</span>
+		<button type="button" class="tsActivity-sortToggle" title="Change how bookmarks are sorted">
+			Sorted by <span class="tsActivity-sortToggle-lastPost">latest post</span><span class="tsActivity-sortToggle-added">date added</span>
+			<i class="fa-solid fa-arrow-down-arrow-up"></i>
+		</button>
 		<button type="button" class="tsActivity-ctrl tsActivity-showBtn" data-ts-size="show"><i class="fa-solid fa-chevron-down"></i><span>Show</span></button>
 	</div>
 	<ul class="tabPanes tsActivity-panes">
@@ -255,6 +259,7 @@ $(document).on('click', '.tsActivity-tab', function()
 				if ($feed.length)
 				{
 					$target.removeClass('tsActivity-remote').html($feed.contents());
+					tsBookmarkSort();
 				}
 				else
 				{
@@ -271,6 +276,45 @@ $(document).on('click', '.tsActivity-tab', function()
 		$target.data('tsLoaded', false);
 		$target.html('<div class="tsActivity-empty">Couldn\'t load bookmarks. Use the link below.</div>');
 	});
+});
+
+// ===== Bookmarks tab: sort by latest post (default) or date added =====
+// The toggle replaces "Sorted by latest post" while the Bookmarks tab is open.
+// It sorts the bookmarks already loaded (the newest page of /account/bookmarks).
+var TS_BM_SORT_KEY = 'tsActivityBookmarkSort';
+function tsBookmarkSortMode()
+{
+	try { return localStorage.getItem(TS_BM_SORT_KEY) === 'added' ? 'added' : 'lastPost'; } catch (e) { return 'lastPost'; }
+}
+function tsBookmarkSort()
+{
+	var mode = tsBookmarkSortMode();
+	var attr = mode === 'added' ? 'data-bookmarked' : 'data-last-post';
+	$('.tsActivity').toggleClass('is-sortAdded', mode === 'added');
+	$('#tsActivity-bookmarks .tsActivity-list').each(function()
+	{
+		var $list = $(this);
+		var rows = $list.children('.tsActivity-item').get();
+		rows.sort(function(a, b)
+		{
+			return (parseInt(b.getAttribute(attr), 10) || 0) - (parseInt(a.getAttribute(attr), 10) || 0);
+		});
+		$list.append(rows);
+	});
+}
+tsBookmarkSort();
+
+$(document).on('click', '.tsActivity-sortToggle', function()
+{
+	var next = tsBookmarkSortMode() === 'added' ? 'lastPost' : 'added';
+	try { localStorage.setItem(TS_BM_SORT_KEY, next); } catch (e) {}
+	tsBookmarkSort();
+});
+
+// Show the toggle only while the Bookmarks tab is the active one
+$(document).on('click', '.tsActivity-tab', function()
+{
+	$('.tsActivity').toggleClass('is-bookmarksTab', $(this).attr('aria-controls') === 'tsActivity-bookmarks');
 });
 
 // ===== Bookmarks tab: remove a bookmark (with Undo) without leaving the page =====

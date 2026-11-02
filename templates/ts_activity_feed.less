@@ -420,6 +420,52 @@
 }
 a.tsActivity-tag { text-decoration: none !important; }
 
+// Bookmarks sort toggle (header) + which date each row shows
+.tsActivity-sortToggle
+{
+	display: none;
+	align-self: center;
+	align-items: center;
+	gap: 6px;
+	margin-left: auto;
+	padding: 4px 9px;
+	border: 1px solid @tsA-border;
+	border-radius: 4px;
+	background: transparent;
+	font: inherit;
+	font-size: 12px;
+	font-style: italic;
+	color: @tsA-muted;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: color .2s ease, border-color .2s ease;
+
+	&:hover { color: @tsA-text; border-color: fade(@tsA-accent, 50%); }
+	i { font-size: 10px; font-style: normal; color: @tsA-accent; }
+}
+.tsActivity-sortToggle-lastPost,
+.tsActivity-sortToggle-added { font-style: normal; font-weight: 700; color: @tsA-text; }
+.tsActivity-sortToggle-added { display: none; }
+
+.tsActivity.is-bookmarksTab
+{
+	.tsActivity-sort { display: none; }
+	.tsActivity-sortToggle { display: inline-flex; }
+}
+
+.tsActivity.is-sortAdded
+{
+	.tsActivity-sortToggle-lastPost { display: none; }
+	.tsActivity-sortToggle-added { display: inline; }
+}
+
+.tsActivity-time--added { display: none; }
+.tsActivity.is-sortAdded
+{
+	.tsActivity-time--added { display: inline; }
+	.tsActivity-time--lastPost { display: none; }
+}
+
 // Remove bookmark / Undo
 .tsActivity-bmActions
 {

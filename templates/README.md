@@ -103,6 +103,7 @@ The four links currently in it are placeholders.
 
 - **Watched:** a New posts widget with key `ts_activity_watched` and its Filter set to *Watched* (see the table above).
 - **Bookmarks:** loads `/account/bookmarks` the first time the tab is clicked. `account_bookmarks` has a hidden block at the end that renders each bookmark with `ts_activity_feed::bookmark_row`, and the tab shows only that block. Thread and post bookmarks get their thread's thumbnail, prefix and "in Forum". Your bookmark labels become the pills, and the right side shows the content's author with the date you bookmarked it. Other bookmark types (profile posts and so on) get a gold bookmark tile.
+  - **Sort:** while the Bookmarks tab is open, the "Sorted by latest post" text becomes a button that switches between *latest post* (default) and *date added*. The time on each row follows the choice (last post time, or a bookmark icon with the date you bookmarked it). Each browser remembers the choice. It sorts the bookmarks already loaded, which are the newest page of `/account/bookmarks`.
   - **Remove:** hovering a bookmark row shows a `fa-bookmark-slash` button (always visible on touch screens). Clicking it removes the bookmark in the background. The row fades and is struck through, with an **Undo** button that bookmarks it again (without the old note or labels).
 
 Both are hidden for guests. Switches: `$tsShowWatched`, `$tsShowBookmarks`.
