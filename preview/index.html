@@ -132,8 +132,12 @@ body{margin:0;padding:24px 16px;background:#0e1424;font-family:"Segoe UI",system
 .tsCB-groupLabel{margin:0 0 6px;font-size:11px;font-weight:600;color:var(--cb-dim);text-transform:uppercase;letter-spacing:.08em}
 .tsCB-chips{display:flex;flex-wrap:wrap;gap:6px}
 .tsCB a.tsCB-chip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 9px 0 3px;border-radius:999px;
-	background:rgba(255,255,255,.05);border:1px solid var(--cb-line);color:var(--cb-ink);text-decoration:none;transition:border-color .15s,background .15s}
-.tsCB a.tsCB-chip:hover{border-color:rgba(127,219,230,.45);background:rgba(63,198,212,.1)}
+	background:rgba(255,255,255,.05);border-width:1px;border-style:solid;color:var(--cb-ink);text-decoration:none;transition:border-color .15s,background .15s}
+.tsCB a.tsCB-chip:hover{background:rgba(63,198,212,.1)}
+/* chips without an add-on colour (loadout) keep the neutral line; tc-border-* chips use the add-on's border colour at 1px */
+.tsCB a.tsCB-chip:not([class*="tc-border-"]){border-color:var(--cb-line)}
+.tsCB a.tsCB-chip:not([class*="tc-border-"]):hover{border-color:rgba(127,219,230,.45)}
+.tsCB a.tsCB-chip[class*="tc-border-"]{border-width:1px !important;border-style:solid !important}
 .tsCB-chipIcon{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;flex:none}
 .tsCB-chipIcon img{width:80%;height:80%;object-fit:contain}
 .tsCB-chip b{font-size:13px;font-weight:800;min-width:12px}
