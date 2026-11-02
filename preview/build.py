@@ -42,7 +42,7 @@ btn_html = "".join(
 
 
 def chip(color, rank, name):
-    return (f'<a class="tsCB-chip" href="#" title="{name}"><span class="tsCB-chipIcon" style="background-color:{color}">'
+    return (f'<a class="tsCB-chip" href="#" title="{name}"><span class="tsCB-chipIcon" >'
             f'<img src="../images/logo.webp" alt=""></span><b>{rank}</b></a>')
 
 
