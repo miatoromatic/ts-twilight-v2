@@ -341,6 +341,30 @@ $(document).on('click', '.tsActivity-unbookmark, .tsActivity-rebookmark', functi
 	});
 });
 
+// ===== Watched tab: unwatch a thread (with Undo) without leaving the page =====
+// Posts to threads/watch: stop=1 unwatches; Undo watches again (without email notifications).
+$(document).on('click', '.tsActivity-unwatch, .tsActivity-rewatch', function(e)
+{
+	e.preventDefault();
+	var $btn = $(this);
+	var $row = $btn.closest('.tsActivity-item');
+	if ($row.hasClass('is-busy')) { return; }
+
+	var undo = $btn.hasClass('tsActivity-rewatch');
+	var data = undo ? { 'email_subscribe': 0 } : { 'stop': 1 };
+
+	$row.addClass('is-busy');
+	XF.ajax('post', $btn.data('watch-url'), data, function(response)
+	{
+		$row.removeClass('is-busy');
+		if (response.errors || response.exception) { return; }
+		$row.toggleClass('is-unwatched', !undo);
+	}, { skipDefaultSuccess: true }).fail(function()
+	{
+		$row.removeClass('is-busy');
+	});
+});
+
 // ===== Remember the last active tab (per browser) =====
 (function()
 {

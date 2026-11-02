@@ -466,15 +466,18 @@ a.tsActivity-tag { text-decoration: none !important; }
 	.tsActivity-time--lastPost { display: none; }
 }
 
-// Remove bookmark / Undo
-.tsActivity-bmActions
+// Remove bookmark / Unwatch, each with Undo
+.tsActivity-bmActions,
+.tsActivity-watchActions
 {
 	display: inline-flex;
 	align-items: center;
 }
 
 .tsActivity-unbookmark,
-.tsActivity-rebookmark
+.tsActivity-rebookmark,
+.tsActivity-unwatch,
+.tsActivity-rewatch
 {
 	border: 0;
 	background: transparent;
@@ -483,7 +486,8 @@ a.tsActivity-tag { text-decoration: none !important; }
 	transition: color .2s ease, background .2s ease, opacity .2s ease;
 }
 
-.tsActivity-unbookmark
+.tsActivity-unbookmark,
+.tsActivity-unwatch
 {
 	display: inline-flex;
 	align-items: center;
@@ -500,7 +504,8 @@ a.tsActivity-tag { text-decoration: none !important; }
 	&:hover { color: #f08a7a; background: fade(#e0604f, 14%); }
 }
 
-.tsActivity-rebookmark
+.tsActivity-rebookmark,
+.tsActivity-rewatch
 {
 	display: none;
 	padding: 3px 9px;
@@ -511,7 +516,23 @@ a.tsActivity-tag { text-decoration: none !important; }
 	&:hover { background: fade(@tsA-accent, 14%); }
 }
 
-.tsActivity-item.is-busy .tsActivity-bmActions { opacity: .5; pointer-events: none; }
+.tsActivity-item.is-busy .tsActivity-bmActions,
+.tsActivity-item.is-busy .tsActivity-watchActions { opacity: .5; pointer-events: none; }
+
+// Unwatch only belongs in the Watched tab
+.tsActivity-watchActions { display: none; }
+#tsActivity-watched .tsActivity-watchActions { display: inline-flex; }
+
+.tsActivity-item.is-unwatched
+{
+	.tsActivity-thumb,
+	.tsActivity-main,
+	.tsActivity-when,
+	.tsActivity-avatar { opacity: .35; }
+	.tsActivity-title { text-decoration: line-through !important; }
+	.tsActivity-unwatch { display: none; }
+	.tsActivity-rewatch { display: inline-block; }
+}
 
 .tsActivity-item.is-unbookmarked
 {
@@ -526,7 +547,8 @@ a.tsActivity-tag { text-decoration: none !important; }
 
 @media (hover: none)
 {
-	.tsActivity-unbookmark { opacity: 1; }
+	.tsActivity-unbookmark,
+	.tsActivity-unwatch { opacity: 1; }
 }
 
 // ---------- Bookmarks tab (content loaded from /account/bookmarks) ----------

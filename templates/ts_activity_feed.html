@@ -48,6 +48,15 @@
 		</div>
 
 		<div class="tsActivity-aside">
+			<xf:comment>Unwatch / Undo: only shown in the Watched tab on forum_list (see ts_activity_feed.less)</xf:comment>
+			<span class="tsActivity-watchActions">
+				<button type="button" class="tsActivity-unwatch"
+					data-watch-url="{{ link('threads/watch', $thread) }}"
+					title="Unwatch thread" aria-label="Unwatch thread"><i class="fa-solid fa-eye-slash"></i></button>
+				<button type="button" class="tsActivity-rewatch"
+					data-watch-url="{{ link('threads/watch', $thread) }}"
+					title="Watch it again">Undo</button>
+			</span>
 			<div class="tsActivity-when">
 				<xf:username user="{$thread.LastPoster}" defaultname="{$thread.last_post_username}" class="tsActivity-poster" />
 				<xf:date time="{$thread.last_post_date}" class="tsActivity-time" />
