@@ -115,4 +115,4 @@ The bar at the bottom of the box has:
 - **Full:** removes any height limit.
 - **Hide:** collapses to the tab bar, with a "Show" button on the right.
 
-Each browser remembers its own choice (localStorage).
+Each browser remembers its own choice (localStorage), and the last tab opened. If that tab is switched off or members-only, the box falls back to All activity.

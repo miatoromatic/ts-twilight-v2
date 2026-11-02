@@ -272,6 +272,34 @@ $(document).on('click', '.tsActivity-tab', function()
 		$target.html('<div class="tsActivity-empty">Couldn\'t load bookmarks. Use the link below.</div>');
 	});
 });
+
+// ===== Remember the last active tab (per browser) =====
+(function()
+{
+	var KEY = 'tsActivityTab';
+
+	$(document).on('click', '.tsActivity-tab', function()
+	{
+		try { localStorage.setItem(KEY, $(this).attr('aria-controls')); } catch (e) {}
+	});
+
+	var saved = null;
+	try { saved = localStorage.getItem(KEY); } catch (e) {}
+	if (!saved) { return; }
+
+	// Only restore a tab that exists on this page (it may be switched off, or members-only)
+	var $tab = $('.tsActivity-tab[aria-controls="' + saved + '"]');
+	var $pane = $('#' + saved);
+	if (!$tab.length || !$pane.length || $tab.hasClass('is-active')) { return; }
+
+	$('.tsActivity-tab').removeClass('is-active').attr('aria-selected', 'false');
+	$tab.addClass('is-active').attr('aria-selected', 'true');
+	$('.tsActivity-panes > li').removeClass('is-active');
+	$pane.addClass('is-active');
+
+	// Runs the Bookmarks loader if that's the saved tab (and keeps XenForo's tab state in step)
+	$tab.trigger('click');
+})();
 </xf:js>
 
 <xf:macro name="node_list" arg-children="{$nodeTree}" arg-extras="{$nodeExtras}" />
