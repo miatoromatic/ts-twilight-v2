@@ -181,21 +181,21 @@ function checkCookie(name) {
 
 	<div class="tsActivity-controls">
 		<span class="tsActivity-grip" data-ts-size="drag" title="Drag to set height"></span>
-		<button type="button" class="tsActivity-ctrl" data-ts-size="half" title="Half the current height"><i class="fa-solid fa-down-left-and-up-right-to-center"></i><span>Half</span></button>
+		<button type="button" class="tsActivity-ctrl" data-ts-size="default" title="Back to the default height"><i class="fa-solid fa-down-left-and-up-right-to-center"></i><span>Default</span></button>
 		<button type="button" class="tsActivity-ctrl" data-ts-size="full" title="Back to full height"><i class="fa-solid fa-up-right-and-down-left-from-center"></i><span>Full</span></button>
 		<button type="button" class="tsActivity-ctrl" data-ts-size="hide" title="Hide the feed"><i class="fa-solid fa-chevron-up"></i><span>Hide</span></button>
 	</div>
 </section>
 
 <xf:js>
-// ===== Activity feed: size controls (Hide / drag to set height / Half / Full) =====
-// The choice is remembered per browser.
+// ===== Activity feed: size controls (Hide / drag to set height / Default / Full) =====
+// Starts at DEFAULT px (or shorter if there isn't enough content). The choice is remembered per browser.
 (function()
 {
 	var box = document.querySelector('.tsActivity');
 	if (!box) { return; }
 	var panes = box.querySelector('.tsActivity-panes');
-	var KEY = 'tsActivityView', MIN = 120;
+	var KEY = 'tsActivityView', MIN = 120, DEFAULT = 415;
 	var state = {};
 	try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
 
@@ -203,8 +203,10 @@ function checkCookie(name) {
 	function apply()
 	{
 		box.classList.toggle('is-collapsed', !!state.hidden);
-		box.classList.toggle('is-sized', !!state.h);
-		panes.style.maxHeight = state.h ? state.h + 'px' : '';
+		// no saved height yet = Default; 0 = Full (no limit)
+		var h = (typeof state.h === 'number') ? state.h : DEFAULT;
+		box.classList.toggle('is-sized', !!h);
+		panes.style.maxHeight = h ? h + 'px' : '';
 	}
 	apply();
 
@@ -216,7 +218,7 @@ function checkCookie(name) {
 		if (act === 'hide') { state.hidden = true; }
 		else if (act === 'show') { state.hidden = false; }
 		else if (act === 'full') { state.h = 0; }
-		else if (act === 'half') { state.h = Math.max(MIN, Math.round(panes.getBoundingClientRect().height / 2)); }
+		else if (act === 'default') { state.h = DEFAULT; }
 		else { return; }
 		apply(); save();
 	});

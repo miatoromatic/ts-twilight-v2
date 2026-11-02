@@ -113,7 +113,7 @@ Both are hidden for guests. Switches: `$tsShowWatched`, `$tsShowBookmarks`. Seas
 The bar at the bottom of the box has:
 
 - **Grip:** drag it to set the height. The list scrolls inside.
-- **Half:** halves the current height.
+- **Default:** 415px, which is also what everyone starts with. If there isn't enough content to fill 415px, the box is simply shorter. Change `DEFAULT = 415` in the script in `forum_list` to adjust it.
 - **Full:** removes any height limit.
 - **Hide:** collapses to the tab bar, with a "Show" button on the right.
 
