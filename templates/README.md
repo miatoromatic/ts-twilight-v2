@@ -33,10 +33,8 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
    |---|---|---|
    | `ts_activity_all` | 12 | (none / all forums) |
    | `ts_activity_regions` | 12 | Season 5 (11), Campaign (56), Tangleweaves (12), Zalra (13), Hylands (15), Astorea (16), Falderen (17), Temeria (19), Lament (57), Misc (20), Real Life (21), Comms (22) |
-   | `ts_activity_season` (tab "Season 5") | 12 | Season 5 (11). Repoint at the next season later |
-   | `ts_activity_campaign` (tab "Campaign") | 12 | Campaign (56) |
-   | `ts_activity_guildhall` (tab "RP") | 12 | Trackers (6), DM Hub (9), Quest (8), LFGs (7), Apps (5), News (4) |
-   | `ts_activity_community` (tab "OOC") | 12 | Services (26), Archive (25), OOC (52) |
+   | `ts_activity_season` (tab "Season 5") | 12 | Season 5 (11) + Campaign (56). Repoint at the next season later |
+   | `ts_activity_meta` (tab "Meta") | 12 | Trackers (6), DM Hub (9), Quest (8), LFGs (7), Apps (5), News (4), Services (26), Archive (25), OOC (52) |
    | `ts_activity_watched` (tab "Watched") | 12 | none (all forums). **Filter: Watched** |
 
    Filter: *Latest*. Display style doesn't matter. Forum limit only matches threads posted directly in the selected forums, so also select any sub-forums.
@@ -75,7 +73,7 @@ Near the top of the feed block in `forum_list`:
 <xf:set var="$tsShowWiki" value="1" />
 ```
 
-`$tsShowSeason`, `$tsShowCampaign` and `$tsShowWiki` sit together there. Set any of them to `0` to hide that tab and its pane.
+`$tsShowSeason`, `$tsShowWatched`, `$tsShowBookmarks` and `$tsShowWiki` sit together there. Set any of them to `0` to hide that tab and its pane.
 
 Each link is one line, drawn exactly like a thread row:
 
@@ -106,7 +104,7 @@ The four links currently in it are placeholders.
 - **Watched:** a New posts widget with key `ts_activity_watched` and its Filter set to *Watched* (see the table above).
 - **Bookmarks:** loads `/account/bookmarks` the first time the tab is clicked. `account_bookmarks` has a hidden block at the end that renders each bookmark with `ts_activity_feed::bookmark_row`, and the tab shows only that block. Thread and post bookmarks get their thread's thumbnail, prefix and "in Forum". Your bookmark labels become the pills, and the right side shows the content's author with the date you bookmarked it. Other bookmark types (profile posts and so on) get a gold bookmark tile.
 
-Both are hidden for guests. Switches: `$tsShowWatched`, `$tsShowBookmarks`. Season 5 and Campaign are currently switched off (`0`).
+Both are hidden for guests. Switches: `$tsShowWatched`, `$tsShowBookmarks`.
 
 ## Size controls
 
