@@ -318,7 +318,10 @@
 			<aside class="tsCB-drawer" aria-label="Character stats">
 				<div class="tsCB-drawerHead">
 					<span class="tsCB-drawerTitle">Stats</span>
-					<xf:if is="$canSheet"><a class="tsCB-sheet" href="{$sheetLink}" data-xf-click="overlay">Full sheet ›</a></xf:if>
+					<xf:if is="$canSheet">
+						<a class="tsCB-sheet" href="{$sheetLink}" data-xf-click="overlay">Full sheet ›</a>
+						<a class="tsCB-sheet" href="https://terrarp.com/terrasphere/refund/">Respec</a>
+					</xf:if>
 					<button type="button" class="tsCB-pin" data-cb="pin" aria-pressed="false" title="Keep this panel open">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.6 2.6a1 1 0 0 1 1.4 0l4.4 4.4a1 1 0 0 1 0 1.4l-1.1 1.1a1 1 0 0 1-1.1.2l-3.3 3.3.4 3.4a1 1 0 0 1-.3.8l-1 1a1 1 0 0 1-1.4 0L10 14.6l-5.3 5.3a1 1 0 0 1-1.4-1.4L8.6 13 5 9.4a1 1 0 0 1 0-1.4l1-1a1 1 0 0 1 .8-.3l3.4.4 3.3-3.3a1 1 0 0 1 .2-1.1z"/></svg>
 						<span>Pin</span>
