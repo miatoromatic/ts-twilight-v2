@@ -879,6 +879,144 @@ html[data-ts-rail="expanded"] .ts-guestLabel {
 	}
 }
 
+/* ---------- layout switch button (first icon in .ts-staff) ---------- */
+
+.ts-rail .ts-layoutIcon--rail {
+	display: none;
+}
+html[data-ts-layout="top"] .ts-rail .ts-layoutIcon--top {
+	display: none;
+}
+html[data-ts-layout="top"] .ts-rail .ts-layoutIcon--rail {
+	display: inline-block;
+}
+
+/* ---------- desktop top bar (user chose it via the layout switch) ----------
+   Same idea as the phone bar: menu button + logo, then tools, staff, account.
+   JS keeps data-ts-rail="collapsed" while this layout is active. */
+
+@media (min-width: 651px) {
+	html[data-ts-layout="top"] {
+		--ts-rail-offset: 0px;
+	}
+	html[data-ts-layout="top"] .p-pageWrapper {
+		padding-left: 0;
+		padding-top: var(--ts-bar-h);
+	}
+	html[data-ts-layout="top"] .ts-rail {
+		bottom: auto;
+		right: 0;
+		width: auto;
+		height: var(--ts-bar-h);
+		flex-direction: row;
+		align-items: center;
+		padding: 0 10px;
+		border-right: 0;
+		border-bottom: 1px solid var(--ts-rail-line);
+		box-shadow: none;
+		cursor: auto;
+	}
+	html[data-ts-layout="top"] .ts-rail::after {
+		top: auto;
+		bottom: -1px;
+		opacity: .5;
+	}
+	html[data-ts-layout="top"] .ts-backdrop,
+	html[data-ts-layout="top"] .ts-toggle,
+	html[data-ts-layout="top"] .ts-navWrap {
+		display: none;
+	}
+
+	/* head: menu button + logo */
+	html[data-ts-layout="top"] .ts-head {
+		height: var(--ts-bar-h);
+		padding: 0;
+		gap: 4px;
+	}
+	html[data-ts-layout="top"] .ts-menuBtn {
+		display: inline-flex;
+	}
+	html[data-ts-layout="top"] .ts-logo {
+		width: auto;
+		padding: 0 8px 0 4px;
+	}
+	html[data-ts-layout="top"] .ts-logo-mark {
+		display: none;
+	}
+	html[data-ts-layout="top"] .ts-logo-full {
+		display: block;
+	}
+
+	/* tools, staff, account in one row on the right */
+	html[data-ts-layout="top"] .ts-rail .ts-tools {
+		flex-direction: row;
+		gap: 2px;
+		margin-left: auto;
+		padding: 0;
+	}
+	html[data-ts-layout="top"] .ts-foot {
+		flex-direction: row;
+		align-items: center;
+		gap: 6px;
+		margin-left: 6px;
+		padding: 0 0 0 8px;
+		border-top: 0;
+		border-left: 1px solid var(--ts-rail-line);
+	}
+	html[data-ts-layout="top"] .ts-staff {
+		flex-direction: row;
+		align-items: center;
+		gap: 2px;
+	}
+	html[data-ts-layout="top"] .ts-staff .ts-tool {
+		width: 34px;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-account {
+		flex-direction: row;
+		align-items: center;
+		width: auto;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-foot .ts-account > .ts-accountLink {
+		flex: none;
+		width: auto;
+		padding: 3px 10px 3px 3px;
+	}
+	/* avatar + username, like the old header */
+	html[data-ts-layout="top"] .ts-accountMeta {
+		opacity: 1;
+	}
+	html[data-ts-layout="top"] .ts-accountTitle,
+	html[data-ts-layout="top"] .ts-rail .ts-accountMore {
+		display: none;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-guestBtn {
+		width: 38px;
+		flex: none;
+	}
+}
+/* narrower desktops: drop the wordmark and username so the row fits */
+@media (min-width: 651px) and (max-width: 999px) {
+	html[data-ts-layout="top"] .ts-head .ts-logo-mark {
+		display: block;
+		opacity: 1;
+	}
+	html[data-ts-layout="top"] .ts-logo-full,
+	html[data-ts-layout="top"] .ts-accountMeta {
+		display: none;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-foot .ts-account > .ts-accountLink {
+		padding: 3px;
+	}
+}
+
+/* menus opened from the desktop top bar drop down under their icon */
+.menu.ts-railMenu[data-ts-place="below"] {
+	top: var(--ts-mt) !important;
+	bottom: auto !important;
+	left: auto !important;
+	right: var(--ts-mr) !important;
+}
+
 /* off-canvas staff block (phones) */
 .ts-offCanvasStaff .badge {
 	margin-left: 4px;

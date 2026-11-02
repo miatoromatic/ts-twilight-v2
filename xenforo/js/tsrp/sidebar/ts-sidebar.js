@@ -21,6 +21,7 @@
 	}
 
 	var STORE_KEY = 'tsRail';
+	var LAYOUT_KEY = 'tsLayout';
 	var mqMobile = window.matchMedia('(max-width: 650px)');
 	var mqDocked = window.matchMedia('(min-width: 1100px)');
 
@@ -30,17 +31,24 @@
 	function isMobile() {
 		return mqMobile.matches;
 	}
+	// top bar = the user chose the top-of-page layout, or the screen is phone-sized
+	function isTopChosen() {
+		return html.getAttribute('data-ts-layout') === 'top';
+	}
+	function isTopBar() {
+		return isMobile() || isTopChosen();
+	}
 	function isExpanded() {
 		return html.getAttribute('data-ts-rail') === 'expanded';
 	}
 	function isCollapsedDesktop() {
-		return !isMobile() && !isExpanded();
+		return !isTopBar() && !isExpanded();
 	}
-	function readStore() {
-		try { return window.localStorage.getItem(STORE_KEY); } catch (e) { return null; }
+	function readStore(key) {
+		try { return window.localStorage.getItem(key || STORE_KEY); } catch (e) { return null; }
 	}
-	function writeStore(value) {
-		try { window.localStorage.setItem(STORE_KEY, value); } catch (e) { /* private mode */ }
+	function writeStore(value, key) {
+		try { window.localStorage.setItem(key || STORE_KEY, value); } catch (e) { /* private mode */ }
 	}
 
 	/* ------------------------------------------------------------------
@@ -71,8 +79,55 @@
 	}
 
 	function toggleRail() {
+		if (isTopChosen()) {
+			return;
+		}
 		setState(isExpanded() ? 'collapsed' : 'expanded', true);
 	}
+
+	/* ------------------------------------------------------------------
+	   Layout: sidebar <-> top bar (remembered per browser)
+	   ------------------------------------------------------------------ */
+
+	var layoutToggles = rail.querySelectorAll('.js-tsLayoutToggle');
+
+	function syncLayoutToggles() {
+		var top = isTopChosen();
+		var label = top ? 'Switch to sidebar' : 'Switch to top bar';
+		each(layoutToggles, function (btn) {
+			btn.setAttribute('aria-pressed', top ? 'true' : 'false');
+			btn.setAttribute('aria-label', label);
+			btn.setAttribute('data-ts-tip', label);
+		});
+	}
+
+	function setLayout(layout) {
+		var top = layout === 'top';
+		html.setAttribute('data-ts-layout', top ? 'top' : 'rail');
+		writeStore(top ? 'top' : 'rail', LAYOUT_KEY);
+
+		// the top bar always uses the collapsed rail markup; going back restores the docked preference
+		var railState = 'collapsed';
+		if (!top && mqDocked.matches) {
+			railState = readStore() === 'collapsed' ? 'collapsed' : 'expanded';
+		}
+		setState(railState, false);
+
+		// close any open XF menus so they re-place for the new layout
+		each(document.querySelectorAll('.ts-railMenu.is-active'), function (menu) {
+			if (menu.__tsTrigger && menu.__tsTrigger.classList.contains('is-menuOpen')) {
+				menu.__tsTrigger.click();
+			}
+		});
+		syncLayoutToggles();
+	}
+
+	each(layoutToggles, function (btn) {
+		btn.addEventListener('click', function (e) {
+			e.preventDefault();
+			setLayout(isTopChosen() ? 'rail' : 'top');
+		});
+	});
 
 	each(toggles, function (btn) {
 		btn.addEventListener('click', function (e) {
@@ -103,6 +158,9 @@
 	}
 
 	function onDockedChange() {
+		if (isTopChosen()) {
+			return;
+		}
 		if (mqDocked.matches) {
 			var stored = readStore();
 			setState(stored === 'collapsed' ? 'collapsed' : 'expanded', false);
@@ -128,13 +186,13 @@
 		if (e.key === 'Escape') {
 			closeFlyouts();
 			// close the overlay rail on mid-width screens
-			if (isExpanded() && !mqDocked.matches && !isMobile()) {
+			if (isExpanded() && !mqDocked.matches && !isTopBar()) {
 				setState('collapsed', false);
 			}
 			return;
 		}
 		// "\" toggles the rail (like Perplexity's sidebar shortcut)
-		if (e.key === '\\' && !e.ctrlKey && !e.metaKey && !e.altKey && !isTyping(e.target) && !isMobile()) {
+		if (e.key === '\\' && !e.ctrlKey && !e.metaKey && !e.altKey && !isTyping(e.target) && !isTopBar()) {
 			e.preventDefault();
 			toggleRail();
 		}
@@ -274,11 +332,12 @@
 			return;
 		}
 		var always = el.hasAttribute('data-ts-tip-always');
-		if (isExpanded() && !always) {
+		var top = isTopChosen();
+		if (!top && isExpanded() && !always) {
 			return;
 		}
 		// entries with children show their title in the flyout instead
-		if (!isExpanded() && el.closest('.ts-navEl.has-children')) {
+		if (!top && !isExpanded() && el.closest('.ts-navEl.has-children')) {
 			return;
 		}
 		var text = el.getAttribute('data-ts-tip');
@@ -289,7 +348,7 @@
 		tipOwner = el;
 		tip.textContent = text;
 		var r = el.getBoundingClientRect();
-		var below = isExpanded(); // expanded: icon rows are horizontal, so tip goes underneath
+		var below = top || isExpanded(); // horizontal icon rows: tip goes underneath
 		tip.classList.toggle('ts-tip--below', below);
 		tip.style.left = '0px';
 		tip.style.top = '0px';
@@ -367,6 +426,15 @@
 		}
 		var railRect = rail.getBoundingClientRect();
 		var r = trigger.getBoundingClientRect();
+
+		if (isTopChosen()) {
+			// desktop top bar: drop down under the icon, right-aligned to it
+			menu.setAttribute('data-ts-place', 'below');
+			style.setProperty('--ts-mt', Math.round(railRect.bottom + 6) + 'px');
+			style.setProperty('--ts-mr', Math.round(Math.max(8, window.innerWidth - r.right)) + 'px');
+			return;
+		}
+
 		style.setProperty('--ts-ml', Math.round(railRect.right + 8) + 'px');
 
 		if (r.top + r.height / 2 > window.innerHeight * 0.55) {
@@ -419,9 +487,14 @@
 	   ------------------------------------------------------------------ */
 
 	syncToggles();
+	syncLayoutToggles();
 
 	// lets you confirm in the browser console which build is running: TSRail.version
-	window.TSRail = { version: '2', expand: function () { setState('expanded', true); } };
+	window.TSRail = {
+		version: '3',
+		expand: function () { setState('expanded', true); },
+		setLayout: setLayout
+	};
 
 	// late-loaded add-on icons inside the tools cluster
 	if (window.MutationObserver) {
