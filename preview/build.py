@@ -73,7 +73,7 @@ char = f'''
   </div>
   <div class="tsCB-bottom">
     <nav class="tsCB-dock">
-      {re.search(r'(<button type="button" class="tsCB-tile" data-cb="drawer-open".*?</button>)', char_tpl, re.S).group(1)}
+      {re.search(r'(<button type="button" class="tsCB-tile[^"]*" data-cb="drawer-open".*?</button>)', char_tpl, re.S).group(1)}
       <div class="tsCB-buttons">{btn_html}</div>
     </nav>
   </div>

@@ -1,16 +1,12 @@
 <xf:css>
-/* =====================================================================
-   TS character banner + featured carousel
-   Slide 0 = the visitor's character card, the rest come from the
-   "ts_banner_slides" template (events / ads).
-   ===================================================================== */
-.tsCB{--cb-ink:#eef2f8;--cb-dim:#b6c1d3;--cb-accent:#3fc6d4;--cb-accent-soft:#7fdbe6;--cb-glass:rgba(9,13,24,.64);--cb-line:rgba(255,255,255,.09);
+.tsCB .ug-race{width:auto!important}
+.tsCB{--cb-ink:#eef2f8;--cb-dim:#b6c1d3;--cb-accent:#3fc6d4;--cb-accent-soft:#7fdbe6;--cb-glass:rgba(9,13,24,0)/*.44*/;--cb-line:rgba(255,255,255,.09);
 	max-width:930px;margin:30px auto;color:var(--cb-ink)}
 .tsCB *{box-sizing:border-box}
 
 /* ---------- stage + slides ---------- */
 .tsCB-stage{position:relative;height:360px;border-radius:12px;overflow:hidden;overflow:clip;background:#0b1120;
-	border:1px solid rgba(127,219,230,.12);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+	border:1px solid rgba(127,219,230,.12)}
 .tsCB-slide{position:absolute;top:0;right:0;bottom:0;left:0;will-change:opacity;display:flex;flex-direction:column;justify-content:space-between;
 	padding:22px 24px 18px;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
 .tsCB-slide.is-active,
@@ -44,17 +40,25 @@
 
 /* ---------- wallet (Gold / Mastery / Valor) ---------- */
 .tsCB-wallet{flex:none;display:flex;flex-direction:column;gap:5px;min-width:160px;padding:11px 14px;border-radius:10px;
-	background:var(--cb-glass);border:1px solid var(--cb-line);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:13px}
+	background:var(--cb-glass);border:1px solid var(--cb-line);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:15px}
 .tsCB-wallet > dl{display:flex !important;flex-direction:row !important;justify-content:space-between;align-items:baseline;gap:22px;
 	margin:0 !important;padding:0 !important;text-align:left !important;width:auto !important}
 .tsCB-wallet dt{margin:0;padding:0;color:var(--cb-dim) !important;font-weight:500}
 .tsCB-wallet dt:after{content:none !important}
 .tsCB-wallet dd{margin:0;padding:0;font-weight:800;font-variant-numeric:tabular-nums;color:var(--cb-ink)}
-.tsCB-wallet dd a{color:inherit !important;text-decoration:none}
+.tsCB-wallet dd a{color:inherit !important;text-decoration:none;font-size:0.9em}
 .tsCB-wallet [title=GP] + dd{color:#f5c542 !important}
 .tsCB-wallet [title=MP] + dd{color:var(--cb-accent-soft) !important}
 .tsCB-wallet > dl:nth-of-type(3) dd{color:#b57cff}
-
+@media (max-width: 650px) {
+.tsCB-wallet{
+	display: none;
+}
+.tsCB-pager{
+	right: 50%;
+	width: 98%;
+}
+}
 /* ---------- dock (bottom buttons) ---------- */
 .tsCB-dock{display:flex;gap:8px;min-width:0}
 .tsCB-buttons{display:contents}
@@ -62,7 +66,7 @@
 .tsCB .tsCB-buttons > .tsCB-btn.tsCB-btn--hidden{display:none !important}
 .tsCB-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:78px;height:62px;padding:0 12px;
 	border-radius:9px;background:var(--cb-glass);border:1px solid var(--cb-line);color:var(--cb-ink) !important;
-	font:inherit;font-size:12px;font-weight:700;line-height:1;text-decoration:none !important;cursor:pointer;
+	font:inherit;font-size:12px;font-weight:400;line-height:1;text-decoration:none !important;cursor:pointer;
 	-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .15s,border-color .15s,transform .15s}
 .tsCB-tile:hover,.tsCB-tile[aria-expanded=true]{background:rgba(63,198,212,.14);border-color:rgba(127,219,230,.45);transform:translateY(-1px)}
 .tsCB-tile:focus-visible{outline:2px solid var(--cb-accent-soft);outline-offset:2px}
@@ -149,7 +153,24 @@
 	.tsCB-blurb{font-size:13px}
 	.tsCB-drawer{width:100%;border-left:0}
 }
+/* ---------- compact (half-height) mode, toggled from the pager ---------- */
+.tsCB-stage{transition:height .3s ease}
+.tsCB.is-compact .tsCB-stage{height:200px}
+.tsCB.is-compact .tsCB-dock{display:none}
+.tsCB.is-compact .tsCB-drawer{display:none}
+.tsCB.is-compact .tsCB-bg{background-position:center top !important;object-position:center top !important}
+.tsCB.is-compact .tsCB-blurb{-webkit-line-clamp:1}
+.tsCB-ctl .is-expand{display:none}
+.tsCB.is-compact .tsCB-ctl .is-expand{display:block}
+.tsCB.is-compact .tsCB-ctl .is-collapse{display:none}
+.tsCB.is-compact [data-cb=compact]{color:var(--cb-accent-soft)}
+@media (max-width:650px){
+	.tsCB.is-compact .tsCB-stage{height:200px}
+	.tsCB.is-compact .tsCB-slide--ad .tsCB-name{font-size:1.4rem}
+	.tsCB.is-compact .tsCB-blurb{display:none}
+}
 @media (prefers-reduced-motion:reduce){
+	.tsCB-stage{transition:none !important}
 	.tsCB-slide,.tsCB-bg,.tsCB-drawer,.tsCB-dot,.tsCB-dot:before{transition:none !important}
 }
 
@@ -207,9 +228,12 @@
 <xf:set var="$canSheet" value="{{ !$isGroup4 && $xf.visitor.canShowCharacterElements() }}" />
 <!-- buttons whose icon class includes "only-dm" are only rendered for these groups -->
 <xf:set var="$isDm" value="{{ $xf.visitor.isMemberOf([12, 21, 31]) }}" />
+<!-- buttons with the "only-players" class are only rendered for group 5 -->
+<xf:set var="$isPlayer" value="{{ $xf.visitor.isMemberOf(5) }}" />
 <xf:set var="$sheetLink" value="{{ link('members/charactersheet', $xf.visitor) }}" />
 
 <div class="tsCB" data-interval="7000">
+	<script>try{if(window.localStorage.getItem('tsCB:compact')==='1'){document.currentScript.parentNode.className+=' is-compact';}}catch(e){}</script>
 	<section class="tsCB-stage" aria-roledescription="carousel" aria-label="Character and featured">
 
 		<xf:if is="$xf.visitor.user_id">
@@ -244,10 +268,12 @@
 
 			<div class="tsCB-bottom">
 				<nav class="tsCB-dock" aria-label="Character menu">
-					<button type="button" class="tsCB-tile" data-cb="drawer-open" aria-expanded="false">
+					<xf:if is="$isPlayer">
+					<button type="button" class="tsCB-tile only-players" data-cb="drawer-open" aria-expanded="false">
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8.7 5v10L12 22l-8.7-5V7z"/><path d="M12 8v8M8.5 10v4M15.5 10v4"/></svg>
 						<span>Stats</span>
 					</button>
+					</xf:if>
 					<div class="tsCB-buttons">
 						<xf:foreach loop="$xf.visitor.getBannerButtons()" value="$button">
 							<xf:set var="$label" value="" />
@@ -261,7 +287,7 @@
 									  arg-label="{$label}"
 									  arg-link="{{ $button.getParsedURL($xf.visitor) }}"
 									  arg-behavior="{$button.behavior}"
-									  arg-hidden="{{ !$isDm && in_array('only-dm', $button.icon_url|split(' ')) }}" />
+									  arg-hidden="{{ (!$isDm && in_array('only-dm', $button.icon_url|split(' '))) || (!$isPlayer && in_array('only-players', $button.icon_url|split(' '))) }}" />
 						</xf:foreach>
 					</div>
 				</nav>
@@ -347,15 +373,20 @@
 				<svg class="is-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>
 				<svg class="is-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.6v12.8a1 1 0 0 0 1.5.9l10-6.4a1 1 0 0 0 0-1.8l-10-6.4A1 1 0 0 0 8 5.6z"/></svg>
 			</button>
+			<button type="button" class="tsCB-ctl" data-cb="compact" title="Compact banner" aria-label="Compact banner" aria-pressed="false">
+				<svg class="is-collapse" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 3.3a1 1 0 0 1 1.4 0L12 6.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4zM11.3 15.3a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1-1.4 1.4L12 17.4l-3.3 3.3a1 1 0 0 1-1.4-1.4z"/><rect x="4" y="11" width="16" height="2" rx="1"/></svg>
+				<svg class="is-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.3 2.3a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1-1.4 1.4L12 4.4 8.7 7.7a1 1 0 0 1-1.4-1.4zM7.3 16.3a1 1 0 0 1 1.4 0l3.3 3.3 3.3-3.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4z"/><rect x="4" y="11" width="16" height="2" rx="1"/></svg>
+			</button>
 		</div>
 	</section>
 </div>
 
 <xf:js>
 (function () {
-	var KEY = 'tsCB:autoplay';
-	function readPref() { try { return window.localStorage.getItem(KEY); } catch (e) { return null; } }
-	function savePref(v) { try { if (v) { window.localStorage.setItem(KEY, v); } else { window.localStorage.removeItem(KEY); } } catch (e) {} }
+	/* autoplay is OFF unless the member turned it on ('tsCB:play' = '1') */
+	var KEY = 'tsCB:play', COMPACT = 'tsCB:compact';
+	function readPref(k) { try { return window.localStorage.getItem(k || KEY); } catch (e) { return null; } }
+	function savePref(v, k) { try { if (v) { window.localStorage.setItem(k || KEY, v); } else { window.localStorage.removeItem(k || KEY); } } catch (e) {} }
 
 	var roots = document.querySelectorAll('.tsCB:not([data-ts-ready])');
 	Array.prototype.forEach.call(roots, function (root) {
@@ -366,6 +397,7 @@
 		var pager = root.querySelector('.tsCB-pager');
 		var dotsBox = root.querySelector('.tsCB-dots');
 		var toggleBtn = root.querySelector('[data-cb=toggle]');
+		var compactBtn = root.querySelector('[data-cb=compact]');
 		var n = slides.length;
 		var base = parseInt(root.getAttribute('data-interval'), 10) || 7000;
 		var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -388,6 +420,13 @@
 		function sync() {
 			root.classList.toggle('is-held', isHeld());
 			root.classList.toggle('is-stopped', !!holds.user);
+			if (compactBtn) {
+				var on = root.classList.contains('is-compact');
+				var cl = on ? 'Full-size banner' : 'Compact banner';
+				compactBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+				compactBtn.setAttribute('aria-label', cl);
+				compactBtn.title = cl;
+			}
 			if (toggleBtn) {
 				var label = holds.user ? 'Resume autoplay' : 'Stop autoplay';
 				toggleBtn.setAttribute('aria-pressed', holds.user ? 'true' : 'false');
@@ -463,7 +502,23 @@
 			schedule();
 		}
 
-		if (n < 2) { if (n === 1) slides[0].classList.add('is-active'); return; }
+		/* compact toggle (remembered); shown even when there is only one slide */
+		if (readPref(COMPACT) === '1') root.classList.add('is-compact');
+		compactBtn.addEventListener('click', function () {
+			var on = !root.classList.contains('is-compact');
+			root.classList.toggle('is-compact', on);
+			if (on) slides.forEach(closeDrawer);
+			savePref(on ? '1' : null, COMPACT);
+			sync();
+		});
+
+		if (n < 2) {
+			if (n === 1) slides[0].classList.add('is-active');
+			Array.prototype.forEach.call(pager.querySelectorAll('[data-cb=prev],[data-cb=next],[data-cb=toggle],.tsCB-dots'), function (el) { el.hidden = true; el.style.display = 'none'; });
+			pager.hidden = false;
+			sync();
+			return;
+		}
 
 		slides.forEach(function (s, i) {
 			if (s.classList.contains('is-active')) cur = i;
@@ -490,14 +545,14 @@
 		toggleBtn.addEventListener('click', function () {
 			if (holds.user) {
 				delete holds.user;
-				savePref(null);
+				savePref('1');
 				remaining = durOf(cur);
 				restartBar();
 				sync();
 				schedule();
 			} else {
 				hold('user');
-				savePref('off');
+				savePref(null);
 			}
 		});
 
@@ -534,7 +589,7 @@
 			x0 = y0 = null;
 		});
 
-		if (readPref() === 'off' || reduce) holds.user = 1;
+		if (readPref() !== '1' || reduce) holds.user = 1;
 		sync();
 		go(cur);
 	});
