@@ -23,6 +23,28 @@
 	}
 })();
 </script>
+<!-- Reader options (Plain Banner / Dialogue / Background): re-apply the saved
+	choices while the page parses, before any post renders, so there is no flash
+	of the default styling. The checkboxes in the thread tools menu save them. -->
+<script>
+(function ()
+{
+	try
+	{
+		var prefs = JSON.parse(window.localStorage.getItem('tsReaderPrefs') || '{}') || {},
+			root = document.documentElement;
+
+		['banner', 'dialogue', 'background'].forEach(function (key)
+		{
+			if (prefs[key])
+			{
+				root.classList.add('ts-plain-' + key);
+			}
+		});
+	}
+	catch (e) {}
+})();
+</script>
 
 
 <xf:if is="!$thread.isSearchEngineIndexable()">
@@ -204,6 +226,13 @@
    aria-pressed="false"
    data-menu-closer="true"
    id="js-threadFocusToggle">Focus mode</a>
+											<div class="menu-row menu-row--separated ts-readerPrefs">
+												<xf:checkbox>
+													<xf:option class="js-tsReaderPref" data-pref="banner" label="Plain Banner" />
+													<xf:option class="js-tsReaderPref" data-pref="dialogue" label="Plain Dialogue" />
+													<xf:option class="js-tsReaderPref" data-pref="background" label="Plain Background" />
+												</xf:checkbox>
+											</div>
 											<!--[XF:thread_tools_menu:before_footer]-->
 											<xf:if is="$thread.canUseInlineModeration()">
 												<div class="menu-footer"
@@ -568,5 +597,93 @@
     });
 
     updateButton();
+})();
+
+/* Reader options: each checkbox toggles a ts-plain-* class on <html>, alongside
+   (never replacing) thread-focus-mode, and is saved in localStorage. */
+(function ()
+{
+    var STORAGE_KEY = 'tsReaderPrefs',
+        root = document.documentElement,
+        boxes = document.querySelectorAll('.js-tsReaderPref');
+
+    if (!boxes.length)
+    {
+        return;
+    }
+
+    function loadPrefs()
+    {
+        try
+        {
+            return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}') || {};
+        }
+        catch (e)
+        {
+            return {};
+        }
+    }
+
+    function savePrefs(prefs)
+    {
+        try
+        {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+        }
+        catch (e) {}
+    }
+
+    function applyPref(key, enabled)
+    {
+        root.classList.toggle('ts-plain-' + key, !!enabled);
+
+        Array.prototype.forEach.call(boxes, function (box)
+        {
+            if (box.getAttribute('data-pref') === key)
+            {
+                box.checked = !!enabled;
+            }
+        });
+    }
+
+    Array.prototype.forEach.call(boxes, function (box)
+    {
+        var key = box.getAttribute('data-pref');
+
+        box.checked = root.classList.contains('ts-plain-' + key);
+
+        box.addEventListener('change', function ()
+        {
+            var prefs = loadPrefs();
+
+            if (box.checked)
+            {
+                prefs[key] = 1;
+            }
+            else
+            {
+                delete prefs[key];
+            }
+
+            savePrefs(prefs);
+            applyPref(key, box.checked);
+        });
+    });
+
+    /* Keep other open tabs in step when an option changes */
+    window.addEventListener('storage', function (event)
+    {
+        if (event.key !== STORAGE_KEY)
+        {
+            return;
+        }
+
+        var prefs = loadPrefs();
+
+        ['banner', 'dialogue', 'background'].forEach(function (key)
+        {
+            applyPref(key, prefs[key]);
+        });
+    });
 })();
 </xf:js>

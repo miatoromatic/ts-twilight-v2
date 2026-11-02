@@ -6,6 +6,23 @@
 .shine {
 	background: rgba(17,21,28,0.35) !important;
 }
+/* Reader options (thread tools menu > Plain Banner / Dialogue / Background).
+   The ts-plain-* classes sit on <html> next to thread-focus-mode, so they work
+   with or without focus mode. html + class out-ranks the default rules here and
+   !important beats inline style="" from BBCode. */
+html.ts-plain-banner .bg-banner{
+	background: #191c28 !important;
+}
+html.ts-plain-dialogue .fixed-color,
+html.ts-plain-dialogue .fixed-color *{
+	color: #248c82 !important;
+}
+html.ts-plain-background .shine{
+	background: #161b27 !important;
+}
+.ts-readerPrefs .inputChoices{
+	margin: 0;
+}
 .titlebg-spacing{
 	position: relative;
 	top: 2px;
@@ -25,6 +42,15 @@
 .message-actionBar .actionBar-action--inlineMod,
 .message-inner .bookmarkLink{
 	display: inline-block;
+}
+.message-actionBar .actionBar-action--edit,
+.message-actionBar .actionBar-action--delete,
+.message-actionBar .actionBar-action--history,
+.message-actionBar .actionBar-action--quote,
+.message-actionBar .actionBar-action--ip,
+.message-actionBar .actionBar-action--inlineMod,
+.message-inner .bookmarkLink,
+.message-inner .message-lastEdit{
 	opacity: 0;
 	transform: translateY(3px);
 	transition: opacity .3s ease, transform .3s ease, color .2s ease !important;
@@ -44,13 +70,15 @@
 .message-inner:hover .message-actionBar .actionBar-action--ip,
 .message-inner:hover .message-actionBar .actionBar-action--inlineMod,
 .message-inner:hover .bookmarkLink,
+.message-inner:hover .message-lastEdit,
 .message-inner:focus-within .message-actionBar .actionBar-action--edit,
 .message-inner:focus-within .message-actionBar .actionBar-action--delete,
 .message-inner:focus-within .message-actionBar .actionBar-action--history,
 .message-inner:focus-within .message-actionBar .actionBar-action--quote,
 .message-inner:focus-within .message-actionBar .actionBar-action--ip,
 .message-inner:focus-within .message-actionBar .actionBar-action--inlineMod,
-.message-inner:focus-within .bookmarkLink{
+.message-inner:focus-within .bookmarkLink,
+.message-inner:focus-within .message-lastEdit{
 	opacity: 1;
 	transform: none;
 }
@@ -62,7 +90,8 @@
 	.message-actionBar .actionBar-action--quote,
 	.message-actionBar .actionBar-action--ip,
 	.message-actionBar .actionBar-action--inlineMod,
-	.message-inner .bookmarkLink{
+	.message-inner .bookmarkLink,
+	.message-inner .message-lastEdit{
 		opacity: 1;
 		transform: none;
 	}
@@ -74,7 +103,8 @@
 	.message-actionBar .actionBar-action--quote,
 	.message-actionBar .actionBar-action--ip,
 	.message-actionBar .actionBar-action--inlineMod,
-	.message-inner .bookmarkLink{
+	.message-inner .bookmarkLink,
+	.message-inner .message-lastEdit{
 		transform: none !important;
 	}
 }
