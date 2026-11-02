@@ -36,6 +36,7 @@ This adds a tabbed list of recent threads above the node list on `forum_list`. I
    | `ts_activity_campaign` (tab "Campaign") | 12 | Campaign (56) |
    | `ts_activity_guildhall` (tab "RP") | 12 | Trackers (6), DM Hub (9), Quest (8), LFGs (7), Apps (5), News (4) |
    | `ts_activity_community` (tab "OOC") | 12 | Services (26), Archive (25), OOC (52) |
+   | `ts_activity_watched` (tab "Watched") | 12 | none (all forums). **Filter: Watched** |
 
    Filter: *Latest*. Display style doesn't matter. Forum limit only matches threads posted directly in the selected forums, so also select any sub-forums.
 4. Replace **forum_list** with `forum_list.html`.
@@ -98,3 +99,21 @@ Only `href` and `title` are required. Optional arguments:
 | `sub` | Small line under the name |
 
 The four links currently in it are placeholders.
+
+## Watched and Bookmarks tabs (members only)
+
+- **Watched:** a New posts widget with key `ts_activity_watched` and its Filter set to *Watched* (see the table above).
+- **Bookmarks:** loads `/account/bookmarks` the first time the tab is clicked, and shows it with the page chrome stripped.
+
+Both are hidden for guests. Switches: `$tsShowWatched`, `$tsShowBookmarks`. Season 5 and Campaign are currently switched off (`0`).
+
+## Size controls
+
+The bar at the bottom of the box has:
+
+- **Grip:** drag it to set the height. The list scrolls inside.
+- **Half:** halves the current height.
+- **Full:** removes any height limit.
+- **Hide:** collapses to the tab bar, with a "Show" button on the right.
+
+Each browser remembers its own choice (localStorage).

@@ -61,7 +61,7 @@
 
 <xf:macro name="thumb" arg-thread="!" arg-href="!">
 	<xf:comment>
-		Region forums: show /db/forums/id_XX.webp
+		Region forums: show /db/forums/id_XX.webp with a soft overlay + play icon
 		Other forums:  show a Font Awesome icon on a tinted tile (colours in ts_activity_feed.less)
 		Anything else: plain dark gradient tile
 	</xf:comment>
@@ -86,7 +86,7 @@
 	<xf:if is="$nodeId == 11 OR $nodeId == 56 OR $nodeId == 12 OR $nodeId == 13 OR $nodeId == 15 OR $nodeId == 16 OR $nodeId == 17 OR $nodeId == 19 OR $nodeId == 57 OR $nodeId == 20 OR $nodeId == 21 OR $nodeId == 22">
 		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--image tsActivity-thumb--node{$nodeId}"
 			style="background-image: url('/db/forums/id_{$nodeId}.webp');"
-			tabindex="-1" aria-hidden="true"></a>
+			tabindex="-1" aria-hidden="true"><span class="tsActivity-thumbOverlay"><i class="fa-solid fa-play"></i></span></a>
 	<xf:elseif is="$icon" />
 		<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--icon tsActivity-thumb--node{$nodeId}"
 			tabindex="-1" aria-hidden="true"><i class="{$icon}"></i></a>
@@ -111,7 +111,7 @@
 		<span class="tsActivity-dot" aria-hidden="true"></span>
 
 		<xf:if is="$image">
-			<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--image" style="background-image: url('{$image}');" tabindex="-1" aria-hidden="true"></a>
+			<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--image" style="background-image: url('{$image}');" tabindex="-1" aria-hidden="true"><span class="tsActivity-thumbOverlay"><i class="fa-solid fa-play"></i></span></a>
 		<xf:else />
 			<a href="{$href}" class="tsActivity-thumb tsActivity-thumb--icon tsActivity-thumb--wiki" tabindex="-1" aria-hidden="true"><i class="{$icon}"></i></a>
 		</xf:if>

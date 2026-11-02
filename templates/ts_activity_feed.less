@@ -2,7 +2,7 @@
 // Styles for the activity feed shown above the node list on forum_list.
 
 @tsA-bg:        #0d1219;
-@tsA-bgHover:   #121925;
+@tsA-bgHover:   #181e29;
 @tsA-border:    #1c2430;
 @tsA-text:      #e9eef5;
 @tsA-muted:     #7b8b9f;
@@ -12,7 +12,7 @@
 {
 	margin: 0 auto 20px auto;
 	max-width: 930px;
-	background: rgba(17, 20, 28, 0.6);
+	/*background: rgba(17, 20, 28, 0.6);*/
 	border: 1px solid #1b2230;
 	border-radius: 8px;
 	overflow: hidden;
@@ -73,9 +73,10 @@
 	margin-left: auto;
 	align-self: center;
 	padding-left: 12px;
-	font-size: 11px;
+	font-size: 12px;
 	color: @tsA-muted;
 	white-space: nowrap;
+	font-style: italic;
 }
 
 // ---------- Panes ----------
@@ -104,7 +105,7 @@
 	align-items: center;
 	gap: 14px;
 	padding: 11px 16px 11px 26px;
-	border-bottom: 1px solid @tsA-border;
+	border-bottom: 1px solid #161d26;/*@tsA-border*/
 	transition: background .2s ease;
 
 	&:hover { background: @tsA-bgHover; }
@@ -128,8 +129,10 @@
 {
 	flex: 0 0 auto;
 	width: 62px;
-	height: 36px;
-	border-radius: 4px;
+	height: 40px;
+	position: relative;
+	top: 3px;
+	border-radius: 8px;
 	background-color: #161d28;
 	background-image: linear-gradient(135deg, #1a2331 0%, #0f141c 100%);
 	background-size: cover;
@@ -146,8 +149,8 @@
 .tsActivity-title
 {
 	display: block;
-	font-size: 14px;
-	font-weight: 700;
+	font-size: 17px;
+	font-weight: 600;
 	line-height: 1.3;
 	color: @tsA-text !important;
 	white-space: nowrap;
@@ -165,9 +168,9 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 5px;
+	gap: 2px;
 	margin-top: 4px;
-	font-size: 11px;
+	font-size: 13px;
 	color: @tsA-muted;
 }
 
@@ -178,7 +181,7 @@
 	a
 	{
 		color: #c9d2de !important;
-		font-weight: 700;
+		font-weight: 400;
 		text-decoration: none !important;
 		&:hover { color: #fff !important; }
 	}
@@ -241,7 +244,7 @@
 
 .tsActivity-time
 {
-	font-size: 11px;
+	font-size: 13px;
 	color: @tsA-muted;
 	white-space: nowrap;
 }
@@ -264,8 +267,8 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	font-size: 12px;
-	font-weight: 700;
+	font-size: 15px;
+	font-weight: 600;
 	color: #c9d2de !important;
 	text-decoration: none !important;
 
@@ -290,8 +293,8 @@
 
 .tsActivity-avatar .avatar
 {
-	width: 24px;
-	height: 24px;
+	width: 28px;
+	height: 28px;
 	border-radius: 50%;
 	font-size: 12px;
 
@@ -331,6 +334,38 @@
 .tsActivity-thumb--image
 {
 	background-color: #161d28;
+	overflow: hidden;
+	text-decoration: none !important;
+}
+
+// Soft overlay + play icon on image thumbnails
+.tsActivity-thumbOverlay
+{
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: inherit;
+	background: linear-gradient(180deg, rgba(10, 13, 19, 0.15) 0%, rgba(10, 13, 19, 0.55) 100%);
+	transition: background .2s ease;
+
+	i
+	{
+		font-size: 12px;
+		line-height: 1;
+		color: rgba(255, 255, 255, 0.85);
+		text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+		transform: translateX(1px); // optical centre for the play triangle
+		transition: transform .2s ease, color .2s ease;
+	}
+
+	.tsActivity-item:hover &
+	{
+		background: linear-gradient(180deg, rgba(10, 13, 19, 0.05) 0%, rgba(10, 13, 19, 0.35) 100%);
+
+		i { color: #fff; transform: translateX(1px) scale(1.15); }
+	}
 }
 
 // Icon tiles (non-region forums)
@@ -375,6 +410,123 @@
 .tsActivity-thumb--node74 { .tsActivity-iconTile(#c46fd6); } // Gallery   - images
 .tsActivity-thumb--node30 { .tsActivity-iconTile(#6fcf97); } // Active Player - user
 
+// ---------- Bookmarks tab (content loaded from /account/bookmarks) ----------
+.tsActivity-remote
+{
+	// strip the page chrome the bookmarks page brings along
+	.block-outer,
+	.block-filterBar,
+	.block-header,
+	.p-title,
+	.p-breadcrumbs { display: none; }
+
+	.block { margin: 0; }
+	.block-container { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+
+	.block-row
+	{
+		padding: 11px 16px 11px 26px;
+		border-bottom: 1px solid #161d26;
+		transition: background .2s ease;
+		&:hover { background: @tsA-bgHover; }
+	}
+}
+
+// ---------- Size controls (footer of the whole box) ----------
+.tsActivity-panes
+{
+	transition: max-height .25s ease;
+}
+
+.tsActivity.is-sized .tsActivity-panes
+{
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: #2a3446 transparent;
+}
+
+.tsActivity.is-collapsed
+{
+	.tsActivity-panes { display: none; }
+	.tsActivity-header { border-bottom: 0; }
+}
+
+.tsActivity-controls
+{
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 4px;
+	padding: 4px 10px;
+	border-top: 1px solid @tsA-border;
+
+	.tsActivity.is-collapsed & { display: none; } // collapsed: the header "Show" button takes over
+}
+
+.tsActivity-grip
+{
+	position: absolute;
+	left: 50%;
+	top: 0;
+	bottom: 0;
+	width: 120px;
+	margin-left: -60px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: ns-resize;
+	touch-action: none;
+
+	&::before
+	{
+		content: "";
+		width: 38px;
+		height: 4px;
+		border-radius: 2px;
+		background: #2a3446;
+		transition: background .2s ease;
+	}
+
+	&:hover::before,
+	.tsActivity.is-dragging &::before { background: @tsA-accent; }
+}
+
+.tsActivity.is-dragging
+{
+	user-select: none;
+	.tsActivity-panes { transition: none; }
+}
+
+.tsActivity-ctrl
+{
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 4px 8px;
+	border: 0;
+	border-radius: 4px;
+	background: transparent;
+	font: inherit;
+	font-size: 11px;
+	font-weight: 600;
+	color: @tsA-muted;
+	cursor: pointer;
+	transition: color .2s ease, background .2s ease;
+
+	&:hover { color: @tsA-text; background: @tsA-bgHover; }
+	i { font-size: 10px; }
+}
+
+.tsActivity-showBtn
+{
+	display: none;
+	align-self: center;
+	margin-left: 8px;
+
+	.tsActivity.is-collapsed & { display: inline-flex; }
+}
+
 // ---------- Mobile ----------
 @media (max-width: @xf-responsiveNarrow)
 {
@@ -387,4 +539,6 @@
 	.tsActivity-aside { gap: 8px; }
 	.tsActivity-poster { max-width: 90px; font-size: 11px; }
 	.tsActivity-time { font-size: 10px; }
+	.tsActivity-thumbOverlay i { font-size: 10px; }
+	.tsActivity-ctrl span { display: none; } // icons only on phones
 }

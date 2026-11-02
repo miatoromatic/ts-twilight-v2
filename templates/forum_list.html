@@ -89,12 +89,15 @@ function checkCookie(name) {
 		ts_activity_campaign   - 56 (Campaign; repoint in ACP as needed)
 		ts_activity_guildhall  - 6, 9, 8, 7, 5, 4   (shown as "RP")
 		ts_activity_community  - 26, 25, 52        (shown as "OOC")
+		ts_activity_watched    - all forums, Filter: "Watched"
 </xf:comment>
 <xf:comment>
 	----- Optional tabs: set to 0 to hide a tab (and its pane), 1 to show it -----
 </xf:comment>
-<xf:set var="$tsShowSeason" value="1" />    <xf:comment>widget key: ts_activity_season   (currently Season 5, forum 11)</xf:comment>
-<xf:set var="$tsShowCampaign" value="1" />  <xf:comment>widget key: ts_activity_campaign (currently Campaign, forum 56)</xf:comment>
+<xf:set var="$tsShowSeason" value="0" />    <xf:comment>widget key: ts_activity_season   (currently Season 5, forum 11)</xf:comment>
+<xf:set var="$tsShowCampaign" value="0" />  <xf:comment>widget key: ts_activity_campaign (currently Campaign, forum 56)</xf:comment>
+<xf:set var="$tsShowWatched" value="{{ $xf.visitor.user_id ? 1 : 0 }}" />    <xf:comment>widget key: ts_activity_watched (members only)</xf:comment>
+<xf:set var="$tsShowBookmarks" value="{{ $xf.visitor.user_id ? 1 : 0 }}" />  <xf:comment>loads /account/bookmarks (members only)</xf:comment>
 <xf:set var="$tsShowWiki" value="1" />
 
 <section class="tsActivity">
@@ -107,12 +110,19 @@ function checkCookie(name) {
 		<xf:if is="$tsShowCampaign">
 			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-campaign">Campaign</a>
 		</xf:if>
+		<xf:if is="$tsShowWatched">
+			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-watched">Watched</a>
+		</xf:if>
+		<xf:if is="$tsShowBookmarks">
+			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-bookmarks">Bookmarks</a>
+		</xf:if>
 		<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-guildhall">RP</a>
 		<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-community">OOC</a>
 		<xf:if is="$tsShowWiki">
 			<a class="tsActivity-tab tabs-tab" role="tab" tabindex="0" aria-controls="tsActivity-wiki">Wiki</a>
 		</xf:if>
 		<span class="tsActivity-sort">Sorted by latest post</span>
+		<button type="button" class="tsActivity-ctrl tsActivity-showBtn" data-ts-size="show"><i class="fa-solid fa-chevron-down"></i><span>Show</span></button>
 	</div>
 	<ul class="tabPanes tsActivity-panes">
 		<li class="is-active" role="tabpanel" id="tsActivity-all">
@@ -129,6 +139,19 @@ function checkCookie(name) {
 		<xf:if is="$tsShowCampaign">
 		<li role="tabpanel" id="tsActivity-campaign">
 			<xf:widget key="ts_activity_campaign" />
+		</li>
+		</xf:if>
+		<xf:if is="$tsShowWatched">
+		<li role="tabpanel" id="tsActivity-watched">
+			<xf:widget key="ts_activity_watched" />
+		</li>
+		</xf:if>
+		<xf:if is="$tsShowBookmarks">
+		<li role="tabpanel" id="tsActivity-bookmarks">
+			<div class="tsActivity-remote" data-ts-load="{{ link('account/bookmarks') }}">
+				<div class="tsActivity-empty">Loading…</div>
+			</div>
+			<div class="tsActivity-footer"><a href="{{ link('account/bookmarks') }}">All bookmarks</a></div>
 		</li>
 		</xf:if>
 		<li role="tabpanel" id="tsActivity-guildhall">
@@ -155,7 +178,102 @@ function checkCookie(name) {
 		</li>
 		</xf:if>
 	</ul>
+
+	<div class="tsActivity-controls">
+		<span class="tsActivity-grip" data-ts-size="drag" title="Drag to set height"></span>
+		<button type="button" class="tsActivity-ctrl" data-ts-size="half" title="Half the current height"><i class="fa-solid fa-down-left-and-up-right-to-center"></i><span>Half</span></button>
+		<button type="button" class="tsActivity-ctrl" data-ts-size="full" title="Back to full height"><i class="fa-solid fa-up-right-and-down-left-from-center"></i><span>Full</span></button>
+		<button type="button" class="tsActivity-ctrl" data-ts-size="hide" title="Hide the feed"><i class="fa-solid fa-chevron-up"></i><span>Hide</span></button>
+	</div>
 </section>
+
+<xf:js>
+// ===== Activity feed: size controls (Hide / drag to set height / Half / Full) =====
+// The choice is remembered per browser.
+(function()
+{
+	var box = document.querySelector('.tsActivity');
+	if (!box) { return; }
+	var panes = box.querySelector('.tsActivity-panes');
+	var KEY = 'tsActivityView', MIN = 120;
+	var state = {};
+	try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+
+	function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+	function apply()
+	{
+		box.classList.toggle('is-collapsed', !!state.hidden);
+		box.classList.toggle('is-sized', !!state.h);
+		panes.style.maxHeight = state.h ? state.h + 'px' : '';
+	}
+	apply();
+
+	box.addEventListener('click', function(e)
+	{
+		var btn = e.target.closest('[data-ts-size]');
+		if (!btn) { return; }
+		var act = btn.getAttribute('data-ts-size');
+		if (act === 'hide') { state.hidden = true; }
+		else if (act === 'show') { state.hidden = false; }
+		else if (act === 'full') { state.h = 0; }
+		else if (act === 'half') { state.h = Math.max(MIN, Math.round(panes.getBoundingClientRect().height / 2)); }
+		else { return; }
+		apply(); save();
+	});
+
+	// Drag the grip to set the height
+	var grip = box.querySelector('.tsActivity-grip');
+	var startY = 0, startH = 0;
+	function onMove(e)
+	{
+		var h = startH + (e.clientY - startY);
+		h = Math.max(MIN, Math.min(h, panes.scrollHeight));
+		state.h = Math.round(h);
+		apply();
+	}
+	function onUp()
+	{
+		box.classList.remove('is-dragging');
+		document.removeEventListener('pointermove', onMove);
+		document.removeEventListener('pointerup', onUp);
+		if (state.h >= panes.scrollHeight) { state.h = 0; apply(); } // dragged to the bottom = full height
+		save();
+	}
+	grip.addEventListener('pointerdown', function(e)
+	{
+		e.preventDefault();
+		startY = e.clientY;
+		startH = panes.getBoundingClientRect().height;
+		box.classList.add('is-dragging');
+		document.addEventListener('pointermove', onMove);
+		document.addEventListener('pointerup', onUp);
+	});
+})();
+
+// ===== Bookmarks tab: load /account/bookmarks the first time the tab is opened =====
+$(document).on('click', '.tsActivity-tab', function()
+{
+	var $target = $('#' + $(this).attr('aria-controls')).find('[data-ts-load]');
+	if (!$target.length || $target.data('tsLoaded')) { return; }
+	$target.data('tsLoaded', true);
+
+	XF.ajax('get', $target.data('ts-load'), {}, function(data)
+	{
+		if (data.html)
+		{
+			XF.setupHtmlInsert(data.html, function($html) { $target.html($html); });
+		}
+		else
+		{
+			$target.html('<div class="tsActivity-empty">Nothing to show right now.</div>');
+		}
+	}, { skipDefaultSuccess: true }).fail(function()
+	{
+		$target.data('tsLoaded', false);
+		$target.html('<div class="tsActivity-empty">Couldn\'t load bookmarks. Use the link below.</div>');
+	});
+});
+</xf:js>
 
 <xf:macro name="node_list" arg-children="{$nodeTree}" arg-extras="{$nodeExtras}" />
 <xf:widgetpos id="forum_list_below_nodes" />
