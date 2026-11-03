@@ -44,9 +44,6 @@ html.ts-light-mode{
 		background: #d9d9d9;
 		border-bottom: 1px solid #868cb345;
 	}
-	.block-header--quickReply .message-cell.message-cell--user{
-		border: none;
-	}
 	.message-name a{
 		color: #343d45;
 	}
@@ -91,12 +88,85 @@ html.ts-light-mode{
 	.bbWrapper hr{
 		border-top: 1px solid #c2c2c2;
 	}
+	/* Editor (quick reply + quick edit): pale field, soft toolbar strip */
 	.fr-box.fr-basic{
-		background: #ddd;
-		border: solid 1px #bbb;
+		background: #e6e6e8;
+		border: 1px solid #b9bdc7;
+		border-radius: 6px;
+		overflow: hidden;
+		transition: border-color .2s ease, box-shadow .2s ease;
+	}
+	.fr-box.fr-basic.is-focused,
+	.fr-box.fr-basic:focus-within{
+		border-color: #8a91a8;
+		box-shadow: 0 0 0 3px #8a91a826;
+	}
+	.fr-box.fr-basic .fr-toolbar{
+		background: #d3d5db;
+		border: 0;
+		border-bottom: 1px solid #b9bdc7;
+	}
+	.fr-box.fr-basic .fr-toolbar .fr-command.fr-btn{
+		color: #4a5161;
+	}
+	.fr-box.fr-basic .fr-toolbar .fr-command.fr-btn svg path{
+		fill: currentColor;
+	}
+	.fr-box.fr-basic .fr-toolbar .fr-command.fr-btn:hover,
+	.fr-box.fr-basic .fr-toolbar .fr-command.fr-btn.fr-active{
+		color: #2a3341;
+		background: #c3c7d0;
+	}
+	.fr-box.fr-basic .fr-wrapper,
+	.fr-box.fr-basic .fr-second-toolbar{
+		background: transparent;
+		border: 0;
 	}
 	.fr-box.fr-basic .fr-element{
-		color: #111;
+		color: #2a3341;
+	}
+	.fr-box.fr-basic .fr-placeholder{
+		color: #808799;
+	}
+	/* BB code (source) mode and any plain textarea in the reply box */
+	.js-quickReply textarea.input,
+	.js-quickReply .input{
+		background: #e6e6e8;
+		border: 1px solid #b9bdc7;
+		color: #2a3341;
+	}
+	/* Quick reply box: same light card as the posts above it */
+	.js-quickReply .block-container{
+		background: #d5d5d5;
+		border: 1px solid #161d29 !important;
+		color: #2a3341;
+	}
+	.message--quickReply{
+		background: transparent;
+	}
+	.message--quickReply .message-cell.message-cell--user{
+		background: transparent !important;
+		border: 0 !important;
+		padding: 15px 10px !important;
+	}
+	.message--quickReply .message-cell.message-cell--main{
+		padding: 15px 15px 10px 5px;
+	}
+	/* Preview / attach / secondary buttons match the post "Reply" pill;
+	   the primary "Post reply" button keeps the theme accent */
+	.js-quickReply .formButtonGroup .button:not(.button--primary){
+		color: #384159;
+		border: 1px solid #a9b2c2;
+		background: #9ea6b666;
+	}
+	.js-quickReply .formButtonGroup .button:not(.button--primary):hover{
+		color: #2a3341;
+		background: #9ea6b699;
+	}
+	.js-quickReply .attachUploadList{
+		background: #e6e6e8;
+		border: 1px solid #b9bdc7;
+		color: #2a3341;
 	}
 }
 .titlebg-spacing{
