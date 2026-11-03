@@ -11,14 +11,18 @@
    with or without focus mode. html + class out-ranks the default rules here and
    !important beats inline style="" from BBCode. */
 html.ts-plain-banner .bg-banner{
-	background: #162531 !important;
+	background: #191c27 !important;
 }
+html.ts-plain-dialogue .fixed-color,
 html.ts-plain-dialogue .d-color,
 html.ts-plain-dialogue .d-color *{
 	color: #248c82 !important;
 }
 html.ts-plain-background .shine{
-	background: rgba(18, 21, 30, 0.9) !important;
+	background: rgba(22, 26, 37, 0.82) !important; /*rgba(18, 21, 30, 0.9)*/
+}
+html.ts-plain-background .titlebg{
+	background: rgba(36, 44, 61, 0.6) !important;
 }
 .ts-readerPrefs .inputChoices{
 	margin: 0;
@@ -34,7 +38,7 @@ html.ts-light-mode{
 		background: #d5d5d5;
 	}
 	.block--messages .message{
-		background: #d5d5d5;
+		background: #d5d5d5 !important;
 		border: 1px solid #161d29 !important;
 	}
 	.message-cell.message-cell--user,
@@ -62,7 +66,7 @@ html.ts-light-mode{
 	}
 	.message-footer{
 		padding: 15px 0 10px 0;
-		border-top: 1px solid #2a30490f;
+		border-top: 1px solid #c9c9c9;
 		margin: 35px 10px 0 10px;
 	}
 	.actionBar-set.actionBar-set--internal > .actionBar-action{
@@ -72,9 +76,20 @@ html.ts-light-mode{
 		color: #3c3f4c;
 	}
 	.message-actionBar .actionBar-action--reply{
-		color: #384159 !important;
-		border: 1px solid #a9b2c2;
-		background: #9ea6b666;
+		color: #a7357b !important;
+		border: 1px solid #a83b7f;
+		background: #d4d4d4;
+	}
+	.reactionsBar a{
+		color: #5f6977;
+	}
+	.NGP{
+		border-color: #b4b7c0;
+	}
+	.button.button--primary,
+	a.button.button--primary{
+		background: #a7357b;
+		border-color: #a7357b;
 	}
 	.message-body{
 		font-family: "Segoe UI", sans-serif;
@@ -83,7 +98,7 @@ html.ts-light-mode{
 		font-optical-sizing: auto;
 		font-weight: normal;
 		font-style: normal;
-		color: #2a3341;
+		color: #202732;
 	}
 	.bbWrapper a{
 		color: #a7357b;
@@ -94,15 +109,15 @@ html.ts-light-mode{
 	/* Editor (quick reply + quick edit): pale field, soft toolbar strip */
 	.fr-box.fr-basic{
 		background: #e6e6e8;
-		border: 1px solid #b9bdc7;
+		border: 1px solid #d5a5be;
 		border-radius: 6px;
 		overflow: hidden;
 		transition: border-color .2s ease, box-shadow .2s ease;
 	}
 	.fr-box.fr-basic.is-focused,
 	.fr-box.fr-basic:focus-within{
-		border-color: #8a91a8;
-		box-shadow: 0 0 0 3px #8a91a826;
+		border-color: #a7357b;
+		box-shadow: 0 0 0 3px #a7357b26;
 	}
 	.fr-box.fr-basic .fr-toolbar{
 		background: #d3d5db;
@@ -111,6 +126,15 @@ html.ts-light-mode{
 	}
 	.fr-box.fr-basic .fr-toolbar .fr-command.fr-btn{
 		color: #4a5161;
+	}
+	.fr-toolbar .fr-btn-grp{
+		border-color: transparent;
+	}
+	.fr-toolbar .fr-command.fr-btn.fr-dropdown::after{
+		border-top: 4px solid #444;
+	}
+	.fr-word-counter{
+		color: #a7357b;
 	}
 	.fr-box.fr-basic .fr-toolbar .fr-command.fr-btn svg path{
 		fill: currentColor;
@@ -143,6 +167,10 @@ html.ts-light-mode{
 		background: #d5d5d5;
 		border: 1px solid #161d29 !important;
 		color: #2a3341;
+	}
+	.block-header--quickReply{
+		border-top: 2px solid #a7357b;
+		background: #d5d5d5;
 	}
 	.message--quickReply{
 		background: transparent;
