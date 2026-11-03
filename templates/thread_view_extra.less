@@ -28,6 +28,9 @@ html.ts-plain-background .shine{
    the mobile overrides, and switches off cleanly with the checkbox. */
 html.ts-light-mode{
 	.block-container{
+		background: transparent;
+	}
+	.character-sheet .block-container{
 		background: #d5d5d5;
 	}
 	.block--messages .message{
@@ -42,7 +45,7 @@ html.ts-light-mode{
 	.message-cell.message-cell--user{
 		padding: 20px 10px !important;
 		background: #d9d9d9;
-		border-bottom: 1px solid #868cb345;
+		border-bottom: 1px solid #c3c5cf;
 	}
 	.message-name a{
 		color: #343d45;
@@ -144,6 +147,21 @@ html.ts-light-mode{
 	.message--quickReply{
 		background: transparent;
 	}
+	/* Reply field rests faded and wakes up on hover / when focused */
+	.js-quickReply .fr-box.fr-basic,
+	.js-quickReply textarea.input{
+		opacity: .55;
+		transition: opacity .25s ease, border-color .2s ease, box-shadow .2s ease;
+	}
+	.js-quickReply .fr-box.fr-basic:hover,
+	.js-quickReply textarea.input:hover{
+		opacity: .8;
+	}
+	.js-quickReply .fr-box.fr-basic.is-focused,
+	.js-quickReply .fr-box.fr-basic:focus-within,
+	.js-quickReply textarea.input:focus{
+		opacity: 1;
+	}
 	.message--quickReply .message-cell.message-cell--user{
 		background: transparent !important;
 		border: 0 !important;
@@ -167,6 +185,44 @@ html.ts-light-mode{
 		background: #e6e6e8;
 		border: 1px solid #b9bdc7;
 		color: #2a3341;
+	}
+	/* Character sheets, boxes and accordions */
+	.character-sheet .message-body{
+		color: #1d232d;
+	}
+	.critical, .t-box, .flex-child{
+		border: 1px solid #c2c2c2;
+		background: #cfcfcf;
+	}
+	.t-box:hover, .flex-child:hover{
+		border: 1px solid #d5a5be;
+	}
+	.cpic-container{
+		border: 5px solid #e1e1e1;
+		background: #e1e1e1;
+	}
+	.sv-accordion dt.sv-accordion-title{
+		background: #777a827d;
+	}
+	.t-box .sv-accordion dt.sv-accordion-title{
+		background: #45454563;
+	}
+	.sv-accordion dt.sv-accordion-title i{
+		color: #a7357b;
+	}
+	.character-sheet-mastery-icon-container,
+	.character-sheet-expertise-icon-container{
+		background-color: #bbb;
+	}
+	.flx-button-full{
+		background: #a7357b;
+		border-color: #a7357b;
+	}
+	.accent--gray{
+		color: #616161;
+	}
+	.m-title-rank{
+		color: #444;
 	}
 }
 .titlebg-spacing{
@@ -292,6 +348,11 @@ html.ts-light-mode{
 	}
 	.block--messages .block-container .message .message-inner .message-avatar-wrapper{
 		margin: 0 0 10px 30px;
+	}
+	/* The post-avatar offset above (or any .block-container version of it)
+	   must not reach the quick reply avatar */
+	.js-quickReply .block-container .message .message-inner .message-avatar-wrapper{
+		margin: 0;
 	}
 	.block-container .message .message-inner .message-cell .collapseTrigger.collapseTrigger--block{
 		margin-left: 0!important;
