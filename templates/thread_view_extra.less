@@ -24,6 +24,17 @@ html.ts-plain-background .shine{
 html.ts-plain-background .titlebg{
 	background: rgba(36, 44, 61, 0.6) !important;
 }
+/* Plain Banner / Dialogue while Light Mode is also on (both classes on <html>
+   out-rank the dark-mode versions above) */
+html.ts-light-mode.ts-plain-banner .bg-banner{
+	background: #cbcbcb !important;
+	color: #545b61;
+}
+html.ts-light-mode.ts-plain-dialogue .fixed-color,
+html.ts-light-mode.ts-plain-dialogue .d-color,
+html.ts-light-mode.ts-plain-dialogue .d-color *{
+	color: #8c2468 !important;
+}
 .ts-readerPrefs .inputChoices{
 	margin: 0;
 }
@@ -251,6 +262,28 @@ html.ts-light-mode{
 	}
 	.m-title-rank{
 		color: #444;
+	}
+	.t-box h4,
+	.flex-child .fheader{
+		border-bottom: solid 2px #c2c3c4;
+		color: #222;
+	}
+	.character-sheet .block-body{
+		padding-bottom: 10px;
+	}
+	.usertag a{
+		background: #c082bd1f;
+		border: 1px solid #c082bd69;
+		color: #ad3a8b !important;
+	}
+	.speech-bubble,
+	.speech-bubble-r{
+		background: #ccc;
+		border: 1px solid transparent;
+	}
+	.speech-bubble::before,
+	.speech-bubble-r::before{
+		border-color: transparent #ccc;
 	}
 }
 .titlebg-spacing{
@@ -1281,10 +1314,11 @@ position: relative!important;
   border-color: @xf-paletteAccent1;
 }
 .titlebg{
-	background: rgba(26, 32, 45, 0.85) !important;
+	background: rgba(36, 44, 61, 0.6) !important; /*rgba(26, 32, 45, 0.85)*/
 	min-height: 70px;
 	width: auto;
 	border: 1px solid #3f4a61 !important;
+	border-bottom: 1px solid #3f4a61 !important;
 	width: auto !important;
 	font-size: 1.3em !important;
 	color: #EEE;
