@@ -32,15 +32,21 @@
 	try
 	{
 		var prefs = JSON.parse(window.localStorage.getItem('tsReaderPrefs') || '{}') || {},
-			root = document.documentElement;
+			root = document.documentElement,
+			classes = {
+				banner: 'ts-plain-banner',
+				dialogue: 'ts-plain-dialogue',
+				background: 'ts-plain-background',
+				light: 'ts-light-mode'
+			};
 
-		['banner', 'dialogue', 'background'].forEach(function (key)
+		for (var key in classes)
 		{
 			if (prefs[key])
 			{
-				root.classList.add('ts-plain-' + key);
+				root.classList.add(classes[key]);
 			}
-		});
+		}
 	}
 	catch (e) {}
 })();
@@ -231,6 +237,7 @@
 													<xf:option class="js-tsReaderPref" data-pref="banner" label="Plain Banner" />
 													<xf:option class="js-tsReaderPref" data-pref="dialogue" label="Plain Dialogue" />
 													<xf:option class="js-tsReaderPref" data-pref="background" label="Plain Background" />
+													<xf:option class="js-tsReaderPref" data-pref="light" label="Light Mode" />
 												</xf:checkbox>
 											</div>
 											<!--[XF:thread_tools_menu:before_footer]-->
@@ -599,11 +606,18 @@
     updateButton();
 })();
 
-/* Reader options: each checkbox toggles a ts-plain-* class on <html>, alongside
-   (never replacing) thread-focus-mode, and is saved in localStorage. */
+/* Reader options: each checkbox toggles a class on <html> (ts-plain-* or
+   ts-light-mode), alongside (never replacing) thread-focus-mode, and is saved
+   in localStorage. Keep CLASSES in step with the early script at the top. */
 (function ()
 {
     var STORAGE_KEY = 'tsReaderPrefs',
+        CLASSES = {
+            banner: 'ts-plain-banner',
+            dialogue: 'ts-plain-dialogue',
+            background: 'ts-plain-background',
+            light: 'ts-light-mode'
+        },
         root = document.documentElement,
         boxes = document.querySelectorAll('.js-tsReaderPref');
 
@@ -635,7 +649,7 @@
 
     function applyPref(key, enabled)
     {
-        root.classList.toggle('ts-plain-' + key, !!enabled);
+        root.classList.toggle(CLASSES[key], !!enabled);
 
         Array.prototype.forEach.call(boxes, function (box)
         {
@@ -650,7 +664,12 @@
     {
         var key = box.getAttribute('data-pref');
 
-        box.checked = root.classList.contains('ts-plain-' + key);
+        if (!CLASSES[key])
+        {
+            return;
+        }
+
+        box.checked = root.classList.contains(CLASSES[key]);
 
         box.addEventListener('change', function ()
         {
@@ -680,7 +699,7 @@
 
         var prefs = loadPrefs();
 
-        ['banner', 'dialogue', 'background'].forEach(function (key)
+        Object.keys(CLASSES).forEach(function (key)
         {
             applyPref(key, prefs[key]);
         });

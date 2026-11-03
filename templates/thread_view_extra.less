@@ -23,6 +23,82 @@ html.ts-plain-background .shine{
 .ts-readerPrefs .inputChoices{
 	margin: 0;
 }
+/* Light Mode (thread tools menu > Light Mode). Everything is scoped under
+   html.ts-light-mode so it out-ranks the dark defaults in this file, including
+   the mobile overrides, and switches off cleanly with the checkbox. */
+html.ts-light-mode{
+	.block-container{
+		background: #d5d5d5;
+	}
+	.block--messages .message{
+		background: #d5d5d5;
+		border: 1px solid #161d29 !important;
+	}
+	.message-cell.message-cell--user,
+	.message-cell.message-cell--action{
+		border-right: 1px solid transparent !important;
+		border-top: 3px solid #eee;
+	}
+	.message-cell.message-cell--user{
+		padding: 20px 10px !important;
+		background: #d9d9d9;
+		border-bottom: 1px solid #868cb345;
+	}
+	.block-header--quickReply .message-cell.message-cell--user{
+		border: none;
+	}
+	.message-name a{
+		color: #343d45;
+	}
+	.collapseTrigger:not(.button).collapseTrigger--block::before{
+		margin-top: 10px;
+	}
+	.ug-race{
+		background-color: #b4b7c0;
+	}
+	.ui-locked{
+		background-color: #b4b7c0;
+		border-color: #b4b7c0;
+	}
+	.message-footer{
+		padding: 15px 0 10px 0;
+		border-top: 1px solid #2a30490f;
+		margin: 35px 10px 0 10px;
+	}
+	.actionBar-set.actionBar-set--internal > .actionBar-action{
+		color: #5f6977;
+	}
+	.message-actionBar .actionBar-action{
+		color: #3c3f4c;
+	}
+	.message-actionBar .actionBar-action--reply{
+		color: #384159 !important;
+		border: 1px solid #a9b2c2;
+		background: #9ea6b666;
+	}
+	.message-body{
+		font-family: "Segoe UI", sans-serif;
+		font-size: 16px !important;
+		line-height: 1.4;
+		font-optical-sizing: auto;
+		font-weight: normal;
+		font-style: normal;
+		color: #2a3341;
+	}
+	.bbWrapper a{
+		color: #a7357b;
+	}
+	.bbWrapper hr{
+		border-top: 1px solid #c2c2c2;
+	}
+	.fr-box.fr-basic{
+		background: #ddd;
+		border: solid 1px #bbb;
+	}
+	.fr-box.fr-basic .fr-element{
+		color: #111;
+	}
+}
 .titlebg-spacing{
 	position: relative;
 	top: 2px;
