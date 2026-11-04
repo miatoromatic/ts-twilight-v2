@@ -23,34 +23,8 @@
 	}
 })();
 </script>
-<!-- Reader options (Plain Banner / Dialogue / Background): re-apply the saved
-	choices while the page parses, before any post renders, so there is no flash
-	of the default styling. The checkboxes in the thread tools menu save them. -->
-<script>
-(function ()
-{
-	try
-	{
-		var prefs = JSON.parse(window.localStorage.getItem('tsReaderPrefs') || '{}') || {},
-			root = document.documentElement,
-			classes = {
-				banner: 'ts-plain-banner',
-				dialogue: 'ts-plain-dialogue',
-				background: 'ts-plain-background',
-				light: 'ts-light-mode'
-			};
-
-		for (var key in classes)
-		{
-			if (prefs[key])
-			{
-				root.classList.add(classes[key]);
-			}
-		}
-	}
-	catch (e) {}
-})();
-</script>
+<!-- Reader options (Muted banner / dialogue, Light mode) now live in the Display menu
+	in PAGE_CONTAINER, which also re-applies them before first paint. -->
 
 
 <xf:if is="!$thread.isSearchEngineIndexable()">
@@ -232,14 +206,6 @@
    aria-pressed="false"
    data-menu-closer="true"
    id="js-threadFocusToggle">Focus mode</a>
-											<div class="menu-row menu-row--separated ts-readerPrefs">
-												<xf:checkbox>
-													<xf:option class="js-tsReaderPref" data-pref="banner" label="Muted Banner" />
-													<xf:option class="js-tsReaderPref" data-pref="dialogue" label="Muted Dialogue" />
-													<xf:option class="js-tsReaderPref" data-pref="background" label="Muted Background" />
-													<xf:option class="js-tsReaderPref" data-pref="light" label="Light Mode" />
-												</xf:checkbox>
-											</div>
 											<!--[XF:thread_tools_menu:before_footer]-->
 											<xf:if is="$thread.canUseInlineModeration()">
 												<div class="menu-footer"
@@ -491,6 +457,18 @@
 		<xf:js src="xf/message.js" min="1" />
 
 		<div class="block-container">
+			<div class="tsQr-head">
+				<div class="tsQr-title">
+					<span class="tsQr-titleMain">Post a Response</span>
+					<span class="tsQr-titleTo">to "{$thread.title}"</span>
+				</div>
+				<div class="tsQr-meta">
+					<span class="tsQr-draft js-tsQrDraft{{ $thread.draft_reply.message ? ' is-visible' : '' }}" aria-live="polite">Draft saved</span>
+					<xf:if is="$xf.visitor.user_id">
+						<span class="tsQr-as">As: <xf:username user="$xf.visitor" /></span>
+					</xf:if>
+				</div>
+			</div>
 			<div class="block-body block-header--quickReply">
 				<xf:macro template="quick_reply_macros" name="body"
 					arg-message="{$thread.draft_reply.message}"
@@ -606,103 +584,71 @@
     updateButton();
 })();
 
-/* Reader options: each checkbox toggles a class on <html> (ts-plain-* or
-   ts-light-mode), alongside (never replacing) thread-focus-mode, and is saved
-   in localStorage. Keep CLASSES in step with the early script at the top. */
+/* Quick reply: puts the word counter (svAdvancedBBCode) next to "Post reply",
+   sets the placeholder and drives the "Draft saved" pill in the header.
+   The editor is built after page load, so this watches the form for it. */
 (function ()
 {
-    var STORAGE_KEY = 'tsReaderPrefs',
-        CLASSES = {
-            banner: 'ts-plain-banner',
-            dialogue: 'ts-plain-dialogue',
-            background: 'ts-plain-background',
-            light: 'ts-light-mode'
-        },
-        root = document.documentElement,
-        boxes = document.querySelectorAll('.js-tsReaderPref');
+    var form = document.querySelector('.js-quickReply'),
+        PLACEHOLDER = 'Write your reply... (BBCode supported)';
 
-    if (!boxes.length)
+    if (!form)
     {
         return;
     }
 
-    function loadPrefs()
+    var draft = form.querySelector('.js-tsQrDraft');
+
+    function enhance()
     {
-        try
+        var counter = form.querySelector('.fr-word-counter'),
+            primary = form.querySelector('.formButtonGroup-primary');
+
+        if (counter && primary && counter.parentNode !== primary)
         {
-            return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}') || {};
+            counter.classList.add('tsQr-words');
+            primary.insertBefore(counter, primary.firstChild);
         }
-        catch (e)
+
+        var placeholder = form.querySelector('.fr-placeholder');
+        if (placeholder && placeholder.textContent !== PLACEHOLDER)
         {
-            return {};
+            placeholder.textContent = PLACEHOLDER;
+        }
+
+        var textarea = form.querySelector('textarea[name="message"]');
+        if (textarea && textarea.getAttribute('placeholder') !== PLACEHOLDER)
+        {
+            textarea.setAttribute('placeholder', PLACEHOLDER);
         }
     }
 
-    function savePrefs(prefs)
+    enhance();
+    if (window.MutationObserver)
     {
-        try
-        {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-        }
-        catch (e) {}
+        new MutationObserver(enhance).observe(form, { childList: true, subtree: true });
     }
 
-    function applyPref(key, enabled)
+    function setDraft(saved)
     {
-        root.classList.toggle(CLASSES[key], !!enabled);
-
-        Array.prototype.forEach.call(boxes, function (box)
+        if (draft)
         {
-            if (box.getAttribute('data-pref') === key)
-            {
-                box.checked = !!enabled;
-            }
+            draft.classList.toggle('is-visible', !!saved);
+        }
+    }
+
+    if (window.jQuery)
+    {
+        /* XF.Draft fires this on the form after each autosave */
+        jQuery(form).on('draft:complete', function (e, data)
+        {
+            setDraft(!(data && data.draft && data.draft.saved === false));
         });
     }
 
-    Array.prototype.forEach.call(boxes, function (box)
+    form.addEventListener('submit', function ()
     {
-        var key = box.getAttribute('data-pref');
-
-        if (!CLASSES[key])
-        {
-            return;
-        }
-
-        box.checked = root.classList.contains(CLASSES[key]);
-
-        box.addEventListener('change', function ()
-        {
-            var prefs = loadPrefs();
-
-            if (box.checked)
-            {
-                prefs[key] = 1;
-            }
-            else
-            {
-                delete prefs[key];
-            }
-
-            savePrefs(prefs);
-            applyPref(key, box.checked);
-        });
-    });
-
-    /* Keep other open tabs in step when an option changes */
-    window.addEventListener('storage', function (event)
-    {
-        if (event.key !== STORAGE_KEY)
-        {
-            return;
-        }
-
-        var prefs = loadPrefs();
-
-        Object.keys(CLASSES).forEach(function (key)
-        {
-            applyPref(key, prefs[key]);
-        });
+        setDraft(false);
     });
 })();
 </xf:js>

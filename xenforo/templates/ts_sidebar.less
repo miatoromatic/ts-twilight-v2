@@ -6,6 +6,8 @@
      ≥1100px  collapsed (64px) | expanded (248px, pushes content)
      651–1099 collapsed (64px) | expanded (overlays content + backdrop)
      ≤650px   top bar; nav lives in the off-canvas menu
+   html[data-ts-layout="top"]  the user picked "Top bar" in the Display menu
+   html[data-ts-theme]         background theme picked in the Display menu
    ===================================================================== */
 
 :root {
@@ -128,7 +130,8 @@ html[data-ts-rail="expanded"] .ts-rail {
 
 .ts-btn,
 .ts-rail .ts-tool,
-.ts-rail .ts-tools > .p-navgroup-link {
+.ts-rail .ts-tools > .p-navgroup-link,
+.ts-rail .ts-extraTools > .p-navgroup-link {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
@@ -152,12 +155,15 @@ html[data-ts-rail="expanded"] .ts-rail {
 .ts-rail .ts-tool:hover,
 .ts-rail .ts-tool.is-menuOpen,
 .ts-rail .ts-tools > .p-navgroup-link:hover,
-.ts-rail .ts-tools > .p-navgroup-link.is-menuOpen {
+.ts-rail .ts-tools > .p-navgroup-link.is-menuOpen,
+.ts-rail .ts-extraTools > .p-navgroup-link:hover,
+.ts-rail .ts-extraTools > .p-navgroup-link.is-menuOpen {
 	background: var(--ts-hover);
 	color: var(--ts-ink-strong);
 }
 .ts-rail .ts-tool.is-menuOpen,
-.ts-rail .ts-tools > .p-navgroup-link.is-menuOpen {
+.ts-rail .ts-tools > .p-navgroup-link.is-menuOpen,
+.ts-rail .ts-extraTools > .p-navgroup-link.is-menuOpen {
 	color: var(--ts-accent-soft);
 }
 
@@ -166,7 +172,8 @@ html[data-ts-rail="expanded"] .ts-rail {
 	content: none !important;
 	display: none !important;
 }
-.ts-rail .ts-tools .p-navgroup-linkText {
+.ts-rail .ts-tools .p-navgroup-linkText,
+.ts-rail .ts-extraTools .p-navgroup-linkText {
 	display: none;
 }
 
@@ -376,10 +383,12 @@ html[data-ts-rail="expanded"] .ts-rail .ts-tools {
 .ts-navLabel {
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+.ts-rail .ts-navLabel {
 	opacity: 0;
 	transition: opacity .12s;
 }
-html[data-ts-rail="expanded"] .ts-navLabel {
+html[data-ts-rail="expanded"] .ts-rail .ts-navLabel {
 	opacity: 1;
 	transition-delay: .06s;
 }
@@ -563,6 +572,21 @@ html[data-ts-rail="expanded"] .ts-staff .ts-tool {
 	align-items: stretch;
 	gap: 6px;
 	width: 100%;
+}
+/* add-on icons (linked accounts) moved here from the tools cluster by PAGE_CONTAINER */
+.ts-rail .ts-extraTools {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+}
+.ts-rail .ts-extraTools:empty {
+	display: none;
+}
+html[data-ts-rail="expanded"] .ts-rail .ts-extraTools {
+	flex-direction: row;
+	justify-content: flex-start;
+	gap: 2px;
 }
 html[data-ts-rail="expanded"] .ts-rail .ts-account.p-navgroup--guest {
 	flex-direction: row;
@@ -879,11 +903,598 @@ html[data-ts-rail="expanded"] .ts-guestLabel {
 	.ts-tip {
 		display: none;
 	}
+	.ts-rail .ts-extraTools,
+	html[data-ts-rail="expanded"] .ts-rail .ts-extraTools {
+		flex-direction: row;
+		gap: 0;
+	}
+}
+@media (max-width: 400px) {
+	.ts-rail .ts-tool--home {
+		display: none;
+	}
 }
 
 /* off-canvas staff block (phones) */
 .ts-offCanvasStaff .badge {
 	margin-left: 4px;
+}
+
+/* ---------- background themes (Display menu) ----------
+   html[data-ts-theme] is set by the <head> script / ts-sidebar.js. With no theme
+   picked, the site's normal background rules apply untouched. */
+
+html[data-ts-theme="twilight"] body,
+html[data-ts-theme="twilight-lt"] body {
+	background-image: url(/db/background/bg_twilight.webp) !important;
+}
+html[data-ts-theme="classic"] body {
+	background-image: url(/db/background/bg_classic.webp) !important;
+}
+html[data-ts-theme="dawn"] body,
+html[data-ts-theme="dawn-lt"] body {
+	background-image: url(/db/dawn.webp) !important;
+}
+html[data-ts-theme="twilight"] .shine {
+	background: rgba(17, 21, 28, .35) !important;
+}
+html[data-ts-theme="twilight-lt"] .shine {
+	background: rgba(22, 26, 37, .82) !important;
+}
+html[data-ts-theme="classic"] .shine {
+	background: rgba(17, 21, 28, .85) !important;
+}
+html[data-ts-theme="dawn"] .shine {
+	background: rgba(17, 21, 28, .7) !important;
+}
+html[data-ts-theme="dawn-lt"] .shine {
+	background: rgba(17, 21, 28, .35) !important;
+}
+/* the phone rules in extra.less use small mobile images at their natural size;
+   a picked theme uses the full image, so scale it to the screen */
+@media (max-width: 650px) {
+	html[data-ts-theme] body {
+		background-size: cover !important;
+		background-position: center top !important;
+	}
+}
+
+/* ---------- Display menu ---------- */
+
+.ts-displayMenu > .menu-content {
+	width: 304px;
+	max-width: ~"calc(100vw - 16px)";
+	padding-bottom: 6px;
+}
+.ts-dm-section {
+	padding: 4px 12px 12px;
+}
+.ts-dm-section + .ts-dm-section {
+	padding-top: 12px;
+	border-top: 1px solid rgba(255, 255, 255, .05);
+}
+.ts-dm-label {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+	color: var(--ts-ink-muted);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 1.2px;
+	text-transform: uppercase;
+}
+.ts-dm-reset {
+	padding: 2px 6px;
+	border: 0;
+	border-radius: 4px;
+	background: none;
+	color: var(--ts-accent-soft);
+	font: inherit;
+	font-size: 11px;
+	letter-spacing: .3px;
+	text-transform: none;
+	cursor: pointer;
+}
+.ts-dm-reset:hover {
+	background: var(--ts-hover);
+	color: var(--ts-ink-strong);
+}
+.ts-dm-reset:disabled {
+	opacity: .35;
+	background: none;
+	color: var(--ts-ink-muted);
+	cursor: default;
+}
+
+/* theme swatches: the real image with that theme's overlay on top */
+.ts-dm-themes {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px 8px;
+}
+.ts-dm-theme {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--ts-ink);
+	font: inherit;
+	font-size: 11.5px;
+	font-weight: 600;
+	text-align: left;
+	cursor: pointer;
+}
+.ts-dm-swatch {
+	position: relative;
+	display: block;
+	height: 50px;
+	border-radius: 8px;
+	background: #1a1f2b center / cover no-repeat;
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, .08);
+	overflow: hidden;
+	transition: box-shadow .15s, transform .15s;
+}
+.ts-dm-swatch::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: var(--sw-shine, transparent);
+}
+.ts-dm-theme:hover .ts-dm-swatch {
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, .28);
+	transform: translateY(-1px);
+}
+.ts-dm-theme:focus-visible {
+	outline: none;
+}
+.ts-dm-theme:focus-visible .ts-dm-swatch {
+	box-shadow: 0 0 0 2px var(--ts-ink-strong);
+}
+.ts-dm-theme[aria-pressed="true"] .ts-dm-swatch {
+	box-shadow: 0 0 0 2px var(--ts-accent);
+}
+.ts-dm-theme[aria-pressed="true"] .ts-dm-swatch::before {
+	content: "\f00c";
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	z-index: 1;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--ts-accent);
+	color: #fff;
+	font-family: "Font Awesome 7 Pro";
+	font-size: 9px;
+	font-weight: 900;
+	line-height: 16px;
+	text-align: center;
+}
+.ts-dm-name {
+	padding-left: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.ts-dm-theme[aria-pressed="true"] .ts-dm-name {
+	color: var(--ts-ink-strong);
+}
+.ts-dm-theme[data-ts-theme-set="twilight"] .ts-dm-swatch {
+	background-image: url(/db/background/bg_twilight.webp);
+	--sw-shine: rgba(17, 21, 28, .35);
+}
+.ts-dm-theme[data-ts-theme-set="twilight-lt"] .ts-dm-swatch {
+	background-image: url(/db/background/bg_twilight.webp);
+	--sw-shine: rgba(22, 26, 37, .82);
+}
+.ts-dm-theme[data-ts-theme-set="classic"] .ts-dm-swatch {
+	background-image: url(/db/background/bg_classic.webp);
+	--sw-shine: rgba(17, 21, 28, .85);
+}
+.ts-dm-theme[data-ts-theme-set="dawn"] .ts-dm-swatch {
+	background-image: url(/db/dawn.webp);
+	--sw-shine: rgba(17, 21, 28, .7);
+}
+.ts-dm-theme[data-ts-theme-set="dawn-lt"] .ts-dm-swatch {
+	background-image: url(/db/dawn.webp);
+	--sw-shine: rgba(17, 21, 28, .35);
+}
+
+/* layout: Sidebar | Top bar */
+.ts-dm-seg {
+	display: flex;
+	gap: 2px;
+	padding: 3px;
+	border-radius: 10px;
+	background: rgba(0, 0, 0, .25);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05);
+}
+.ts-dm-seg button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	flex: 1 1 0;
+	height: 32px;
+	padding: 0 8px;
+	border: 0;
+	border-radius: 8px;
+	background: none;
+	color: var(--ts-ink-muted);
+	font: inherit;
+	font-size: 12.5px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color .15s, color .15s;
+}
+.ts-dm-seg button:hover {
+	color: var(--ts-ink-strong);
+}
+.ts-dm-seg button[aria-pressed="true"] {
+	background: var(--ts-active);
+	color: var(--ts-ink-strong);
+	box-shadow: inset 0 0 0 1px rgba(48, 173, 187, .45);
+}
+.ts-dm-seg button:focus-visible {
+	outline: 2px solid var(--ts-accent);
+	outline-offset: -2px;
+}
+
+/* thread reading switches: only on thread pages, where thread_view_extra.less styles them */
+.ts-dm-section--reader {
+	display: none;
+}
+html[data-template^="thread_view"] .ts-dm-section--reader {
+	display: block;
+}
+.ts-dm-switch {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 2px;
+	color: var(--ts-ink);
+	font-size: 13px;
+	cursor: pointer;
+}
+.ts-dm-switch input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+	pointer-events: none;
+}
+.ts-dm-switchTrack {
+	position: relative;
+	flex: none;
+	width: 32px;
+	height: 18px;
+	border-radius: 9px;
+	background: #2a3142;
+	transition: background-color .15s;
+}
+.ts-dm-switchTrack::after {
+	content: "";
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: #8a96aa;
+	transition: transform .15s var(--ts-ease), background-color .15s;
+}
+.ts-dm-switch input:checked + .ts-dm-switchTrack {
+	background: var(--ts-accent);
+}
+.ts-dm-switch input:checked + .ts-dm-switchTrack::after {
+	transform: translateX(14px);
+	background: #fff;
+}
+.ts-dm-switch input:focus-visible + .ts-dm-switchTrack {
+	outline: 2px solid var(--ts-accent);
+	outline-offset: 2px;
+}
+.ts-dm-switch:hover .ts-dm-switchText {
+	color: var(--ts-ink-strong);
+}
+
+/* phones always use the top bar, so the layout choice is hidden there */
+@media (max-width: 650px) {
+	.ts-dm-section--layout {
+		display: none;
+	}
+}
+
+/* ---------- desktop top bar (Display menu > Navigation > Top bar) ----------
+   Same idea as the phone bar: menu button + logo, then tools, staff, account.
+   The bar's background spans the page; its content lines up with the content column.
+   JS keeps data-ts-rail="collapsed" while this layout is active. */
+
+:root {
+	--ts-bar-max: 880px;
+}
+
+html[data-ts-layout="top"] .ts-rail .ts-tool--home {
+	display: none;
+}
+
+@media (min-width: 651px) {
+	html[data-ts-layout="top"] {
+		--ts-rail-offset: 0px;
+	}
+	html[data-ts-layout="top"] .p-pageWrapper {
+		padding-left: 0;
+		padding-top: var(--ts-bar-h);
+	}
+	html[data-ts-layout="top"] .ts-rail {
+		bottom: auto;
+		right: 0;
+		width: auto;
+		height: var(--ts-bar-h);
+		flex-direction: row;
+		align-items: center;
+		padding: 0 ~"max(10px, calc((100% - var(--ts-bar-max)) / 2))";
+		border-right: 0;
+		border-bottom: 1px solid var(--ts-rail-line);
+		box-shadow: none;
+		cursor: auto;
+	}
+	html[data-ts-layout="top"] .ts-rail::after {
+		top: auto;
+		bottom: -1px;
+		opacity: .5;
+	}
+	html[data-ts-layout="top"] .ts-backdrop,
+	html[data-ts-layout="top"] .ts-toggle,
+	html[data-ts-layout="top"] .ts-navWrap {
+		display: none;
+	}
+
+	/* head: menu button + logo */
+	html[data-ts-layout="top"] .ts-head {
+		height: var(--ts-bar-h);
+		padding: 0;
+		gap: 4px;
+	}
+	html[data-ts-layout="top"] .ts-menuBtn {
+		display: inline-flex;
+	}
+	html[data-ts-layout="top"] .ts-logo {
+		width: auto;
+		padding: 0 8px 0 4px;
+	}
+	html[data-ts-layout="top"] .ts-logo-mark {
+		display: none;
+	}
+	html[data-ts-layout="top"] .ts-logo-full {
+		display: block;
+	}
+
+	/* tools, staff, account in one row on the right */
+	html[data-ts-layout="top"] .ts-rail .ts-tools {
+		flex-direction: row;
+		gap: 2px;
+		margin-left: auto;
+		padding: 0;
+	}
+	html[data-ts-layout="top"] .ts-foot {
+		flex-direction: row;
+		align-items: center;
+		gap: 6px;
+		margin-left: 6px;
+		padding: 0 0 0 8px;
+		border-top: 0;
+		border-left: 1px solid var(--ts-rail-line);
+	}
+	html[data-ts-layout="top"] .ts-staff {
+		flex-direction: row;
+		align-items: center;
+		gap: 2px;
+	}
+	html[data-ts-layout="top"] .ts-staff .ts-tool {
+		width: 34px;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-account {
+		flex-direction: row;
+		align-items: center;
+		width: auto;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-extraTools {
+		flex-direction: row;
+		gap: 2px;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-foot .ts-account > .ts-accountLink {
+		flex: none;
+		width: auto;
+		padding: 3px 10px 3px 3px;
+	}
+	/* avatar + username, like the old header */
+	html[data-ts-layout="top"] .ts-accountMeta {
+		opacity: 1;
+	}
+	html[data-ts-layout="top"] .ts-accountTitle,
+	html[data-ts-layout="top"] .ts-rail .ts-accountMore {
+		display: none;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-guestBtn {
+		width: 38px;
+		flex: none;
+	}
+}
+/* narrower desktops: drop the wordmark and username so the row fits */
+@media (min-width: 651px) and (max-width: 999px) {
+	html[data-ts-layout="top"] .ts-head .ts-logo-mark {
+		display: block;
+		opacity: 1;
+	}
+	html[data-ts-layout="top"] .ts-logo-full,
+	html[data-ts-layout="top"] .ts-accountMeta {
+		display: none;
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-foot .ts-account > .ts-accountLink {
+		padding: 3px;
+	}
+}
+
+/* menus opened from the desktop top bar drop down under their icon */
+.menu.ts-railMenu[data-ts-place="below"] {
+	top: var(--ts-mt) !important;
+	bottom: auto !important;
+	left: auto !important;
+	right: var(--ts-mr) !important;
+}
+
+/* ---------- off-canvas menu (menu button in the top bar / on phones) ----------
+   Restyled to match the sidebar. XenForo builds the nav part from the rail. */
+
+.offCanvasMenu.offCanvasMenu--nav {
+	.offCanvasMenu-backdrop {
+		background: rgba(4, 6, 10, .6);
+	}
+	.offCanvasMenu-content {
+		width: 288px;
+		max-width: 86vw;
+		padding-bottom: 16px;
+		border-right: 1px solid var(--ts-rail-line);
+		background: #0b0e14;
+		color: var(--ts-ink);
+		box-shadow: 18px 0 48px rgba(0, 0, 0, .55);
+	}
+	.offCanvasMenu-header {
+		position: relative;
+		display: flex;
+		align-items: center;
+		height: 56px;
+		margin: 0 0 6px;
+		padding: 0 10px 0 18px;
+		border: 0;
+		border-bottom: 1px solid var(--ts-rail-line);
+		background: none;
+		color: var(--ts-accent-soft);
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 1.4px;
+		text-transform: uppercase;
+	}
+	.offCanvasMenu-header::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: linear-gradient(90deg, var(--ts-accent), var(--ts-magenta));
+		opacity: .85;
+	}
+	.offCanvasMenu-closer {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		margin-left: auto;
+		border-radius: var(--ts-radius);
+		color: var(--ts-ink-muted);
+		font-size: 16px;
+	}
+	.offCanvasMenu-closer:hover {
+		background: var(--ts-hover);
+		color: var(--ts-ink-strong);
+	}
+	.offCanvasMenu-linkHolder {
+		display: flex;
+		align-items: center;
+		margin: 2px 10px;
+		padding: 0;
+		border: 0;
+		border-radius: var(--ts-radius);
+		background: none;
+		color: var(--ts-ink);
+		transition: background-color .15s;
+	}
+	.offCanvasMenu-linkHolder:hover {
+		background: var(--ts-hover);
+	}
+	.offCanvasMenu-linkHolder.is-selected {
+		background: var(--ts-active);
+		box-shadow: inset 3px 0 0 var(--ts-accent);
+	}
+	.offCanvasMenu-link {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex: 1 1 auto;
+		min-width: 0;
+		padding: 10px 12px;
+		border: 0;
+		background: none;
+		color: inherit;
+		font-size: 14px;
+		font-weight: 500;
+		text-decoration: none;
+	}
+	.offCanvasMenu-link:hover {
+		color: var(--ts-ink-strong);
+		text-decoration: none;
+	}
+	.offCanvasMenu-linkHolder.is-selected .offCanvasMenu-link {
+		color: var(--ts-ink-strong);
+	}
+	.offCanvasMenu-linkHolder.is-selected .ts-navIcon {
+		color: var(--ts-accent-soft);
+	}
+	.offCanvasMenu-link--splitToggle {
+		flex: none;
+		justify-content: center;
+		width: 40px;
+		padding: 10px 0;
+		border: 0;
+		color: var(--ts-ink-muted);
+	}
+	.offCanvasMenu-subList {
+		margin: 2px 10px 8px 32px;
+		padding: 0 0 0 10px;
+		border: 0;
+		border-left: 1px solid #222a3a;
+		background: none;
+		list-style: none;
+	}
+	.offCanvasMenu-subList .offCanvasMenu-link {
+		padding: 7px 10px;
+		border-radius: 8px;
+		color: var(--ts-ink-muted);
+		font-size: 13px;
+	}
+	.offCanvasMenu-subList .offCanvasMenu-link:hover {
+		background: var(--ts-hover);
+		color: var(--ts-ink-strong);
+	}
+	.offCanvasMenu-separator {
+		margin: 8px 16px;
+		border: 0;
+		border-top: 1px solid var(--ts-rail-line);
+	}
+	.p-offCanvasAccountLink .offCanvasMenu-link {
+		color: var(--ts-ink-strong);
+		font-weight: 600;
+	}
+	.p-offCanvasAccountLink .avatar {
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		box-shadow: 0 0 0 2px rgba(48, 173, 187, .35);
+	}
+	.offCanvasMenu-installBanner {
+		margin: 12px 16px;
+		border: 1px solid var(--ts-panel-line);
+		border-radius: var(--ts-radius);
+		background: var(--ts-panel-bg);
+	}
 }
 
 /* ---------- integrations ---------- */

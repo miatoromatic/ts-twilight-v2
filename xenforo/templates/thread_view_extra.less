@@ -6,10 +6,11 @@
 .shine {
 	background: rgba(17,21,28,0.35) !important;
 }
-/* Reader options (thread tools menu > Plain Banner / Dialogue / Background).
+/* Reader options (Display menu in the sidebar > Thread reading).
    The ts-plain-* classes sit on <html> next to thread-focus-mode, so they work
    with or without focus mode. html + class out-ranks the default rules here and
-   !important beats inline style="" from BBCode. */
+   !important beats inline style="" from BBCode. "Muted background" is now the
+   Twilight LT theme in the same menu. */
 html.ts-plain-banner .bg-banner{
 	background: #262b3d !important; /*191c27*/
 }
@@ -17,12 +18,6 @@ html.ts-plain-dialogue .fixed-color,
 html.ts-plain-dialogue .d-color,
 html.ts-plain-dialogue .d-color *{
 	color: #248c82 !important;
-}
-html.ts-plain-background .shine{
-	background: rgba(22, 26, 37, 0.82) !important; /*rgba(18, 21, 30, 0.9)*/
-}
-html.ts-plain-background .titlebg{
-	background: rgba(36, 44, 61, 0.6) !important;
 }
 /* Plain Banner / Dialogue while Light Mode is also on (both classes on <html>
    out-rank the dark-mode versions above) */
@@ -35,10 +30,7 @@ html.ts-light-mode.ts-plain-dialogue .d-color,
 html.ts-light-mode.ts-plain-dialogue .d-color *{
 	color: #8c2468 !important;
 }
-.ts-readerPrefs .inputChoices{
-	margin: 0;
-}
-/* Light Mode (thread tools menu > Light Mode). Everything is scoped under
+/* Light Mode (Display menu > Thread reading > Light mode). Everything is scoped under
    html.ts-light-mode so it out-ranks the dark defaults in this file, including
    the mobile overrides, and switches off cleanly with the checkbox. */
 html.ts-light-mode{
@@ -208,8 +200,52 @@ html.ts-light-mode{
 		color: #2a3341;
 	}
 	.block-header--quickReply{
-		border-top: 2px solid #a7357b;
 		background: #d5d5d5;
+	}
+	/* new quick reply card (see "Quick reply" at the end of this file) */
+	.js-quickReply .tsQr-head{
+		background: #cbcdd3;
+		border-bottom-color: #b9bdc7;
+	}
+	.tsQr-titleMain{
+		color: #202732;
+	}
+	.tsQr-titleTo,
+	.tsQr-as{
+		color: #5f6977;
+	}
+	.tsQr-as{
+		border-left-color: #b9bdc7;
+	}
+	.js-quickReply .message-editorWrapper{
+		background: #e6e6e8;
+		border-color: #b9bdc7;
+	}
+	.js-quickReply .message-editorWrapper:focus-within{
+		border-color: #a7357b;
+		box-shadow: 0 0 0 3px #a7357b26;
+	}
+	.js-quickReply .fr-box.fr-basic,
+	.js-quickReply .fr-box.fr-basic.is-focused,
+	.js-quickReply .fr-box.fr-basic:focus-within{
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.js-quickReply .formButtonGroup{
+		background: #d3d5db;
+		border-top-color: #b9bdc7;
+	}
+	.js-quickReply .tsQr-words{
+		color: #5f6977;
+	}
+	.tsQr-draft{
+		border-color: rgba(21, 128, 61, .35);
+		background: rgba(21, 128, 61, .1);
+		color: #15803d;
+	}
+	.js-quickReply .message--quickReply .message-avatar-wrapper::after{
+		box-shadow: 0 0 0 3px #d5d5d5;
 	}
 	.message--quickReply{
 		background: transparent;
@@ -232,10 +268,10 @@ html.ts-light-mode{
 	.message--quickReply .message-cell.message-cell--user{
 		background: transparent !important;
 		border: 0 !important;
-		padding: 15px 10px !important;
+		padding: 2px 0 0 !important;
 	}
 	.message--quickReply .message-cell.message-cell--main{
-		padding: 15px 15px 10px 5px;
+		padding: 0 0 0 14px;
 	}
 	/* Preview / attach / secondary buttons match the post "Reply" pill;
 	   the primary "Post reply" button keeps the theme accent */
@@ -1091,17 +1127,7 @@ progress[value] {
 .block-body{
 	padding-bottom: 0;
 }
-.js-quickReply .block-container{
-	border: 1px solid #1b2230 !important;
-	color: #239d85;
-	border-radius: 8px;
-	overflow: hidden;
-}
 .message-userArrow:after, .message-userArrow{}
-.message--quickReply .message-cell--user{
-	margin-top: 10px;
-	background: transparent!important;
-}
 .message-userArrow{
 	display:none;
 }
@@ -1784,4 +1810,328 @@ position: relative!important;
   color: #576482;
   background: #12151d;
   padding: 0 0 0 15px;
+}
+
+/* =====================================================================
+   Quick reply
+   Card with a header ("Post a Response to …" / Draft saved / As: user),
+   the avatar on the left, and one editor panel: toolbar, writing area and
+   a footer with Attach / Preview on the left, word count + Post reply on
+   the right. Markup: thread_view (header) + stock quick_reply_macros.
+   The word counter and placeholder are handled by the script in thread_view.
+   Light-mode colours live in the html.ts-light-mode block near the top.
+   ===================================================================== */
+
+.js-quickReply .block-container{
+	border: 1px solid #262e3f !important;
+	border-radius: 12px;
+	background: #141925;
+	color: #8f9bb0;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+.js-quickReply .block-body{
+	padding: 18px 20px 20px;
+	border-radius: 0 0 12px 12px;
+	background: transparent;
+}
+
+/* header */
+.tsQr-head{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 14px 20px;
+	border-bottom: 1px solid #222a3a;
+	border-radius: 12px 12px 0 0;
+	background: #171d2a;
+}
+.tsQr-title{
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	min-width: 0;
+	padding-left: 12px;
+	border-left: 4px solid #e8730c;
+	line-height: 1.25;
+}
+.tsQr-titleMain{
+	flex: none;
+	color: #eef1f6;
+	font-size: 16px;
+	font-weight: 700;
+}
+.tsQr-titleTo{
+	color: #7d8aa3;
+	font-size: 13px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.tsQr-meta{
+	display: flex;
+	align-items: center;
+	flex: none;
+	gap: 12px;
+	font-size: 13px;
+}
+.tsQr-draft{
+	display: none;
+	align-items: center;
+	gap: 6px;
+	padding: 3px 10px;
+	border: 1px solid rgba(34, 197, 94, .3);
+	border-radius: 999px;
+	background: rgba(34, 197, 94, .1);
+	color: #4ade80;
+	font-size: 12px;
+	font-weight: 600;
+}
+.tsQr-draft::before{
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #22c55e;
+}
+.tsQr-draft.is-visible{
+	display: inline-flex;
+	animation: tsQr-fade .25s ease;
+}
+@keyframes tsQr-fade{
+	from { opacity: 0; transform: translateY(-2px); }
+	to { opacity: 1; transform: none; }
+}
+.tsQr-as{
+	color: #7d8aa3;
+}
+.tsQr-draft.is-visible + .tsQr-as{
+	padding-left: 12px;
+	border-left: 1px solid #2f384b;
+}
+.tsQr-as .username{
+	font-weight: 700;
+}
+
+/* body: avatar column + editor panel */
+.js-quickReply .message--quickReply{
+	border: 0;
+	background: transparent;
+}
+.js-quickReply .message--quickReply .message-inner{
+	overflow: visible;
+}
+.js-quickReply .message--quickReply .message-cell.message-cell--user{
+	flex: 0 0 92px;
+	width: 92px;
+	margin: 0;
+	padding: 2px 0 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+	text-align: center;
+}
+.js-quickReply .message--quickReply .message-avatar-wrapper{
+	position: relative;
+	display: inline-block;
+	margin: 0 !important;
+}
+.js-quickReply .message--quickReply .message-avatar .avatar{
+	width: 64px;
+	height: 64px;
+	border-radius: 12px;
+	box-shadow: 0 0 0 2px #1f8b96;
+}
+.js-quickReply .message--quickReply .message-avatar .avatar img{
+	border-radius: 12px;
+}
+/* online dot + label under the avatar */
+.js-quickReply .message--quickReply .message-avatar-wrapper::after{
+	content: "";
+	position: absolute;
+	right: -4px;
+	bottom: -4px;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: #22c55e;
+	box-shadow: 0 0 0 3px #141925;
+}
+.js-quickReply .message--quickReply .message-cell--user::after{
+	content: "Active";
+	display: block;
+	margin-top: 10px;
+	color: #30adbb;
+	font-size: 12px;
+	font-weight: 600;
+}
+.js-quickReply .message--quickReply .message-cell.message-cell--main{
+	padding: 0 0 0 14px;
+}
+
+/* the editor panel holds toolbar, writing area and the button footer */
+.js-quickReply .message-editorWrapper{
+	border: 1px solid #262e3f;
+	border-radius: 10px;
+	background: #0d1118;
+	transition: border-color .2s ease, box-shadow .2s ease;
+}
+.js-quickReply .message-editorWrapper:focus-within{
+	border-color: #2e7f8a;
+	box-shadow: 0 0 0 3px rgba(48, 173, 187, .12);
+}
+.js-quickReply .fr-box.fr-basic,
+.js-quickReply .fr-box.fr-basic.is-focused{
+	border: 0;
+	border-radius: 10px 10px 0 0;
+	background: transparent;
+	box-shadow: none;
+}
+.js-quickReply .fr-box.fr-basic .fr-toolbar{
+	padding: 4px 8px;
+	border: 0;
+	border-bottom: 1px solid #222a3a;
+	border-radius: 10px 10px 0 0;
+	background: #141a26;
+}
+.js-quickReply .fr-box.fr-basic .fr-toolbar .fr-command.fr-btn{
+	color: #8c98ad;
+}
+.js-quickReply .fr-box.fr-basic .fr-toolbar .fr-command.fr-btn:hover,
+.js-quickReply .fr-box.fr-basic .fr-toolbar .fr-command.fr-btn.fr-active{
+	background: #222a3a;
+	color: #e6ebf2;
+}
+.js-quickReply .fr-toolbar .fr-btn-grp{
+	border-color: #222a3a;
+}
+.js-quickReply .fr-box.fr-basic .fr-wrapper{
+	background: transparent;
+}
+.js-quickReply .fr-box.fr-basic .fr-element{
+	padding: 16px 20px;
+	color: #c9d2de;
+}
+.js-quickReply .fr-box.fr-basic .fr-placeholder{
+	padding-left: 20px !important;
+	color: #56627a;
+}
+.js-quickReply textarea.input{
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+}
+/* the counter moves to the footer; hide the bar it leaves behind if it is empty */
+.js-quickReply .fr-second-toolbar:empty{
+	display: none;
+}
+.js-quickReply .fr-second-toolbar{
+	border: 0;
+	background: transparent;
+}
+
+/* footer: Attach / Preview | word count + Post reply */
+.js-quickReply .formButtonGroup{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin: 0;
+	padding: 12px 16px;
+	border-top: 1px solid #222a3a;
+	border-radius: 0 0 10px 10px;
+	background: #111622;
+}
+.js-quickReply .formButtonGroup-extra{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	order: 1;
+	margin: 0 auto 0 0;
+}
+.js-quickReply .formButtonGroup-primary{
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	order: 2;
+	margin: 0 0 0 auto;
+}
+.js-quickReply .formButtonGroup-extra .button{
+	height: 34px;
+	padding: 0 12px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	background: transparent;
+	color: #9aa6bd;
+	font-size: 13px;
+	font-weight: 600;
+}
+.js-quickReply .formButtonGroup-extra .button:hover{
+	background: #1b2231;
+	color: #e6ebf2;
+}
+/* "Attach files" gets the outlined look from the screenshot */
+.js-quickReply .formButtonGroup-extra .button.js-attachmentUpload{
+	border-color: #2f384b;
+	background: #1a2130;
+	color: #d5dbe6;
+}
+.js-quickReply .formButtonGroup-extra .button.js-attachmentUpload:hover{
+	border-color: #3d4860;
+	background: #212a3c;
+}
+.js-quickReply .formButtonGroup .button.button--primary{
+	height: 34px;
+	padding: 0 16px;
+	border: 0;
+	border-radius: 6px;
+	background: #e5670f;
+	color: #fff;
+	font-size: 13.5px;
+	font-weight: 700;
+	box-shadow: 0 4px 14px rgba(229, 103, 15, .25);
+}
+.js-quickReply .formButtonGroup .button.button--primary:hover{
+	background: #f07a24;
+}
+/* word counter moved here by the thread_view script */
+.js-quickReply .tsQr-words{
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: #7d8aa3;
+	font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+	font-size: 12px;
+	white-space: nowrap;
+}
+.js-quickReply .tsQr-words::before{
+	content: "\f15c";
+	font-family: "Font Awesome 7 Pro";
+	font-weight: 400;
+}
+
+@media (max-width: 650px){
+	.tsQr-head{
+		flex-wrap: wrap;
+		padding: 12px 14px;
+	}
+	.tsQr-titleTo{
+		display: none;
+	}
+	.js-quickReply .block-body{
+		padding: 12px;
+	}
+	.js-quickReply .message--quickReply .message-cell.message-cell--user{
+		display: none;
+	}
+	.js-quickReply .message--quickReply .message-cell.message-cell--main{
+		padding: 0;
+	}
+	.js-quickReply .formButtonGroup{
+		padding: 10px 12px;
+	}
 }

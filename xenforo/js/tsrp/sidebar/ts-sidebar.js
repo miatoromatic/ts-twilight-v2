@@ -7,6 +7,7 @@
  * - hover flyouts for nav entries with children (collapsed rail)
  * - tooltips for icon-only controls
  * - places XenForo menus (alerts, inbox, search, account…) beside the rail
+ * - Display menu: sidebar / top bar layout, background theme, thread reading prefs
  *
  * Runs before XenForo's own init (plain script at the end of <body>), which lets it
  * tag each rail menu while it is still next to its trigger.
@@ -50,6 +51,9 @@
 	function writeStore(value, key) {
 		try { window.localStorage.setItem(key || STORE_KEY, value); } catch (e) { /* private mode */ }
 	}
+	function removeStore(key) {
+		try { window.localStorage.removeItem(key); } catch (e) { /* private mode */ }
+	}
 
 	/* ------------------------------------------------------------------
 	   Expand / collapse
@@ -86,25 +90,37 @@
 	}
 
 	/* ------------------------------------------------------------------
-	   Layout: sidebar <-> top bar (remembered per browser)
+	   Display menu: layout, background theme, thread reading prefs.
+	   Everything is remembered per browser; the <head> script in PAGE_CONTAINER
+	   re-applies it before first paint. Keep THEMES / READER_CLASSES in step with it.
 	   ------------------------------------------------------------------ */
 
-	var layoutToggles = rail.querySelectorAll('.js-tsLayoutToggle');
+	var THEME_KEY = 'tsTheme';
+	var READER_KEY = 'tsReaderPrefs';
+	var THEMES = ['twilight', 'twilight-lt', 'classic', 'dawn', 'dawn-lt'];
+	var READER_CLASSES = {
+		banner: 'ts-plain-banner',
+		dialogue: 'ts-plain-dialogue',
+		light: 'ts-light-mode'
+	};
 
-	function syncLayoutToggles() {
-		var top = isTopChosen();
-		var label = top ? 'Switch to sidebar' : 'Switch to top bar';
-		each(layoutToggles, function (btn) {
-			btn.setAttribute('aria-pressed', top ? 'true' : 'false');
-			btn.setAttribute('aria-label', label);
-			btn.setAttribute('data-ts-tip', label);
+	// an open menu (e.g. the Display menu itself) follows the bar when the layout changes
+	function replaceActiveMenus() {
+		window.requestAnimationFrame(function () {
+			each(document.querySelectorAll('.ts-railMenu.is-active'), function (menu) {
+				if (menu.__tsTrigger) {
+					placeMenu(menu, menu.__tsTrigger);
+				}
+			});
 		});
 	}
 
-	function setLayout(layout) {
+	function setLayout(layout, persist) {
 		var top = layout === 'top';
 		html.setAttribute('data-ts-layout', top ? 'top' : 'rail');
-		writeStore(top ? 'top' : 'rail', LAYOUT_KEY);
+		if (persist !== false) {
+			writeStore(top ? 'top' : 'rail', LAYOUT_KEY);
+		}
 
 		// the top bar always uses the collapsed rail markup; going back restores the docked preference
 		var railState = 'collapsed';
@@ -112,21 +128,112 @@
 			railState = readStore() === 'collapsed' ? 'collapsed' : 'expanded';
 		}
 		setState(railState, false);
-
-		// close any open XF menus so they re-place for the new layout
-		each(document.querySelectorAll('.ts-railMenu.is-active'), function (menu) {
-			if (menu.__tsTrigger && menu.__tsTrigger.classList.contains('is-menuOpen')) {
-				menu.__tsTrigger.click();
-			}
-		});
-		syncLayoutToggles();
+		syncDisplayMenu();
+		replaceActiveMenus();
 	}
 
-	each(layoutToggles, function (btn) {
-		btn.addEventListener('click', function (e) {
-			e.preventDefault();
-			setLayout(isTopChosen() ? 'rail' : 'top');
+	function currentTheme() {
+		var theme = html.getAttribute('data-ts-theme');
+		return THEMES.indexOf(theme) > -1 ? theme : '';
+	}
+
+	function setTheme(theme, persist) {
+		if (THEMES.indexOf(theme) > -1) {
+			html.setAttribute('data-ts-theme', theme);
+			if (persist !== false) {
+				writeStore(theme, THEME_KEY);
+			}
+		} else {
+			html.removeAttribute('data-ts-theme');
+			if (persist !== false) {
+				removeStore(THEME_KEY);
+			}
+		}
+		syncDisplayMenu();
+	}
+
+	function readReaderPrefs() {
+		try {
+			return JSON.parse(readStore(READER_KEY) || '{}') || {};
+		} catch (e) {
+			return {};
+		}
+	}
+
+	function applyReaderPrefs(prefs) {
+		Object.keys(READER_CLASSES).forEach(function (key) {
+			html.classList.toggle(READER_CLASSES[key], !!prefs[key]);
 		});
+	}
+
+	function setReaderPref(key, on) {
+		if (!READER_CLASSES[key]) {
+			return;
+		}
+		var prefs = readReaderPrefs();
+		if (on) {
+			prefs[key] = 1;
+		} else {
+			delete prefs[key];
+		}
+		delete prefs.background; // "Muted background" is now the Twilight LT theme
+		writeStore(JSON.stringify(prefs), READER_KEY);
+		html.classList.toggle(READER_CLASSES[key], !!on);
+		syncDisplayMenu();
+	}
+
+	function syncDisplayMenu() {
+		var theme = currentTheme();
+		var layout = isTopChosen() ? 'top' : 'rail';
+		each(document.querySelectorAll('[data-ts-theme-set]'), function (btn) {
+			btn.setAttribute('aria-pressed', btn.getAttribute('data-ts-theme-set') === theme ? 'true' : 'false');
+		});
+		each(document.querySelectorAll('[data-ts-layout-set]'), function (btn) {
+			btn.setAttribute('aria-pressed', btn.getAttribute('data-ts-layout-set') === layout ? 'true' : 'false');
+		});
+		each(document.querySelectorAll('.js-tsThemeReset'), function (btn) {
+			btn.disabled = !theme;
+		});
+		each(document.querySelectorAll('.js-tsReaderPref'), function (box) {
+			var cls = READER_CLASSES[box.getAttribute('data-pref')];
+			if (cls) {
+				box.checked = html.classList.contains(cls);
+			}
+		});
+	}
+
+	document.addEventListener('click', function (e) {
+		var btn = e.target.closest && e.target.closest('[data-ts-theme-set], [data-ts-layout-set], .js-tsThemeReset');
+		if (!btn) {
+			return;
+		}
+		e.preventDefault();
+		if (btn.hasAttribute('data-ts-theme-set')) {
+			setTheme(btn.getAttribute('data-ts-theme-set'));
+		} else if (btn.hasAttribute('data-ts-layout-set')) {
+			setLayout(btn.getAttribute('data-ts-layout-set'));
+		} else {
+			setTheme('');
+		}
+	});
+
+	document.addEventListener('change', function (e) {
+		var box = e.target.closest && e.target.closest('.js-tsReaderPref');
+		if (box) {
+			setReaderPref(box.getAttribute('data-pref'), box.checked);
+		}
+	});
+
+	// keep other open tabs in step
+	window.addEventListener('storage', function (e) {
+		if (e.key === THEME_KEY) {
+			setTheme(e.newValue || '', false);
+		} else if (e.key === LAYOUT_KEY) {
+			setLayout(e.newValue === 'top' ? 'top' : 'rail', false);
+		} else if (e.key === READER_KEY) {
+			applyReaderPrefs(readReaderPrefs());
+			syncDisplayMenu();
+		}
 	});
 
 	each(toggles, function (btn) {
@@ -316,7 +423,7 @@
 
 	// adopt add-on icons (e.g. linked accounts) that only have a title=""
 	function adoptTitles(scope) {
-		each(scope.querySelectorAll('.ts-tools > .p-navgroup-link[title]:not([data-ts-tip])'), function (el) {
+		each(scope.querySelectorAll('.ts-tools > .p-navgroup-link[title]:not([data-ts-tip]), .ts-extraTools > .p-navgroup-link[title]:not([data-ts-tip])'), function (el) {
 			el.setAttribute('data-ts-tip', el.getAttribute('title'));
 			el.setAttribute('data-ts-tip-always', '');
 			if (!el.hasAttribute('aria-label')) {
@@ -487,24 +594,24 @@
 	   ------------------------------------------------------------------ */
 
 	syncToggles();
-	syncLayoutToggles();
+	syncDisplayMenu();
 
 	// lets you confirm in the browser console which build is running: TSRail.version
 	window.TSRail = {
-		version: '3',
+		version: '4',
 		expand: function () { setState('expanded', true); },
-		setLayout: setLayout
+		setLayout: setLayout,
+		setTheme: setTheme
 	};
 
-	// late-loaded add-on icons inside the tools cluster
+	// late-loaded add-on icons (tools cluster, or the linked-accounts slot above the avatar)
 	if (window.MutationObserver) {
-		var tools = rail.querySelector('.ts-tools');
-		if (tools) {
+		each(rail.querySelectorAll('.ts-tools, .ts-extraTools'), function (group) {
 			new MutationObserver(function () {
 				adoptTitles(rail);
 				each(rail.querySelectorAll(MENU_TRIGGER), menuFor);
-			}).observe(tools, { childList: true });
-		}
+			}).observe(group, { childList: true });
+		});
 	}
 
 	// enable transitions only after the first paint, so page loads don't animate

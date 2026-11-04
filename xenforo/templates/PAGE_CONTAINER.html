@@ -8,6 +8,7 @@
 	data-cookie-prefix="{$xf.cookie.prefix}"
 	data-csrf="{{ csrf_token()|escape('js') }}"
 	data-ts-rail="collapsed"
+	data-ts-layout="rail"
 	class="has-no-js {{ $template ? 'template-' . $template : '' }}"
 	{{ $xf.runJobs ? ' data-run-jobs=""' : '' }}>
 <head>
@@ -72,8 +73,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-	<!-- TS sidebar: restore the rail state before first paint (no layout jump). Under 1100px it always starts collapsed. -->
-	<script>(function(){var d=document.documentElement,s=null;try{s=window.localStorage.getItem('tsRail')}catch(e){}if(window.innerWidth<1100){s='collapsed'}else if(s!=='collapsed'&&s!=='expanded'){s='expanded'}d.setAttribute('data-ts-rail',s)})();</script>
+	<!-- TS sidebar: restore layout (sidebar / top bar), rail state, background theme and thread reading
+		prefs before first paint, so nothing jumps. Keep in step with /js/tsrp/sidebar/ts-sidebar.js -->
+	<script>(function(){var d=document.documentElement,g=function(k){try{return window.localStorage.getItem(k)}catch(e){return null}},s=g('tsRail'),l=g('tsLayout'),t=g('tsTheme'),p=null;try{p=JSON.parse(g('tsReaderPrefs')||'{}')}catch(e){}if(l==='top'){s='collapsed'}else if(window.innerWidth<1100){s='collapsed'}else if(s!=='collapsed'&&s!=='expanded'){s='expanded'}d.setAttribute('data-ts-layout',l==='top'?'top':'rail');d.setAttribute('data-ts-rail',s);if(t&&/^[a-z-]+$/.test(t)){d.setAttribute('data-ts-theme',t)}if(p){if(p.banner){d.classList.add('ts-plain-banner')}if(p.dialogue){d.classList.add('ts-plain-dialogue')}if(p.light){d.classList.add('ts-light-mode')}}})();</script>
 </head>
 <body data-template="{$template}">
 <!--shine below-->
@@ -273,6 +275,74 @@
 				</div>
 			</div>
 		</xf:if>
+
+		<!-- Display: background theme, layout, thread reading options (everyone, remembered per browser) -->
+		<a class="ts-tool ts-tool--display" data-xf-click="menu" role="button" tabindex="0"
+			aria-label="Display options" aria-expanded="false" aria-haspopup="true"
+			data-ts-tip="Display" data-ts-tip-always="">
+			<xf:fa icon="far fa-palette" />
+		</a>
+		<div class="menu menu--structural ts-displayMenu" data-menu="menu" aria-hidden="true">
+			<div class="menu-content">
+				<h3 class="menu-header">Display</h3>
+
+				<div class="ts-dm-section">
+					<div class="ts-dm-label">
+						<span>Background</span>
+						<button type="button" class="ts-dm-reset js-tsThemeReset">Reset</button>
+					</div>
+					<div class="ts-dm-themes">
+						<button type="button" class="ts-dm-theme" data-ts-theme-set="twilight" aria-pressed="false">
+							<span class="ts-dm-swatch"></span><span class="ts-dm-name">Twilight</span>
+						</button>
+						<button type="button" class="ts-dm-theme" data-ts-theme-set="twilight-lt" aria-pressed="false">
+							<span class="ts-dm-swatch"></span><span class="ts-dm-name">Twilight LT</span>
+						</button>
+						<button type="button" class="ts-dm-theme" data-ts-theme-set="classic" aria-pressed="false">
+							<span class="ts-dm-swatch"></span><span class="ts-dm-name">Classic</span>
+						</button>
+						<button type="button" class="ts-dm-theme" data-ts-theme-set="dawn" aria-pressed="false">
+							<span class="ts-dm-swatch"></span><span class="ts-dm-name">Dawn</span>
+						</button>
+						<button type="button" class="ts-dm-theme" data-ts-theme-set="dawn-lt" aria-pressed="false">
+							<span class="ts-dm-swatch"></span><span class="ts-dm-name">Dawn LT</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="ts-dm-section ts-dm-section--layout">
+					<div class="ts-dm-label"><span>Navigation</span></div>
+					<div class="ts-dm-seg" role="group" aria-label="Navigation layout">
+						<button type="button" data-ts-layout-set="rail" aria-pressed="true">
+							<xf:fa icon="far fa-sidebar" /> Sidebar
+						</button>
+						<button type="button" data-ts-layout-set="top" aria-pressed="false">
+							<xf:fa icon="far fa-window-maximize" /> Top bar
+						</button>
+					</div>
+				</div>
+
+				<!-- shown on thread pages only (see ts_sidebar.less); the classes are styled in thread_view_extra.less -->
+				<div class="ts-dm-section ts-dm-section--reader">
+					<div class="ts-dm-label"><span>Thread reading</span></div>
+					<label class="ts-dm-switch">
+						<input type="checkbox" class="js-tsReaderPref" data-pref="banner" />
+						<span class="ts-dm-switchTrack" aria-hidden="true"></span>
+						<span class="ts-dm-switchText">Muted banner</span>
+					</label>
+					<label class="ts-dm-switch">
+						<input type="checkbox" class="js-tsReaderPref" data-pref="dialogue" />
+						<span class="ts-dm-switchTrack" aria-hidden="true"></span>
+						<span class="ts-dm-switchText">Muted dialogue</span>
+					</label>
+					<label class="ts-dm-switch">
+						<input type="checkbox" class="js-tsReaderPref" data-pref="light" />
+						<span class="ts-dm-switchTrack" aria-hidden="true"></span>
+						<span class="ts-dm-switchText">Light mode</span>
+					</label>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- Main navigation. Also the source XenForo copies into the mobile off-canvas menu. -->
@@ -385,6 +455,7 @@
 
 		<!-- Account -->
 		<div class="p-navgroup ts-account {{ $xf.visitor.user_id ? 'p-navgroup--member' : 'p-navgroup--guest' }}">
+			<div class="ts-extraTools"></div>
 			<xf:if is="$xf.visitor.user_id">
 				<xf:if is="$xf.visitor.user_state == 'rejected' OR $xf.visitor.user_state == 'disabled'">
 					<a href="{{ link('account') }}" class="p-navgroup-link p-navgroup-link--user ts-accountLink"
@@ -446,6 +517,9 @@
 		</div>
 	</div>
 </aside>
+<!-- Move add-on icons that the Linked Account template mod drops in after Alerts (linked accounts)
+	into the slot next to the avatar. Runs while the page parses, so there is no visible jump. -->
+<script>(function(){var r=document.getElementById('ts-rail');if(!r){return}var tools=r.querySelector('.ts-tools'),slot=r.querySelector('.ts-extraTools'),alerts=tools&&tools.querySelector('.p-navgroup-link--alerts');if(!slot||!alerts){return}var menu=alerts.nextElementSibling,node=menu&&menu.nextElementSibling;while(node&&!node.classList.contains('ts-tool--display')){var next=node.nextElementSibling;slot.appendChild(node);node=next}})();</script>
 <div class="ts-backdrop js-tsRailBackdrop" aria-hidden="true"></div>
 
 <div class="p-pageWrapper" id="top">
@@ -748,7 +822,7 @@
 <!--shine below-->
 </div>
 <script src="/js/tsrp/tether/tether-popup.js"></script>
-<script src="/js/tsrp/sidebar/ts-sidebar.js?v=2"></script>
+<script src="/js/tsrp/sidebar/ts-sidebar.js?v=4"></script>
 </body>
 </html>
 
