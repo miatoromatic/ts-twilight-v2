@@ -8,7 +8,6 @@
 	data-cookie-prefix="{$xf.cookie.prefix}"
 	data-csrf="{{ csrf_token()|escape('js') }}"
 	data-ts-rail="collapsed"
-	data-ts-layout="rail"
 	class="has-no-js {{ $template ? 'template-' . $template : '' }}"
 	{{ $xf.runJobs ? ' data-run-jobs=""' : '' }}>
 <head>
@@ -73,8 +72,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-	<!-- TS sidebar: restore layout (sidebar / top bar) and rail state before first paint (no layout jump). -->
-	<script>(function(){var d=document.documentElement,s=null,l=null;try{s=window.localStorage.getItem('tsRail');l=window.localStorage.getItem('tsLayout')}catch(e){}if(l==='top'){s='collapsed'}else if(window.innerWidth<1100){s='collapsed'}else if(s!=='collapsed'&&s!=='expanded'){s='expanded'}d.setAttribute('data-ts-layout',l==='top'?'top':'rail');d.setAttribute('data-ts-rail',s)})();</script>
+	<!-- TS sidebar: restore the rail state before first paint (no layout jump). Under 1100px it always starts collapsed. -->
+	<script>(function(){var d=document.documentElement,s=null;try{s=window.localStorage.getItem('tsRail')}catch(e){}if(window.innerWidth<1100){s='collapsed'}else if(s!=='collapsed'&&s!=='expanded'){s='expanded'}d.setAttribute('data-ts-rail',s)})();</script>
 </head>
 <body data-template="{$template}">
 <!--shine below-->
@@ -86,10 +85,10 @@
 <xf:set var="$tsLogoMark" value="/db/branding/logo-i-xs.png" />
 <xf:set var="$tsNavIcons" value="{{ {
 	'home': 'far fa-house',
-	'wiki': 'far fa-book-sparkles',
-	'ewrCarta': 'far fa-book-sparkles',
-	'ewr_carta': 'far fa-book-sparkles',
-	'xa_ams': 'far fa-book-sparkles',
+	'wiki': 'fa-brands fa-wikipedia-w',
+	'ewrCarta': 'fa-brands fa-wikipedia-w',
+	'ewr_carta': 'fa-brands fa-wikipedia-w',
+	'xa_ams': 'fa-brands fa-wikipedia-w',
 	'forums': 'far fa-comments',
 	'whatsNew': 'far fa-bolt',
 	'members': 'far fa-users',
@@ -297,14 +296,6 @@
 		<xf:if contentcheck="true">
 			<div class="ts-staff">
 			<xf:contentcheck>
-				<!-- Layout switch: sidebar <-> top bar (remembered per browser) -->
-				<button type="button" class="ts-tool js-tsLayoutToggle" aria-pressed="false"
-					aria-label="Switch to top bar"
-					data-ts-tip="Switch to top bar">
-					<xf:fa icon="far fa-arrow-up-to-line" class="ts-layoutIcon ts-layoutIcon--top" />
-					<xf:fa icon="far fa-sidebar" class="ts-layoutIcon ts-layoutIcon--rail" />
-				</button>
-
 				<!-- Mod templates (CM reviewers) -->
 				<xf:if is="$xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">
 					<a href="https://terrarp.com/pages/mod-templates/" class="ts-tool" data-xf-click="overlay"
@@ -757,7 +748,7 @@
 <!--shine below-->
 </div>
 <script src="/js/tsrp/tether/tether-popup.js"></script>
-<script src="/js/tsrp/sidebar/ts-sidebar.js?v=3"></script>
+<script src="/js/tsrp/sidebar/ts-sidebar.js?v=2"></script>
 </body>
 </html>
 
