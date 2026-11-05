@@ -68,9 +68,9 @@ h4{margin:0}
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(12, 16, 24, 0.74) 0%, rgba(12, 16, 24, 0.84) 45%, rgba(16, 20, 28, 0.97) 100%);
-  -webkit-backdrop-filter: blur(5px) saturate(0.85);
-  backdrop-filter: blur(5px) saturate(0.85);
+  background: linear-gradient(180deg, rgba(12, 16, 24, 0.55) 0%, rgba(12, 16, 24, 0.7) 45%, rgba(16, 20, 28, 0.95) 100%);
+  -webkit-backdrop-filter: blur(3px) saturate(0.9);
+  backdrop-filter: blur(3px) saturate(0.9);
 }
 .tsTip-headerInner {
   position: relative;
@@ -338,15 +338,24 @@ a.tsTip-tool.menuTrigger::after,
   font-weight: 700;
   line-height: 1.35;
 }
-.tsTip-ooc {
+.tsTip-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 100%;
+}
+.tsTip-fields .pairs.tsTip-field {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: #e7eaf0;
-  font-size: 12.5px;
-  font-weight: 600;
+  gap: 6px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
-.tsTip-oocTag {
+.tsTip-fields .pairs.tsTip-field > dt {
+  float: none;
+  width: auto;
+  margin: 0;
   padding: 1px 6px;
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 4px;
@@ -355,6 +364,33 @@ a.tsTip-tool.menuTrigger::after,
   font-size: 9.5px;
   font-weight: 800;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tsTip-fields .pairs.tsTip-field > dd {
+  min-width: 0;
+  margin: 0;
+  padding: 2px 9px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  background: rgba(10, 13, 20, 0.55);
+  color: #e7eaf0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tsTip-fields .pairs.tsTip-field .custom-button a,
+.tsTip-fields .pairs.tsTip-field > dd a {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #3ccbdb;
+}
+.tsTip-fields > :not(.pairs) {
+  max-width: 100%;
 }
 .tsTip-facts,
 .tsTip .memberTooltip-blurbContainer {
@@ -656,6 +692,8 @@ a.tsTip-tool.menuTrigger::after,
 .userBanner{cursor:help;font-size:65%}
 .NGP{background-color:#182a1f;border:1px solid #3c6426;color:#eee;border-radius:4px;padding:1px 4px}
 .buttonGroup{border-radius:4px;overflow:hidden}
+.custom-button a{background-color:#282f42;padding:1px 7px;border-radius:4px;color:#348c91f5;display:inline-block;border:1px solid #282f42}
+.pairs.pairs--columns{display:inline}
 </style></head><body>
 <div class="tooltip tooltip--member tooltip--bottom">
  <div class="tooltip-arrow"></div>
@@ -683,7 +721,7 @@ a.tsTip-tool.menuTrigger::after,
        <span class="tsTip-banners memberTooltip-banners"><em class="userBanner" style="background:#d9dde5;color:#1a1f2b">H</em><em class="userBanner NGP">NG+</em></span>
       </div>
       <div class="tsTip-title"><span class="userTitle">&lt; Ale Queen &gt;</span></div>
-      <div class="tsTip-ooc"><span class="tsTip-oocTag">OOC</span><span class="tsTip-oocName">Warwolfer</span></div>
+      <div class="tsTip-fields"><dl class="pairs pairs--columns tsTip-field" data-field="ooc"><dd class="custom-button">Warwolfer</dd></dl><dl class="pairs pairs--columns tsTip-field" data-field="race"><dd class="custom-button"><a href="#">Beastfolk</a></dd></dl><dl class="pairs pairs--columns tsTip-field" data-field="discord"><dd class="custom-button">lune#0001</dd></dl></div>
      </div>
     </div>
     <div class="tsTip-facts memberTooltip-blurbContainer">

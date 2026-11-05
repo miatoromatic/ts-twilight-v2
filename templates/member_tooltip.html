@@ -64,7 +64,7 @@
 					</div>
 				</div>
 
-				<!-- ===== Identity: avatar + character links | name, banners, title, OOC ===== -->
+				<!-- ===== Identity: avatar + character links | name, banners, title, custom fields ===== -->
 				<div class="tsTip-identity">
 					<div class="tsTip-avatarCol memberTooltip-avatar">
 						<xf:avatar user="{$user}" size="m" notooltip="true" />
@@ -103,7 +103,14 @@
 							</div>
 						</xf:if>
 
-						<!--[TS:ooc_line] see the README note: add the OOC snippet here with your custom field ID -->
+						<!-- Custom user fields: same set as in posts ("Display in messages"). See README to change. -->
+						<xf:macro template="custom_fields_macros" name="custom_fields_view"
+							arg-type="users"
+							arg-group="personal"
+							arg-set="{$user.Profile.custom_fields}"
+							arg-additionalFilters="{{ ['message'] }}"
+							arg-wrapperClass="tsTip-fields"
+							arg-valueClass="pairs pairs--columns tsTip-field" />
 					</div>
 				</div>
 
