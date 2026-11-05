@@ -106,11 +106,14 @@
 							</div>
 						</xf:if>
 
-						<xf:if is="$tsOocField && $user.Profile.custom_fields.{$tsOocField}">
-							<div class="tsTip-ooc">
-								<span class="tsTip-oocTag">OOC</span>
-								<span class="tsTip-oocName">{$user.Profile.custom_fields.{$tsOocField}}</span>
-							</div>
+						<xf:if is="$tsOocField">
+							<xf:set var="$tsOoc" value="{$user.Profile.custom_fields.{$tsOocField}}" />
+							<xf:if is="$tsOoc">
+								<div class="tsTip-ooc">
+									<span class="tsTip-oocTag">OOC</span>
+									<span class="tsTip-oocName">{$tsOoc}</span>
+								</div>
+							</xf:if>
 						</xf:if>
 					</div>
 				</div>
