@@ -373,21 +373,20 @@ a.tsTip-tool,
 .tsTip .tsTip-idInfo dl.tsTip-field,
 .tsTip .tsTip-idInfo dl:has(> dd.custom-button)
 {
-	display: inline-flex !important;
-	align-items: center;
-	gap: 6px;
-	max-width: 100%;
-	margin: 0 6px 6px 0;
+	// inline (not inline-flex): this is what lines the chips up in a row on the live site
+	display: inline !important;
+	margin: 0;
 	padding: 0;
-	vertical-align: middle;
 	font-size: 12px;
 
 	> dt
 	{
 		// only shown if the <dt> is un-commented in custom_fields_macros
+		display: inline-block;
 		float: none;
 		width: auto;
-		margin: 0;
+		margin: 0 4px 6px 0;
+		vertical-align: middle;
 		padding: 1px 6px;
 		border: 1px solid @ts-line-hi;
 		border-radius: 4px;
@@ -404,9 +403,10 @@ a.tsTip-tool,
 		display: inline-flex;
 		align-items: center;
 		gap: 5px;
-		min-width: 0;
-		margin: 0;
+		max-width: 100%;
+		margin: 0 6px 6px 0;
 		padding: 2px 9px;
+		vertical-align: middle;
 		overflow: hidden;
 		border: 1px solid @ts-line-hi;
 		border-radius: 6px;
@@ -433,7 +433,7 @@ a.tsTip-tool,
 }
 
 // The chip row's last line shouldn't add extra space under the card section
-.tsTip-idInfo > :last-child dl { margin-bottom: 0; }
+.tsTip-idInfo > .tsTip-fields { margin-bottom: -6px; }
 
 // ---- Facts ----
 .tsTip-facts,
@@ -575,13 +575,14 @@ a.tsTip-tool,
 }
 
 // =============================================================
-//  Actions: Character sheet / Character thread / PM
+//  Actions: Follow / Character sheet / PM
+//  One row; whichever buttons the viewer is allowed to see share the width.
 // =============================================================
 .tsTip-actions,
 .tsTip .memberTooltip-actions
 {
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	gap: 8px;
 	padding: 12px @_tsTip-pad 14px;
 	border-radius: 0 0 @ts-radius @ts-radius;
@@ -591,13 +592,16 @@ a.tsTip-tool,
 // Shared button look
 .tsTip-btnBase()
 {
+	position: relative;
 	display: inline-flex;
+	flex: 1 1 0;
 	align-items: center;
 	justify-content: center;
 	gap: 7px;
-	width: 100%;
+	min-width: 0;
 	height: 38px;
 	min-height: 0;
+	margin: 0;
 	padding: 0 12px;
 	border: 1px solid @ts-line-hi;
 	border-radius: @ts-radius-sm;
@@ -611,80 +615,139 @@ a.tsTip-tool,
 	overflow: hidden;
 	text-decoration: none;
 	transition: color .15s ease, background .15s ease, border-color .15s ease, filter .15s ease;
+}
+
+.tsTip-btnHover()
+{
+	color: #fff;
+	border-color: rgba(60, 203, 219, .4);
+	background: #1b2330;
+	text-decoration: none;
+}
+
+// Follow + PM (our own markup). The .tsTip .tsTip-actions prefix beats XF's
+// core `.button.button--link` / `a.button` rules regardless of load order.
+.tsTip .tsTip-actions .tsTip-btn
+{
+	.tsTip-btnBase();
+
+	.fa--xf, i { font-size: 12px; }
+	.button-text { overflow: hidden; text-overflow: ellipsis; }
+
+	&:hover,
+	&:focus-visible { .tsTip-btnHover(); }
+}
+
+// Follow: icon via CSS, because XF's "switch" swaps the text inside .button-text
+.tsTip .tsTip-actions .tsTip-btn--follow::before
+{
+	.m-faBase();
+	.m-faContent("\f234"); // user-plus
+	font-size: 12px;
+	color: @ts-accent;
+}
+
+// Character sheet: the Terrasphere macro renders its own link/button, so the
+// wrapper *is* the button and the macro's link is stretched over it.
+// Works whatever markup the macro outputs.
+.tsTip .tsTip-actions .tsTip-act
+{
+	.tsTip-btnBase();
+	cursor: pointer;
+
+	// nothing rendered (no sheet) → no empty button
+	&:not(:has(a, button)) { display: none; }
+
+	// flatten whatever the macro outputs (!important beats inline styles), so the
+	// stretched link below is measured against this button, not an inner wrapper
+	*
+	{
+		position: static !important;
+	}
+
+	a,
+	button,
+	.button
+	{
+		display: inline-flex;
+		align-items: center;
+		width: auto;
+		height: auto;
+		min-height: 0;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		box-shadow: none;
+		color: @ts-accent;
+		font-size: 13px;
+		line-height: 1;
+
+		// stretch the macro's link over the whole button
+		&::after
+		{
+			content: '';
+			position: absolute;
+			inset: 0;
+			z-index: 1;
+			border-radius: inherit;
+		}
+	}
+
+	&:hover,
+	&:focus-within { .tsTip-btnHover(); }
+}
+
+.tsTip .tsTip-actions .tsTip-act--sheet::after { content: "Character sheet"; }
+
+// PM: primary
+.tsTip .tsTip-actions .tsTip-btn.tsTip-btn--primary
+{
+	border-color: transparent;
+	background: linear-gradient(90deg, @ts-accent 0%, @ts-accent-2 100%);
+	color: #06222a;
+
+	.fa--xf, i { color: inherit; }
 
 	&:hover,
 	&:focus-visible
 	{
-		color: #fff;
-		border-color: rgba(60, 203, 219, .4);
-		background: #1b2330;
-		text-decoration: none;
-	}
-}
-
-// Character sheet / thread: the Terrasphere macros render their own link or
-// button; we size it as a full button and add the label after its icon.
-.tsTip-actions .tsTip-act
-{
-	display: flex;
-	flex: 1 1 0;
-	min-width: 0;
-
-	// thread link hidden by the permission check → collapse the slot
-	&:not(:has(a, button)) { display: none; }
-
-	> a,
-	> button,
-	> .button,
-	> * > a:only-child
-	{
-		.tsTip-btnBase();
-	}
-
-	.fa--xf,
-	i
-	{
-		font-size: 13px;
-		color: @ts-accent;
-	}
-}
-
-.tsTip-act--sheet  > a::after, .tsTip-act--sheet  > button::after, .tsTip-act--sheet  > * > a:only-child::after  { content: "Character sheet"; }
-.tsTip-act--thread > a::after, .tsTip-act--thread > button::after, .tsTip-act--thread > * > a:only-child::after { content: "Character thread"; }
-
-// (.tsTip-actions prefix so this beats XF's core `a.button` rule)
-.tsTip-actions .tsTip-btn
-{
-	flex: 1 1 0;
-	min-width: 0;
-	.tsTip-btnBase();
-
-	&.tsTip-btn--primary
-	{
-		flex: 0 0 auto;
-		width: auto;
-		padding: 0 20px;
+		color: #031a20;
 		border-color: transparent;
 		background: linear-gradient(90deg, @ts-accent 0%, @ts-accent-2 100%);
-		color: #06222a;
-
-		.fa--xf, i { color: inherit; }
-
-		&:hover,
-		&:focus-visible
-		{
-			color: #031a20;
-			border-color: transparent;
-			background: linear-gradient(90deg, @ts-accent 0%, @ts-accent-2 100%);
-			filter: brightness(1.08);
-		}
+		filter: brightness(1.08);
 	}
 }
 
-// No character buttons (or no permission) → PM takes the whole row
-.tsTip-actions:not(:has(.tsTip-act a, .tsTip-act button)) .tsTip-btn.tsTip-btn--primary
+// ---- Character thread link inside the cog (moderator tools) menu ----
+.tsTip-menuThread
 {
-	flex: 1 1 auto;
+	padding: 2px 0 4px;
+	border-bottom: 1px solid @ts-line;
+	margin-bottom: 4px;
+
+	a
+	{
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 6px 15px;
+		border-radius: 4px;
+		color: @ts-text;
+		font-size: 13px;
+		text-decoration: none;
+
+		&::after { content: "Character thread"; }
+
+		&:hover
+		{
+			background: @ts-accent-soft;
+			color: @ts-accent;
+			text-decoration: none;
+		}
+
+		.fa--xf, i { color: @ts-accent; }
+	}
 }
 
 // =============================================================
@@ -727,17 +790,16 @@ a.tsTip-tool,
 	.tsTip-actions,
 	.tsTip .memberTooltip-actions { padding: 10px 12px 12px; }
 
-	// two character buttons share a row, PM gets its own full-width row
-	.tsTip-actions .tsTip-act { flex: 1 1 ~"calc(50% - 4px)"; }
+	// still one row; shorter labels and tighter padding
+	.tsTip .tsTip-actions { gap: 6px; }
 
-	.tsTip-actions .tsTip-act > a,
-	.tsTip-actions .tsTip-act > button,
-	.tsTip-actions .tsTip-act > * > a:only-child
+	.tsTip .tsTip-actions .tsTip-btn,
+	.tsTip .tsTip-actions .tsTip-act
 	{
-		gap: 6px;
+		gap: 5px;
 		padding: 0 8px;
 		font-size: 12px;
 	}
 
-	.tsTip-actions .tsTip-btn.tsTip-btn--primary { flex: 1 1 100%; }
+	.tsTip .tsTip-actions .tsTip-act--sheet::after { content: "Sheet"; }
 }

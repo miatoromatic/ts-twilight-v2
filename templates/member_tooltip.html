@@ -53,6 +53,17 @@
 								<div class="menu-content">
 									<h3 class="menu-header">{{ phrase('moderator_tools') }}</h3>
 									<xf:contentcheck>
+										<!-- Character thread link (moved here from the card).
+											 Same conditions as before: character elements + terrasphere_cm_review.
+											 Written as a real xf:if now; the old HTML-comment-wrapped xf:if was
+											 already active, so who sees it does not change. -->
+										<xf:if is="$user.canShowCharacterElements() && $xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">
+											<div class="tsTip-menuThread">
+												<xf:macro template="terrasphere_core_generic_macros"
+													name="character_sheet_thread_link"
+													arg-user="{$user}" />
+											</div>
+										</xf:if>
 										<xf:macro template="member_macros" name="moderator_menu_actions"
 											arg-user="{$user}"
 											arg-context="tooltip" />
@@ -138,23 +149,25 @@
 			</div>
 		</div>
 
-		<!-- ===== Actions: Character sheet / Character thread / PM ===== -->
+		<!-- ===== Actions: Follow / Character sheet / PM — one row, buttons share the width ===== -->
 		<xf:if contentcheck="true">
 			<div class="memberTooltip-actions tsTip-actions">
 				<xf:contentcheck>
+					<xf:if is="$xf.visitor.canFollowUser($user)">
+						<xf:button href="{{ link('members/follow', $user) }}"
+							class="button--link tsTip-btn tsTip-btn--follow"
+							data-xf-click="switch"
+							data-sk-follow="{{ phrase('follow')|for_attr }}"
+							data-sk-unfollow="{{ phrase('unfollow')|for_attr }}">
+							{{ $xf.visitor.isFollowing($user) ? phrase('unfollow') : phrase('follow') }}
+						</xf:button>
+					</xf:if>
+
 					<xf:if is="$user.canShowCharacterElements()">
 						<span class="tsTip-act tsTip-act--sheet">
 							<xf:macro template="terrasphere_core_generic_macros"
 								name="character_sheet_modal_button"
 								arg-user="{$user}" />
-						</span>
-						<span class="tsTip-act tsTip-act--thread">
-							<!-- NOTE: XF still compiles xf tags inside HTML comments, so the permission check below IS active (kept as in the original) -->
-							<!--<xf:if is="$xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">-->
-								<xf:macro template="terrasphere_core_generic_macros"
-									name="character_sheet_thread_link"
-									arg-user="{$user}" />
-							<!--</xf:if>-->
 						</span>
 					</xf:if>
 
