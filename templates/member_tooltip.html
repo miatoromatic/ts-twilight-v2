@@ -3,11 +3,8 @@
 <!--
 	==========================================================
 	Terrasphere — member tooltip (mini profile card)
-	$tsOocField: custom user field ID for the "OOC" line under the
-	user title (e.g. "ooc_name"). Leave empty ("") to hide the line.
 	==========================================================
 -->
-<xf:set var="$tsOocField" value="" />
 
 <!-- Respects the member's "show online status" privacy setting -->
 <xf:set var="$tsCanSeeStatus" value="{{ $user.canViewOnlineStatus() }}" />
@@ -106,15 +103,7 @@
 							</div>
 						</xf:if>
 
-						<xf:if is="$tsOocField">
-							<xf:set var="$tsOoc" value="{$user.Profile.custom_fields.{$tsOocField}}" />
-							<xf:if is="$tsOoc">
-								<div class="tsTip-ooc">
-									<span class="tsTip-oocTag">OOC</span>
-									<span class="tsTip-oocName">{$tsOoc}</span>
-								</div>
-							</xf:if>
-						</xf:if>
+						<!--[TS:ooc_line] see the README note: add the OOC snippet here with your custom field ID -->
 					</div>
 				</div>
 
