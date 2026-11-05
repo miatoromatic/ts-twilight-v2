@@ -130,8 +130,7 @@ html[data-ts-rail="expanded"] .ts-rail {
 
 .ts-btn,
 .ts-rail .ts-tool,
-.ts-rail .ts-tools > .p-navgroup-link,
-.ts-rail .ts-extraTools > .p-navgroup-link {
+.ts-rail .ts-tools > .p-navgroup-link {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
@@ -155,15 +154,12 @@ html[data-ts-rail="expanded"] .ts-rail {
 .ts-rail .ts-tool:hover,
 .ts-rail .ts-tool.is-menuOpen,
 .ts-rail .ts-tools > .p-navgroup-link:hover,
-.ts-rail .ts-tools > .p-navgroup-link.is-menuOpen,
-.ts-rail .ts-extraTools > .p-navgroup-link:hover,
-.ts-rail .ts-extraTools > .p-navgroup-link.is-menuOpen {
+.ts-rail .ts-tools > .p-navgroup-link.is-menuOpen {
 	background: var(--ts-hover);
 	color: var(--ts-ink-strong);
 }
 .ts-rail .ts-tool.is-menuOpen,
-.ts-rail .ts-tools > .p-navgroup-link.is-menuOpen,
-.ts-rail .ts-extraTools > .p-navgroup-link.is-menuOpen {
+.ts-rail .ts-tools > .p-navgroup-link.is-menuOpen {
 	color: var(--ts-accent-soft);
 }
 
@@ -172,8 +168,7 @@ html[data-ts-rail="expanded"] .ts-rail {
 	content: none !important;
 	display: none !important;
 }
-.ts-rail .ts-tools .p-navgroup-linkText,
-.ts-rail .ts-extraTools .p-navgroup-linkText {
+.ts-rail .ts-tools .p-navgroup-linkText {
 	display: none;
 }
 
@@ -573,21 +568,6 @@ html[data-ts-rail="expanded"] .ts-staff .ts-tool {
 	gap: 6px;
 	width: 100%;
 }
-/* add-on icons (linked accounts) moved here from the tools cluster by PAGE_CONTAINER */
-.ts-rail .ts-extraTools {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 4px;
-}
-.ts-rail .ts-extraTools:empty {
-	display: none;
-}
-html[data-ts-rail="expanded"] .ts-rail .ts-extraTools {
-	flex-direction: row;
-	justify-content: flex-start;
-	gap: 2px;
-}
 html[data-ts-rail="expanded"] .ts-rail .ts-account.p-navgroup--guest {
 	flex-direction: row;
 }
@@ -903,16 +883,6 @@ html[data-ts-rail="expanded"] .ts-guestLabel {
 	.ts-tip {
 		display: none;
 	}
-	.ts-rail .ts-extraTools,
-	html[data-ts-rail="expanded"] .ts-rail .ts-extraTools {
-		flex-direction: row;
-		gap: 0;
-	}
-}
-@media (max-width: 400px) {
-	.ts-rail .ts-tool--home {
-		display: none;
-	}
 }
 
 /* off-canvas staff block (phones) */
@@ -1219,10 +1189,6 @@ html[data-template^="thread_view"] .ts-dm-section--reader {
 	--ts-bar-max: 880px;
 }
 
-html[data-ts-layout="top"] .ts-rail .ts-tool--home {
-	display: none;
-}
-
 @media (min-width: 651px) {
 	html[data-ts-layout="top"] {
 		--ts-rail-offset: 0px;
@@ -1257,7 +1223,9 @@ html[data-ts-layout="top"] .ts-rail .ts-tool--home {
 
 	/* head: menu button + logo */
 	html[data-ts-layout="top"] .ts-head {
+		order: 0;
 		height: var(--ts-bar-h);
+		margin-right: auto;
 		padding: 0;
 		gap: 4px;
 	}
@@ -1275,38 +1243,35 @@ html[data-ts-layout="top"] .ts-rail .ts-tool--home {
 		display: block;
 	}
 
-	/* tools, staff, account in one row on the right */
-	html[data-ts-layout="top"] .ts-rail .ts-tools {
-		flex-direction: row;
-		gap: 2px;
-		margin-left: auto;
-		padding: 0;
-	}
+	/* right side, in order: staff | tools (search, inbox, alerts, display, linked) | account.
+	   .ts-foot steps out of the way so staff and account can be ordered around the tools. */
 	html[data-ts-layout="top"] .ts-foot {
-		flex-direction: row;
-		align-items: center;
-		gap: 6px;
-		margin-left: 6px;
-		padding: 0 0 0 8px;
-		border-top: 0;
-		border-left: 1px solid var(--ts-rail-line);
+		display: contents;
 	}
 	html[data-ts-layout="top"] .ts-staff {
+		order: 1;
 		flex-direction: row;
 		align-items: center;
 		gap: 2px;
+		margin-right: 6px;
+		padding-right: 8px;
+		border-right: 1px solid var(--ts-rail-line);
+	}
+	html[data-ts-layout="top"] .ts-rail .ts-tools {
+		order: 2;
+		flex-direction: row;
+		gap: 2px;
+		padding: 0;
 	}
 	html[data-ts-layout="top"] .ts-staff .ts-tool {
 		width: 34px;
 	}
 	html[data-ts-layout="top"] .ts-rail .ts-account {
+		order: 3;
 		flex-direction: row;
 		align-items: center;
 		width: auto;
-	}
-	html[data-ts-layout="top"] .ts-rail .ts-extraTools {
-		flex-direction: row;
-		gap: 2px;
+		margin-left: 4px;
 	}
 	html[data-ts-layout="top"] .ts-rail .ts-foot .ts-account > .ts-accountLink {
 		flex: none;

@@ -121,14 +121,8 @@
 		</button>
 	</div>
 
-	<!-- Search / inbox / alerts: always visible, in both rail states and on mobile -->
+	<!-- Search / inbox / alerts / display (+ linked accounts): always visible, in both rail states and on mobile -->
 	<div class="p-navgroup ts-tools">
-		<a href="https://terrarp.com/" class="ts-tool ts-tool--home"
-			aria-label="{{ phrase('home')|for_attr }}"
-			data-ts-tip="{{ phrase('home')|for_attr }}" data-ts-tip-always="">
-			<xf:fa icon="far fa-house" />
-		</a>
-
 		<xf:if is="$xf.visitor.canSearch()">
 			<a href="{{ link('search') }}"
 				class="p-navgroup-link ts-tool p-navgroup-link--search"
@@ -455,7 +449,6 @@
 
 		<!-- Account -->
 		<div class="p-navgroup ts-account {{ $xf.visitor.user_id ? 'p-navgroup--member' : 'p-navgroup--guest' }}">
-			<div class="ts-extraTools"></div>
 			<xf:if is="$xf.visitor.user_id">
 				<xf:if is="$xf.visitor.user_state == 'rejected' OR $xf.visitor.user_state == 'disabled'">
 					<a href="{{ link('account') }}" class="p-navgroup-link p-navgroup-link--user ts-accountLink"
@@ -518,8 +511,8 @@
 	</div>
 </aside>
 <!-- Move add-on icons that the Linked Account template mod drops in after Alerts (linked accounts)
-	into the slot next to the avatar. Runs while the page parses, so there is no visible jump. -->
-<script>(function(){var r=document.getElementById('ts-rail');if(!r){return}var tools=r.querySelector('.ts-tools'),slot=r.querySelector('.ts-extraTools'),alerts=tools&&tools.querySelector('.p-navgroup-link--alerts');if(!slot||!alerts){return}var menu=alerts.nextElementSibling,node=menu&&menu.nextElementSibling;while(node&&!node.classList.contains('ts-tool--display')){var next=node.nextElementSibling;slot.appendChild(node);node=next}})();</script>
+	to just after the Display button. Runs while the page parses, so there is no visible jump. -->
+<script>(function(){var r=document.getElementById('ts-rail');if(!r){return}var tools=r.querySelector('.ts-tools'),alerts=tools&&tools.querySelector('.p-navgroup-link--alerts'),disp=tools&&tools.querySelector('.ts-tool--display');if(!alerts||!disp){return}var dispMenu=disp.nextElementSibling,after=dispMenu?dispMenu.nextSibling:null,menu=alerts.nextElementSibling,node=menu&&menu.nextElementSibling;while(node&&node!==disp){var next=node.nextElementSibling;tools.insertBefore(node,after);node=next}})();</script>
 <div class="ts-backdrop js-tsRailBackdrop" aria-hidden="true"></div>
 
 <div class="p-pageWrapper" id="top">
