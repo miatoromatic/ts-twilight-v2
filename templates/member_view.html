@@ -30,7 +30,6 @@
 	Set a URL to show a tile, leave it empty ("") to hide it.
 	==========================================================
 -->
-<xf:set var="$tsDockStats" value="{{ link('members/about', $user) }}" />
 <xf:set var="$tsDockInventory" value="" />
 <xf:set var="$tsDockShop" value="" />
 <xf:set var="$tsDockBuild" value="" />
@@ -44,93 +43,16 @@
 
 			<div class="tsHero-inner">
 
-				<!-- ===== Top row: identity + wallet ===== -->
+				<!-- ===== Top row: name + user banners | wallet ===== -->
 				<div class="tsHero-top">
 					<div class="tsHero-identity">
 						<h1 class="tsHero-name">
 							<xf:username user="{$user}" rich="true" href="" />
-							<xf:if is="$user.hasViewableUsernameHistory()">
-								<a class="tsHero-nameHistory"
-									data-xf-click="menu"
-									data-xf-init="tooltip"
-									title="{{ phrase('username_changed')|for_attr }}"
-									role="button"
-									tabindex="0"
-									aria-expanded="false"
-									aria-haspopup="true"
-									aria-label="{{ phrase('username_changed')|for_attr }}"><xf:fa icon="fa-history" /></a>
-								<div class="menu" data-menu="menu" aria-hidden="true"
-									data-href="{{ link('members/username-history', $user, {'menu': 1}) }}"
-									data-load-target=".js-usernameHistoryBody">
-									<div class="menu-content">
-										<h3 class="menu-header">{{ phrase('previous_usernames') }}</h3>
-										<div class="js-usernameHistoryBody">
-											<div class="menu-row">{{ phrase('loading...') }}</div>
-										</div>
-									</div>
-								</div>
-							</xf:if>
 						</h1>
 
 						<xf:if contentcheck="true">
 							<div class="tsHero-banners">
 								<xf:contentcheck><xf:userbanners user="$user" /></xf:contentcheck>
-							</div>
-						</xf:if>
-
-						<div class="tsHero-meta">
-							<span class="tsHero-avatar">
-								<xf:avatar user="{$user}" size="s" href="{{ $user.getAvatarUrl('o') ?: '' }}" />
-								<xf:if is="$tsIsSelf && $xf.visitor.canUploadAvatar()">
-									<a class="tsHero-avatarEdit" href="{{ link('account/avatar') }}" data-xf-click="overlay"
-										aria-label="{{ phrase('edit')|for_attr }}"><xf:fa icon="fa-pen" /></a>
-								</xf:if>
-							</span>
-							<div class="tsHero-metaText">
-								<xf:userblurb user="$user" tag="div" class="tsHero-blurb" />
-								<div class="tsHero-seen">
-									<span>{{ phrase('joined') }} <xf:date time="$user.register_date" /></span>
-									<xf:if contentcheck="true">
-										<span class="tsHero-dot" aria-hidden="true"></span>
-										<span>{{ phrase('last_seen') }}
-											<xf:contentcheck><xf:useractivity user="$user" class="pairs--plainLabel" /></xf:contentcheck>
-										</span>
-									</xf:if>
-								</div>
-							</div>
-						</div>
-
-						<!-- Follow / Ignore / Start conversation / Find + Report / Mod tools -->
-						<xf:if contentcheck="true">
-							<div class="tsHero-actions">
-								<xf:contentcheck>
-									<xf:macro template="member_macros" name="member_action_buttons"
-										arg-user="{$user}"
-										arg-context="profile" />
-
-									<xf:if is="$user.canBeReported()">
-										<xf:button href="{{ link('members/report', $user) }}"
-											class="button--link" overlay="true">
-											{{ phrase('report_verb') }}
-										</xf:button>
-									</xf:if>
-
-									<xf:if contentcheck="true">
-										<div class="buttonGroup-buttonWrapper">
-											<xf:button class="button--link menuTrigger" data-xf-click="menu" aria-expanded="false" aria-haspopup="true">{{ phrase('moderator_tools') }}</xf:button>
-											<div class="menu" data-menu="menu" aria-hidden="true">
-												<div class="menu-content">
-													<h3 class="menu-header">{{ phrase('moderator_tools') }}</h3>
-													<xf:contentcheck>
-														<xf:macro template="member_macros" name="moderator_menu_actions"
-															arg-user="{$user}"
-															arg-context="profile" />
-													</xf:contentcheck>
-												</div>
-											</div>
-										</div>
-									</xf:if>
-								</xf:contentcheck>
 							</div>
 						</xf:if>
 					</div>
@@ -147,48 +69,64 @@
 					</xf:if>
 				</div>
 
-				<!-- ===== Bottom row: dock + banner controls ===== -->
+				<!-- ===== Bottom row: meta | dock + banner controls ===== -->
 				<div class="tsHero-bottom">
-					<div class="tsDock">
-						<xf:if is="$tsDockStats">
-							<a href="{$tsDockStats}" class="tsDock-tile" data-ts-tab="about">
-								<xf:fa icon="fa-cube" class="tsDock-icon" />
-								<span class="tsDock-label">Stats</span>
-							</a>
-						</xf:if>
-						<xf:if is="$tsDockInventory">
-							<a href="{$tsDockInventory}" class="tsDock-tile">
-								<xf:fa icon="fa-backpack" class="tsDock-icon" />
-								<span class="tsDock-label">Inventory</span>
-							</a>
-						</xf:if>
-						<xf:if is="$tsDockShop">
-							<a href="{$tsDockShop}" class="tsDock-tile">
-								<xf:fa icon="fa-shopping-cart" class="tsDock-icon" />
-								<span class="tsDock-label">Shop</span>
-							</a>
-						</xf:if>
-						<xf:if is="$tsDockBuild">
-							<a href="{$tsDockBuild}" class="tsDock-tile">
-								<xf:fa icon="fa-swords" class="tsDock-icon" />
-								<span class="tsDock-label">Build</span>
-							</a>
-						</xf:if>
-						<xf:if is="$tsIsSelf && $xf.visitor.canUploadProfileBanner()">
-							<a href="{{ link('account/banner') }}" class="tsDock-tile" data-xf-click="overlay">
-								<xf:fa icon="fa-fill-drip" class="tsDock-icon" />
-								<span class="tsDock-label">Banner</span>
-							</a>
-						</xf:if>
+					<div class="tsHero-meta">
+						<span class="tsHero-avatar">
+							<xf:avatar user="{$user}" size="s" href="{{ $user.getAvatarUrl('o') ?: '' }}" />
+							<xf:if is="$tsIsSelf && $xf.visitor.canUploadAvatar()">
+								<a class="tsHero-avatarEdit" href="{{ link('account/avatar') }}" data-xf-click="overlay"
+									aria-label="{{ phrase('edit')|for_attr }}"><xf:fa icon="fa-pen" /></a>
+							</xf:if>
+						</span>
+						<div class="tsHero-metaText">
+							<xf:userblurb user="$user" tag="div" class="tsHero-blurb" />
+							<div class="tsHero-seen">
+								<span>{{ phrase('joined') }} <xf:date time="$user.register_date" /></span>
+								<xf:if contentcheck="true">
+									<span class="tsHero-dot" aria-hidden="true"></span>
+									<span>{{ phrase('last_seen') }}
+										<xf:contentcheck><xf:useractivity user="$user" class="pairs--plainLabel" /></xf:contentcheck>
+									</span>
+								</xf:if>
+							</div>
+						</div>
 					</div>
 
-					<div class="tsHero-controls">
-						<!-- Mount point for your banner rotator (prev / dots / next / play). Hidden while empty. -->
-						<div class="tsHero-pager js-tsHeroPager"></div>
-						<button type="button" class="tsHero-collapse js-tsHeroCollapse"
-							data-xf-init="tooltip" title="Collapse banner" aria-pressed="false">
-							<xf:fa icon="fa-compress-alt" />
-						</button>
+					<div class="tsHero-right">
+						<xf:if contentcheck="true">
+							<div class="tsDock">
+								<xf:contentcheck>
+									<xf:if is="$tsDockInventory">
+										<a href="{$tsDockInventory}" class="tsDock-tile">
+											<xf:fa icon="fa-backpack" class="tsDock-icon" />
+											<span class="tsDock-label">Inventory</span>
+										</a>
+									</xf:if>
+									<xf:if is="$tsDockShop">
+										<a href="{$tsDockShop}" class="tsDock-tile">
+											<xf:fa icon="fa-shopping-cart" class="tsDock-icon" />
+											<span class="tsDock-label">Shop</span>
+										</a>
+									</xf:if>
+									<xf:if is="$tsDockBuild">
+										<a href="{$tsDockBuild}" class="tsDock-tile">
+											<xf:fa icon="fa-swords" class="tsDock-icon" />
+											<span class="tsDock-label">Build</span>
+										</a>
+									</xf:if>
+								</xf:contentcheck>
+							</div>
+						</xf:if>
+
+						<div class="tsHero-controls">
+							<!-- Mount point for your banner rotator (prev / dots / next / play). Hidden while empty. -->
+							<div class="tsHero-pager js-tsHeroPager"></div>
+							<button type="button" class="tsHero-collapse js-tsHeroCollapse"
+								data-xf-init="tooltip" title="Collapse banner" aria-pressed="false">
+								<xf:fa icon="fa-compress-alt" />
+							</button>
+						</div>
 					</div>
 				</div>
 
@@ -199,57 +137,100 @@
 
 <div class="block tsProfileTabs">
 	<div class="block-container">
-		<h2 class="block-tabHeader block-tabHeader--memberTabs tabs hScroller"
-			data-xf-init="tabs h-scroller"
-			data-panes=".js-memberTabPanes"
-			data-state="replace"
-			role="tablist">
-			<span class="hScroller-scroll">
-				<!--[XF:tabs:start]-->
-				<xf:if is="$user.canViewPostsOnProfile()">
-					<a href="{{ link('members', $user) }}"
-						class="tabs-tab is-active"
-						role="tab"
-						aria-controls="profile-posts">{{ phrase('profile_posts') }}</a>
-				</xf:if>
-
-				<xf:if is="$user.canViewLatestActivity()">
-					<xf:if is="!$user.canViewPostsOnProfile()">
+		<div class="tsTabBar">
+			<h2 class="block-tabHeader block-tabHeader--memberTabs tabs hScroller"
+				data-xf-init="tabs h-scroller"
+				data-panes=".js-memberTabPanes"
+				data-state="replace"
+				role="tablist">
+				<span class="hScroller-scroll">
+					<!--[XF:tabs:start]-->
+					<xf:if is="$user.canViewPostsOnProfile()">
 						<a href="{{ link('members', $user) }}"
 							class="tabs-tab is-active"
 							role="tab"
-							aria-controls="latest-activity">{{ phrase('latest_activity') }}</a>
-					<xf:else />
-						<a href="{{ link('members/latest-activity', $user) }}"
-							rel="nofollow"
-							class="tabs-tab"
-							id="latest-activity"
-							role="tab">{{ phrase('latest_activity') }}</a>
+							aria-controls="profile-posts">{{ phrase('profile_posts') }}</a>
 					</xf:if>
-				</xf:if>
 
-				<a href="{{ link('members/recent-content', $user) }}"
-					rel="nofollow"
-					class="tabs-tab"
-					id="recent-content"
-					role="tab">{{ phrase('postings') }}</a>
+					<xf:if is="$user.canViewLatestActivity()">
+						<xf:if is="!$user.canViewPostsOnProfile()">
+							<a href="{{ link('members', $user) }}"
+								class="tabs-tab is-active"
+								role="tab"
+								aria-controls="latest-activity">{{ phrase('latest_activity') }}</a>
+						<xf:else />
+							<a href="{{ link('members/latest-activity', $user) }}"
+								rel="nofollow"
+								class="tabs-tab"
+								id="latest-activity"
+								role="tab">{{ phrase('latest_activity') }}</a>
+						</xf:if>
+					</xf:if>
 
-				<!--[XF:tabs:after_recent_content]-->
-
-				<a href="{{ link('members/about', $user) }}"
-					class="tabs-tab"
-					id="about"
-					role="tab">{{ phrase('about') }}</a>
-
-				<xf:if is="$xf.visitor.canViewWarnings() && $user.warning_count">
-					<a href="{{ link('members/warnings', $user) }}"
+					<a href="{{ link('members/recent-content', $user) }}"
+						rel="nofollow"
 						class="tabs-tab"
-						id="warnings"
-						role="tab">{{ phrase('warnings') }}</a>
-				</xf:if>
-				<!--[XF:tabs:end]-->
-			</span>
-		</h2>
+						id="recent-content"
+						role="tab">{{ phrase('postings') }}</a>
+
+					<!--[XF:tabs:after_recent_content]-->
+
+					<a href="{{ link('members/about', $user) }}"
+						class="tabs-tab"
+						id="about"
+						role="tab">{{ phrase('about') }}</a>
+
+					<xf:if is="$xf.visitor.canViewWarnings() && $user.warning_count">
+						<a href="{{ link('members/warnings', $user) }}"
+							class="tabs-tab"
+							id="warnings"
+							role="tab">{{ phrase('warnings') }}</a>
+					</xf:if>
+					<!--[XF:tabs:end]-->
+				</span>
+			</h2>
+
+			<!-- Toolbar: Follow / Ignore / Message / Find / Report / Mod tools / Banner -->
+			<xf:if contentcheck="true">
+				<div class="tsToolbar">
+					<xf:contentcheck>
+						<xf:macro template="member_macros" name="member_action_buttons"
+							arg-user="{$user}"
+							arg-context="profile" />
+
+						<xf:if is="$user.canBeReported()">
+							<xf:button href="{{ link('members/report', $user) }}"
+								class="button--link tsAct tsAct--report" overlay="true">
+								{{ phrase('report_verb') }}
+							</xf:button>
+						</xf:if>
+
+						<xf:if contentcheck="true">
+							<div class="buttonGroup-buttonWrapper">
+								<xf:button class="button--link menuTrigger tsAct tsAct--mod" data-xf-click="menu" aria-expanded="false" aria-haspopup="true">{{ phrase('moderator_tools') }}</xf:button>
+								<div class="menu" data-menu="menu" aria-hidden="true">
+									<div class="menu-content">
+										<h3 class="menu-header">{{ phrase('moderator_tools') }}</h3>
+										<xf:contentcheck>
+											<xf:macro template="member_macros" name="moderator_menu_actions"
+												arg-user="{$user}"
+												arg-context="profile" />
+										</xf:contentcheck>
+									</div>
+								</div>
+							</div>
+						</xf:if>
+
+						<xf:if is="$tsIsSelf && $xf.visitor.canUploadProfileBanner()">
+							<xf:button href="{{ link('account/banner') }}"
+								class="button--link tsAct tsAct--banner" overlay="true">
+								Banner
+							</xf:button>
+						</xf:if>
+					</xf:contentcheck>
+				</div>
+			</xf:if>
+		</div>
 
 		<xf:ad position="member_view_below_tabs" arg-user="{$user}" />
 
@@ -390,19 +371,6 @@
 			var next = !hero.classList.contains('is-collapsed');
 			set(next);
 			try { window.localStorage.setItem(KEY, next ? '1' : '0'); } catch (e) {}
-		});
-	}
-
-	// "Stats" dock tile switches to the About tab in place instead of leaving the page.
-	var statsTile = hero.querySelector('[data-ts-tab="about"]');
-	var aboutTab = document.getElementById('about');
-	if (statsTile && aboutTab)
-	{
-		statsTile.addEventListener('click', function (e)
-		{
-			e.preventDefault();
-			aboutTab.click();
-			aboutTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		});
 	}
 })();

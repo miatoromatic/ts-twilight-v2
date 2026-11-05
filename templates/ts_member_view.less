@@ -41,29 +41,36 @@
 		radial-gradient(90% 120% at 0% 100%, rgba(178, 108, 242, .12) 0%, rgba(178, 108, 242, 0) 60%),
 		@ts-panel;
 	box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+	display: flex;
+	flex-direction: column;
 }
 
-.tsHero-banner,
-.tsHero .memberProfileBanner
+// The banner layer always fills the whole hero, whatever the image's aspect ratio.
+// !important beats inline/global rules such as an old `.memberProfileBanner { background: ... !important }`.
+.tsHero > .tsHero-banner,
+.tsHero > .memberProfileBanner
 {
 	position: relative;
 	display: block;
+	flex: 1 1 auto;
+	width: 100%;
 	min-height: 360px;
-	background-color: transparent;
-	background-size: cover;
-	background-repeat: no-repeat;
+	margin: 0;
+	border-radius: 0;
+	background-color: transparent !important;
+	background-size: cover !important;
+	background-repeat: no-repeat !important;
+	background-position-x: center;
 	transition: min-height .35s ease;
 }
 
-// Readability gradient: darker at the top-left (name) and the bottom (dock)
+// Readability gradient: a light touch at the top, darker at the bottom (meta row)
 .tsHero-shade
 {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
-	background:
-		linear-gradient(180deg, rgba(10, 13, 20, .55) 0%, rgba(10, 13, 20, 0) 32%, rgba(10, 13, 20, 0) 55%, rgba(10, 13, 20, .78) 100%),
-		linear-gradient(90deg, rgba(10, 13, 20, .55) 0%, rgba(10, 13, 20, 0) 45%);
+	background: linear-gradient(180deg, rgba(10, 13, 20, .28) 0%, rgba(10, 13, 20, 0) 26%, rgba(10, 13, 20, 0) 62%, rgba(10, 13, 20, .62) 100%);
 }
 
 .tsHero-inner
@@ -105,18 +112,10 @@
 	line-height: 1.1;
 	letter-spacing: -.01em;
 	color: #fff;
-	text-shadow: 0 2px 14px rgba(0, 0, 0, .55);
+	text-shadow: 0 1px 3px rgba(0, 0, 0, .35);
 	word-break: break-word;
 
 	.username { color: inherit; }
-}
-
-.tsHero-nameHistory
-{
-	font-size: 15px;
-	color: @ts-text-soft;
-	opacity: .8;
-	&:hover { color: @ts-accent; opacity: 1; text-decoration: none; }
 }
 
 .tsHero-banners
@@ -144,8 +143,9 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 10px;
+	flex: 0 1 auto;
+	min-width: 0;
 	max-width: 100%;
-	margin-top: 14px;
 	padding: 6px 14px 6px 6px;
 	border: 1px solid @ts-line-hi;
 	border-radius: @ts-radius-sm + 3px;
@@ -227,52 +227,6 @@
 	border-radius: 50%;
 	background: currentColor;
 	opacity: .6;
-}
-
-// ---- Follow / Ignore / Find / Report / Mod tools ----
-.tsHero-actions
-{
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 6px;
-	margin-top: 12px;
-
-	> .buttonGroup,
-	> .buttonGroup-buttonWrapper,
-	.buttonGroup
-	{
-		display: contents;
-	}
-
-	.button,
-	a.button
-	{
-		height: auto;
-		min-height: 0;
-		padding: 5px 11px;
-		border: 1px solid @ts-line-hi;
-		border-radius: 999px;
-		background: @ts-glass;
-		-webkit-backdrop-filter: blur(8px);
-		backdrop-filter: blur(8px);
-		color: @ts-text-soft;
-		font-size: 12px;
-		font-weight: 600;
-		line-height: 1.4;
-		box-shadow: none;
-		transition: color .15s ease, border-color .15s ease, background .15s ease;
-
-		&:hover,
-		&:focus,
-		&.is-menuOpen
-		{
-			color: @ts-accent;
-			border-color: rgba(60, 203, 219, .45);
-			background: rgba(13, 17, 25, .8);
-			text-decoration: none;
-		}
-	}
 }
 
 // ---- Wallet card (member_stat_pairs) ----
@@ -357,11 +311,20 @@
 	gap: 16px;
 }
 
+.tsHero-right
+{
+	display: flex;
+	flex: 0 0 auto;
+	align-items: flex-end;
+	gap: 10px;
+	margin-left: auto;
+}
+
 .tsDock
 {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
+	flex-wrap: nowrap;
+	gap: 8px;
 
 	&:empty { display: none; }
 }
@@ -372,9 +335,9 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: 7px;
-	width: 78px;
-	height: 60px;
+	gap: 6px;
+	width: 70px;
+	height: 54px;
 	border: 1px solid @ts-line-hi;
 	border-radius: @ts-radius-sm;
 	background: @ts-glass;
@@ -413,7 +376,6 @@
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	margin-left: auto;
 }
 
 .tsHero-pager
@@ -462,8 +424,8 @@
 // ---- Collapsed state: slim strip, wallet + dock stay reachable ----
 .tsHero.is-collapsed
 {
-	.tsHero-banner,
-	.memberProfileBanner
+	> .tsHero-banner,
+	> .memberProfileBanner
 	{
 		min-height: 0;
 	}
@@ -479,9 +441,10 @@
 	.tsHero-top { flex: 1 1 auto; align-items: center; }
 	.tsHero-name { font-size: 24px; }
 	.tsHero-meta,
-	.tsHero-actions,
 	.tsHero-banners,
 	.tsDock { display: none; }
+	.tsHero-bottom { flex: 0 0 auto; }
+	.tsHero-shade { background: rgba(10, 13, 20, .4); }
 
 	.tsWallet
 	{
@@ -506,14 +469,29 @@
 	border: 1px solid @ts-line;
 	border-radius: @ts-radius;
 	background: @ts-panel;
-	overflow: hidden;
+	// no overflow:hidden here, it would clip the Find / Moderator tools menus
+}
+
+.tsTabBar
+{
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding-right: 12px;
+	border-bottom: 1px solid @ts-line;
+	border-radius: @ts-radius @ts-radius 0 0;
+	background: @ts-panel;
 }
 
 .tsProfileTabs .block-tabHeader--memberTabs
 {
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0;
 	padding: 0 12px;
-	border-bottom: 1px solid @ts-line;
-	background: @ts-panel;
+	border: 0;
+	border-radius: @ts-radius 0 0 0;
+	background: transparent;
 
 	.tabs-tab
 	{
@@ -550,6 +528,108 @@
 	}
 }
 
+// ---- Toolbar (member actions, right side of the tab bar) ----
+// Known actions become icon buttons with a hover label; anything else
+// (e.g. buttons added by add-ons) stays a small text pill.
+.tsIconAct(@code)
+{
+	width: 32px;
+	padding: 0;
+	justify-content: center;
+
+	&::before
+	{
+		.m-faBase();
+		.m-faContent(@code);
+		font-size: 14px;
+		line-height: 1;
+	}
+
+	.button-text
+	{
+		position: absolute;
+		left: 50%;
+		bottom: ~"calc(100% + 8px)";
+		z-index: 5;
+		padding: 4px 8px;
+		border: 1px solid @ts-line-hi;
+		border-radius: 6px;
+		background: #0b0e14;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, .45);
+		color: @ts-text;
+		font-size: 11.5px;
+		font-weight: 600;
+		white-space: nowrap;
+		pointer-events: none;
+		opacity: 0;
+		transform: translate(-50%, 4px);
+		transition: opacity .12s ease, transform .12s ease;
+	}
+
+	&:hover .button-text,
+	&:focus-visible .button-text
+	{
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+}
+
+.tsToolbar
+{
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: 4px;
+	padding: 6px 0;
+
+	.buttonGroup,
+	.buttonGroup-buttonWrapper
+	{
+		display: contents;
+	}
+
+	.button,
+	a.button
+	{
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		height: 32px;
+		min-height: 0;
+		padding: 0 11px;
+		border: 1px solid transparent;
+		border-radius: 8px;
+		background: transparent;
+		box-shadow: none;
+		color: @ts-muted;
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 1;
+		transition: color .15s ease, background .15s ease, border-color .15s ease;
+
+		&:hover,
+		&:focus-visible,
+		&.is-menuOpen
+		{
+			color: @ts-accent;
+			background: @ts-accent-soft;
+			border-color: rgba(60, 203, 219, .25);
+			text-decoration: none;
+		}
+
+		// XF's menu caret is noise on icon buttons
+		&.menuTrigger::after { display: none; }
+	}
+
+	a.button[href*="/follow"]           { .tsIconAct("\f234"); } // user-plus
+	a.button[href*="/ignore"]           { .tsIconAct("\f070"); } // eye-slash
+	a.button[href*="conversations/add"] { .tsIconAct("\f0e0"); } // envelope
+	.button.menuTrigger:not(.tsAct)     { .tsIconAct("\f002"); } // search (Find)
+	.tsAct--report                      { .tsIconAct("\f024"); } // flag
+	.tsAct--mod                         { .tsIconAct("\f3ed"); } // shield-alt
+	.tsAct--banner                      { .tsIconAct("\f576"); } // fill-drip
+}
+
 // Panes sit flush inside the tab card
 .tsProfileTabs .tabPanes > li > .block,
 .tsProfileTabs .tabPanes > li > .block > .block-container
@@ -579,15 +659,15 @@
 // =============================================================
 @media (max-width: @xf-responsiveWide)
 {
-	.tsHero-banner,
-	.tsHero .memberProfileBanner { min-height: 320px; }
+	.tsHero > .tsHero-banner,
+	.tsHero > .memberProfileBanner { min-height: 320px; }
 	.tsHero-name { font-size: 34px; }
 }
 
 @media (max-width: @xf-responsiveMedium)
 {
-	.tsHero-banner,
-	.tsHero .memberProfileBanner { min-height: 0; }
+	.tsHero > .tsHero-banner,
+	.tsHero > .memberProfileBanner { min-height: 300px; }
 
 	.tsHero-inner { padding: 18px 16px 14px; gap: 18px; }
 
@@ -610,6 +690,19 @@
 	}
 
 	.tsHero-bottom { flex-direction: column; align-items: stretch; }
+	.tsHero-right { flex-direction: column; align-items: stretch; margin-left: 0; }
+	.tsHero-controls { justify-content: flex-end; }
+	.tsHero-meta { align-self: flex-start; }
+
+	// Toolbar gets its own row above the tabs
+	.tsTabBar { flex-wrap: wrap; padding-right: 0; }
+	.tsToolbar
+	{
+		order: -1;
+		width: 100%;
+		padding: 6px 10px;
+		border-bottom: 1px solid @ts-line;
+	}
 
 	.tsDock
 	{

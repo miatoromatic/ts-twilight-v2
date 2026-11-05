@@ -11,7 +11,8 @@ a{color:#3ccbdb;text-decoration:none}
 .block{margin-bottom:14px}
 .tabs{display:flex;margin:0}.hScroller-scroll{display:flex;overflow-x:auto}
 .tabPanes{list-style:none;margin:0;padding:0}
-.pairs{display:block}.button{display:inline-flex;cursor:pointer;text-decoration:none}
+.memberProfileBanner{background-size:contain;background-repeat:repeat}
+.pairs{display:block}.button{display:inline-flex;cursor:pointer;text-decoration:none;font:inherit}
 .userBanner{display:inline-block;font-style:normal}
 .avatar{display:block}.avatar img{display:block;width:100%;height:100%;object-fit:cover}
 .pv-dot{width:6px;height:6px;border-radius:999px;background:#4a5568;display:inline-block}
@@ -30,22 +31,29 @@ a{color:#3ccbdb;text-decoration:none}
   overflow: hidden;
   background: radial-gradient(120% 140% at 85% 0%, rgba(60, 203, 219, 0.14) 0%, rgba(60, 203, 219, 0) 55%), radial-gradient(90% 120% at 0% 100%, rgba(178, 108, 242, 0.12) 0%, rgba(178, 108, 242, 0) 60%), #131720;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
 }
-.tsHero-banner,
-.tsHero .memberProfileBanner {
+.tsHero > .tsHero-banner,
+.tsHero > .memberProfileBanner {
   position: relative;
   display: block;
+  flex: 1 1 auto;
+  width: 100%;
   min-height: 360px;
-  background-color: transparent;
-  background-size: cover;
-  background-repeat: no-repeat;
+  margin: 0;
+  border-radius: 0;
+  background-color: transparent !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position-x: center;
   transition: min-height 0.35s ease;
 }
 .tsHero-shade {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(10, 13, 20, 0.55) 0%, rgba(10, 13, 20, 0) 32%, rgba(10, 13, 20, 0) 55%, rgba(10, 13, 20, 0.78) 100%), linear-gradient(90deg, rgba(10, 13, 20, 0.55) 0%, rgba(10, 13, 20, 0) 45%);
+  background: linear-gradient(180deg, rgba(10, 13, 20, 0.28) 0%, rgba(10, 13, 20, 0) 26%, rgba(10, 13, 20, 0) 62%, rgba(10, 13, 20, 0.62) 100%);
 }
 .tsHero-inner {
   position: relative;
@@ -78,21 +86,11 @@ a{color:#3ccbdb;text-decoration:none}
   line-height: 1.1;
   letter-spacing: -0.01em;
   color: #fff;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   word-break: break-word;
 }
 .tsHero-name .username {
   color: inherit;
-}
-.tsHero-nameHistory {
-  font-size: 15px;
-  color: #b7bfcc;
-  opacity: 0.8;
-}
-.tsHero-nameHistory:hover {
-  color: #3ccbdb;
-  opacity: 1;
-  text-decoration: none;
 }
 .tsHero-banners {
   display: flex;
@@ -114,8 +112,9 @@ a{color:#3ccbdb;text-decoration:none}
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  flex: 0 1 auto;
+  min-width: 0;
   max-width: 100%;
-  margin-top: 14px;
   padding: 6px 14px 6px 6px;
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 12px;
@@ -190,46 +189,6 @@ a{color:#3ccbdb;text-decoration:none}
   background: currentColor;
   opacity: 0.6;
 }
-.tsHero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-}
-.tsHero-actions > .buttonGroup,
-.tsHero-actions > .buttonGroup-buttonWrapper,
-.tsHero-actions .buttonGroup {
-  display: contents;
-}
-.tsHero-actions .button,
-.tsHero-actions a.button {
-  height: auto;
-  min-height: 0;
-  padding: 5px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  border-radius: 999px;
-  background: rgba(12, 16, 24, 0.72);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  color: #b7bfcc;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.4;
-  box-shadow: none;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-}
-.tsHero-actions .button:hover,
-.tsHero-actions a.button:hover,
-.tsHero-actions .button:focus,
-.tsHero-actions a.button:focus,
-.tsHero-actions .button.is-menuOpen,
-.tsHero-actions a.button.is-menuOpen {
-  color: #3ccbdb;
-  border-color: rgba(60, 203, 219, 0.45);
-  background: rgba(13, 17, 25, 0.8);
-  text-decoration: none;
-}
 .tsWallet {
   flex: 0 0 auto;
   display: flex;
@@ -301,10 +260,17 @@ a{color:#3ccbdb;text-decoration:none}
   justify-content: space-between;
   gap: 16px;
 }
+.tsHero-right {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  gap: 10px;
+  margin-left: auto;
+}
 .tsDock {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-wrap: nowrap;
+  gap: 8px;
 }
 .tsDock:empty {
   display: none;
@@ -314,9 +280,9 @@ a{color:#3ccbdb;text-decoration:none}
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  width: 78px;
-  height: 60px;
+  gap: 6px;
+  width: 70px;
+  height: 54px;
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 9px;
   background: rgba(12, 16, 24, 0.72);
@@ -347,7 +313,6 @@ a{color:#3ccbdb;text-decoration:none}
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
 }
 .tsHero-pager {
   display: flex;
@@ -387,8 +352,8 @@ a{color:#3ccbdb;text-decoration:none}
   color: #3ccbdb;
   border-color: rgba(60, 203, 219, 0.5);
 }
-.tsHero.is-collapsed .tsHero-banner,
-.tsHero.is-collapsed .memberProfileBanner {
+.tsHero.is-collapsed > .tsHero-banner,
+.tsHero.is-collapsed > .memberProfileBanner {
   min-height: 0;
 }
 .tsHero.is-collapsed .tsHero-inner {
@@ -405,10 +370,15 @@ a{color:#3ccbdb;text-decoration:none}
   font-size: 24px;
 }
 .tsHero.is-collapsed .tsHero-meta,
-.tsHero.is-collapsed .tsHero-actions,
 .tsHero.is-collapsed .tsHero-banners,
 .tsHero.is-collapsed .tsDock {
   display: none;
+}
+.tsHero.is-collapsed .tsHero-bottom {
+  flex: 0 0 auto;
+}
+.tsHero.is-collapsed .tsHero-shade {
+  background: rgba(10, 13, 20, 0.4);
 }
 .tsHero.is-collapsed .tsWallet {
   flex-direction: row;
@@ -424,12 +394,24 @@ a{color:#3ccbdb;text-decoration:none}
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   background: #131720;
-  overflow: hidden;
+}
+.tsTabBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px 12px 0 0;
+  background: #131720;
 }
 .tsProfileTabs .block-tabHeader--memberTabs {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
   padding: 0 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: #131720;
+  border: 0;
+  border-radius: 12px 0 0 0;
+  background: transparent;
 }
 .tsProfileTabs .block-tabHeader--memberTabs .tabs-tab {
   position: relative;
@@ -462,6 +444,316 @@ a{color:#3ccbdb;text-decoration:none}
 .tsProfileTabs .block-tabHeader--memberTabs .tabs-tab.is-active::after {
   transform: scaleX(1);
 }
+.tsToolbar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+}
+.tsToolbar .buttonGroup,
+.tsToolbar .buttonGroup-buttonWrapper {
+  display: contents;
+}
+.tsToolbar .button,
+.tsToolbar a.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  min-height: 0;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+  color: #7f8a9c;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.tsToolbar .button:hover,
+.tsToolbar a.button:hover,
+.tsToolbar .button:focus-visible,
+.tsToolbar a.button:focus-visible,
+.tsToolbar .button.is-menuOpen,
+.tsToolbar a.button.is-menuOpen {
+  color: #3ccbdb;
+  background: rgba(60, 203, 219, 0.13);
+  border-color: rgba(60, 203, 219, 0.25);
+  text-decoration: none;
+}
+.tsToolbar .button.menuTrigger::after,
+.tsToolbar a.button.menuTrigger::after {
+  display: none;
+}
+.tsToolbar a.button[href*="/follow"] {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.tsToolbar a.button[href*="/follow"]::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  content: "\f234";
+  font-size: 14px;
+  line-height: 1;
+}
+.tsToolbar a.button[href*="/follow"] .button-text {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  background: #0b0e14;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  color: #e7eaf0;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.tsToolbar a.button[href*="/follow"]:hover .button-text,
+.tsToolbar a.button[href*="/follow"]:focus-visible .button-text {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.tsToolbar a.button[href*="/ignore"] {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.tsToolbar a.button[href*="/ignore"]::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  content: "\f070";
+  font-size: 14px;
+  line-height: 1;
+}
+.tsToolbar a.button[href*="/ignore"] .button-text {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  background: #0b0e14;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  color: #e7eaf0;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.tsToolbar a.button[href*="/ignore"]:hover .button-text,
+.tsToolbar a.button[href*="/ignore"]:focus-visible .button-text {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.tsToolbar a.button[href*="conversations/add"] {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.tsToolbar a.button[href*="conversations/add"]::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  content: "\f0e0";
+  font-size: 14px;
+  line-height: 1;
+}
+.tsToolbar a.button[href*="conversations/add"] .button-text {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  background: #0b0e14;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  color: #e7eaf0;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.tsToolbar a.button[href*="conversations/add"]:hover .button-text,
+.tsToolbar a.button[href*="conversations/add"]:focus-visible .button-text {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.tsToolbar .button.menuTrigger:not(.tsAct) {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.tsToolbar .button.menuTrigger:not(.tsAct)::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  content: "\f002";
+  font-size: 14px;
+  line-height: 1;
+}
+.tsToolbar .button.menuTrigger:not(.tsAct) .button-text {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  background: #0b0e14;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  color: #e7eaf0;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.tsToolbar .button.menuTrigger:not(.tsAct):hover .button-text,
+.tsToolbar .button.menuTrigger:not(.tsAct):focus-visible .button-text {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.tsToolbar .tsAct--report {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.tsToolbar .tsAct--report::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  content: "\f024";
+  font-size: 14px;
+  line-height: 1;
+}
+.tsToolbar .tsAct--report .button-text {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  background: #0b0e14;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  color: #e7eaf0;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.tsToolbar .tsAct--report:hover .button-text,
+.tsToolbar .tsAct--report:focus-visible .button-text {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.tsToolbar .tsAct--mod {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.tsToolbar .tsAct--mod::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  content: "\f3ed";
+  font-size: 14px;
+  line-height: 1;
+}
+.tsToolbar .tsAct--mod .button-text {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  background: #0b0e14;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  color: #e7eaf0;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.tsToolbar .tsAct--mod:hover .button-text,
+.tsToolbar .tsAct--mod:focus-visible .button-text {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.tsToolbar .tsAct--banner {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.tsToolbar .tsAct--banner::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  content: "\f576";
+  font-size: 14px;
+  line-height: 1;
+}
+.tsToolbar .tsAct--banner .button-text {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  background: #0b0e14;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  color: #e7eaf0;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.tsToolbar .tsAct--banner:hover .button-text,
+.tsToolbar .tsAct--banner:focus-visible .button-text {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
 .tsProfileTabs .tabPanes > li > .block,
 .tsProfileTabs .tabPanes > li > .block > .block-container {
   margin: 0;
@@ -480,8 +772,8 @@ a{color:#3ccbdb;text-decoration:none}
   color: #7f8a9c;
 }
 @media (max-width: 900px) {
-  .tsHero-banner,
-  .tsHero .memberProfileBanner {
+  .tsHero > .tsHero-banner,
+  .tsHero > .memberProfileBanner {
     min-height: 320px;
   }
   .tsHero-name {
@@ -489,9 +781,9 @@ a{color:#3ccbdb;text-decoration:none}
   }
 }
 @media (max-width: 650px) {
-  .tsHero-banner,
-  .tsHero .memberProfileBanner {
-    min-height: 0;
+  .tsHero > .tsHero-banner,
+  .tsHero > .memberProfileBanner {
+    min-height: 300px;
   }
   .tsHero-inner {
     padding: 18px 16px 14px;
@@ -524,6 +816,27 @@ a{color:#3ccbdb;text-decoration:none}
     flex-direction: column;
     align-items: stretch;
   }
+  .tsHero-right {
+    flex-direction: column;
+    align-items: stretch;
+    margin-left: 0;
+  }
+  .tsHero-controls {
+    justify-content: flex-end;
+  }
+  .tsHero-meta {
+    align-self: flex-start;
+  }
+  .tsTabBar {
+    flex-wrap: wrap;
+    padding-right: 0;
+  }
+  .tsToolbar {
+    order: -1;
+    width: 100%;
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
   .tsDock {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -551,28 +864,11 @@ a{color:#3ccbdb;text-decoration:none}
    <div class="tsHero-inner">
     <div class="tsHero-top">
      <div class="tsHero-identity">
-      <h1 class="tsHero-name"><span class="username">Asch</span>
-       <a class="tsHero-nameHistory" title="Username changed"><i class="fas fa-history"></i></a></h1>
+      <h1 class="tsHero-name"><span class="username">Asch</span></h1>
       <div class="tsHero-banners">
        <em class="userBanner" style="background:#8e2a46;color:#fff">STAFF</em>
        <em class="userBanner" style="background:#2a3a55;color:#cfe3ff">H</em>
        <em class="userBanner" style="background:#2a3a55;color:#cfe3ff">E</em>
-      </div>
-      <div class="tsHero-meta">
-       <span class="tsHero-avatar"><a class="avatar avatar--s"><img src="../images/avatar.png" width="40" height="40" alt=""></a>
-        <a class="tsHero-avatarEdit" href="#"><i class="fas fa-pen"></i></a></span>
-       <div class="tsHero-metaText">
-        <div class="tsHero-blurb">Administrator</div>
-        <div class="tsHero-seen"><span>Joined <time class="u-dt">Jan 26, 2022</time></span><span class="tsHero-dot"></span><span>Last seen <a>1 minute ago</a> · Viewing member profile Asch</span></div>
-       </div>
-      </div>
-      <div class="tsHero-actions">
-       <a class="button--link button" href="#"><span class="button-text">Follow</span></a>
-       <a class="button--link button" href="#"><span class="button-text">Ignore</span></a>
-       <a class="button--link button" href="#"><span class="button-text">Start conversation</span></a>
-       <a class="button--link button" href="#"><span class="button-text">Find ▾</span></a>
-       <a class="button--link button" href="#"><span class="button-text">Report</span></a>
-       <a class="button--link button" href="#"><span class="button-text">Moderator tools ▾</span></a>
       </div>
      </div>
      <div class="tsWallet">
@@ -584,16 +880,24 @@ a{color:#3ccbdb;text-decoration:none}
      </div>
     </div>
     <div class="tsHero-bottom">
-     <div class="tsDock">
-      <a href="#" class="tsDock-tile"><i class="fas fa-cube tsDock-icon"></i><span class="tsDock-label">Stats</span></a>
-      <a href="#" class="tsDock-tile"><i class="fas fa-briefcase tsDock-icon"></i><span class="tsDock-label">Inventory</span></a>
-      <a href="#" class="tsDock-tile"><i class="fas fa-shopping-cart tsDock-icon"></i><span class="tsDock-label">Shop</span></a>
-      <a href="#" class="tsDock-tile"><i class="fas fa-khanda tsDock-icon"></i><span class="tsDock-label">Build</span></a>
-      <a href="#" class="tsDock-tile"><i class="fas fa-fill-drip tsDock-icon"></i><span class="tsDock-label">Banner</span></a>
+     <div class="tsHero-meta">
+      <span class="tsHero-avatar"><a class="avatar avatar--s"><img src="../images/avatar.png" width="40" height="40" alt=""></a>
+       <a class="tsHero-avatarEdit" href="#"><i class="fas fa-pen"></i></a></span>
+      <div class="tsHero-metaText">
+       <div class="tsHero-blurb">Administrator</div>
+       <div class="tsHero-seen"><span>Joined <time class="u-dt">Jan 26, 2022</time></span><span class="tsHero-dot"></span><span>Last seen <a>1 minute ago</a> · Viewing member profile Asch</span></div>
+      </div>
      </div>
-     <div class="tsHero-controls">
-      <div class="tsHero-pager js-tsHeroPager"><i class="fas fa-chevron-left"></i><span class="pv-dot is-on"></span><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-dot"></span><i class="fas fa-chevron-right"></i><i class="fas fa-play" style="margin-left:8px;color:#3ccbdb"></i></div>
-      <button type="button" class="tsHero-collapse js-tsHeroCollapse" title="Collapse banner"><i class="fas fa-compress-alt"></i></button>
+     <div class="tsHero-right">
+      <div class="tsDock">
+       <a href="#" class="tsDock-tile"><i class="fas fa-briefcase tsDock-icon"></i><span class="tsDock-label">Inventory</span></a>
+       <a href="#" class="tsDock-tile"><i class="fas fa-shopping-cart tsDock-icon"></i><span class="tsDock-label">Shop</span></a>
+       <a href="#" class="tsDock-tile"><i class="fas fa-khanda tsDock-icon"></i><span class="tsDock-label">Build</span></a>
+      </div>
+      <div class="tsHero-controls">
+       <div class="tsHero-pager js-tsHeroPager"><i class="fas fa-chevron-left"></i><span class="pv-dot is-on"></span><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-dot"></span><i class="fas fa-chevron-right"></i><i class="fas fa-play" style="margin-left:8px;color:#3ccbdb"></i></div>
+       <button type="button" class="tsHero-collapse js-tsHeroCollapse" title="Collapse banner"><i class="fas fa-compress-alt"></i></button>
+      </div>
      </div>
     </div>
    </div>
@@ -601,8 +905,21 @@ a{color:#3ccbdb;text-decoration:none}
  </div>
 </div>
 <div class="block tsProfileTabs"><div class="block-container">
- <h2 class="block-tabHeader block-tabHeader--memberTabs tabs"><span class="hScroller-scroll">
-  <a class="tabs-tab is-active">Profile posts</a><a class="tabs-tab">Latest activity</a><a class="tabs-tab">Postings</a><a class="tabs-tab">About</a></span></h2>
+ <div class="tsTabBar">
+  <h2 class="block-tabHeader block-tabHeader--memberTabs tabs"><span class="hScroller-scroll">
+   <a class="tabs-tab is-active">Profile posts</a><a class="tabs-tab">Latest activity</a><a class="tabs-tab">Postings</a><a class="tabs-tab">About</a></span></h2>
+  <div class="tsToolbar">
+   <div class="buttonGroup">
+    <a href="/members/asch.1/follow" class="button--link button"><span class="button-text">Follow</span></a>
+    <a href="/members/asch.1/ignore" class="button--link button"><span class="button-text">Ignore</span></a>
+    <a href="/conversations/add?to=Asch" class="button--link button"><span class="button-text">Start conversation</span></a>
+    <div class="buttonGroup-buttonWrapper"><button class="button--link menuTrigger button"><span class="button-text">Find</span></button></div>
+   </div>
+   <a href="/members/asch.1/report" class="button--link tsAct tsAct--report button"><span class="button-text">Report</span></a>
+   <div class="buttonGroup-buttonWrapper"><button class="button--link menuTrigger tsAct tsAct--mod button"><span class="button-text">Moderator tools</span></button></div>
+   <a href="/account/banner" class="button--link tsAct tsAct--banner button"><span class="button-text">Banner</span></a>
+  </div>
+ </div>
  <ul class="tabPanes"><li class="is-active"><div class="block"><div class="block-container"><div class="block-body">
   <div class="pv-post"><img src="../images/avatar.png"><div><b>Shadow</b> <span class="pv-muted">· Today at 3:27 PM</span><p>Welcome back! The October monthly rewards are up.</p></div></div>
   <div class="pv-post"><img src="../images/discord.png"><div><b>Dreikel</b> <span class="pv-muted">· Today at 4:52 AM</span><p>Blood Vipers comms are open again — ping me.</p></div></div>
