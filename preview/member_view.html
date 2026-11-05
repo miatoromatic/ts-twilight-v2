@@ -1,0 +1,616 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Member Profile Preview</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+/* --- preview-only: minimal stand-ins for XF base styles --- */
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0f131a;color:#e7eaf0;font:14px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif}
+a{color:#3ccbdb;text-decoration:none}
+.p-body-inner{max-width:920px;margin:0 auto;padding:24px 16px}
+.block{margin-bottom:14px}
+.tabs{display:flex;margin:0}.hScroller-scroll{display:flex;overflow-x:auto}
+.tabPanes{list-style:none;margin:0;padding:0}
+.pairs{display:block}.button{display:inline-flex;cursor:pointer;text-decoration:none}
+.userBanner{display:inline-block;font-style:normal}
+.avatar{display:block}.avatar img{display:block;width:100%;height:100%;object-fit:cover}
+.pv-dot{width:6px;height:6px;border-radius:999px;background:#4a5568;display:inline-block}
+.pv-dot.is-on{width:20px;background:#3ccbdb}
+.pv-post{display:flex;gap:12px;padding:14px 16px;border-top:1px solid rgba(255,255,255,.06)}
+.pv-post:first-child{border-top:0}.pv-post img{width:40px;height:40px;border-radius:9px}
+.pv-post p{margin:4px 0 0;color:#b7bfcc}.pv-muted{color:#7f8a9c;font-size:12px}
+/* --- compiled ts_member_view.less --- */
+.tsProfile {
+  margin-bottom: 14px;
+}
+.tsHero {
+  position: relative;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  overflow: hidden;
+  background: radial-gradient(120% 140% at 85% 0%, rgba(60, 203, 219, 0.14) 0%, rgba(60, 203, 219, 0) 55%), radial-gradient(90% 120% at 0% 100%, rgba(178, 108, 242, 0.12) 0%, rgba(178, 108, 242, 0) 60%), #131720;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.tsHero-banner,
+.tsHero .memberProfileBanner {
+  position: relative;
+  display: block;
+  min-height: 360px;
+  background-color: transparent;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: min-height 0.35s ease;
+}
+.tsHero-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(10, 13, 20, 0.55) 0%, rgba(10, 13, 20, 0) 32%, rgba(10, 13, 20, 0) 55%, rgba(10, 13, 20, 0.78) 100%), linear-gradient(90deg, rgba(10, 13, 20, 0.55) 0%, rgba(10, 13, 20, 0) 45%);
+}
+.tsHero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: inherit;
+  padding: 22px 24px 18px;
+  box-sizing: border-box;
+}
+.tsHero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.tsHero-identity {
+  min-width: 0;
+}
+.tsHero-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+  word-break: break-word;
+}
+.tsHero-name .username {
+  color: inherit;
+}
+.tsHero-nameHistory {
+  font-size: 15px;
+  color: #b7bfcc;
+  opacity: 0.8;
+}
+.tsHero-nameHistory:hover {
+  color: #3ccbdb;
+  opacity: 1;
+  text-decoration: none;
+}
+.tsHero-banners {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.tsHero-banners .userBanner {
+  margin: 0;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.tsHero-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin-top: 14px;
+  padding: 6px 14px 6px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  background: rgba(12, 16, 24, 0.72);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+  color: #b7bfcc;
+  font-size: 12.5px;
+}
+.tsHero-avatar {
+  position: relative;
+  flex: 0 0 auto;
+}
+.tsHero-avatar .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.tsHero-avatar .avatar img {
+  border-radius: inherit;
+}
+.tsHero-avatarEdit {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3ccbdb;
+  color: #0f131a;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.tsHero-avatar:hover .tsHero-avatarEdit,
+.tsHero-avatarEdit:focus {
+  opacity: 1;
+  text-decoration: none;
+}
+.tsHero-metaText {
+  min-width: 0;
+  line-height: 1.45;
+}
+.tsHero-blurb {
+  color: #e7eaf0;
+  font-weight: 600;
+  font-size: 13px;
+}
+.tsHero-blurb a {
+  color: inherit;
+}
+.tsHero-seen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  color: #7f8a9c;
+}
+.tsHero-seen .u-dt,
+.tsHero-seen a {
+  color: #b7bfcc;
+}
+.tsHero-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+.tsHero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+.tsHero-actions > .buttonGroup,
+.tsHero-actions > .buttonGroup-buttonWrapper,
+.tsHero-actions .buttonGroup {
+  display: contents;
+}
+.tsHero-actions .button,
+.tsHero-actions a.button {
+  height: auto;
+  min-height: 0;
+  padding: 5px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(12, 16, 24, 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #b7bfcc;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: none;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.tsHero-actions .button:hover,
+.tsHero-actions a.button:hover,
+.tsHero-actions .button:focus,
+.tsHero-actions a.button:focus,
+.tsHero-actions .button.is-menuOpen,
+.tsHero-actions a.button.is-menuOpen {
+  color: #3ccbdb;
+  border-color: rgba(60, 203, 219, 0.45);
+  background: rgba(13, 17, 25, 0.8);
+  text-decoration: none;
+}
+.tsWallet {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 168px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 9px;
+  background: rgba(12, 16, 24, 0.72);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+.tsWallet .pairs,
+.tsWallet .pairs.pairs--rows {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0;
+  padding: 4px 0;
+  min-width: 0;
+  text-align: left;
+}
+.tsWallet .pairs > dt,
+.tsWallet .pairs.pairs--rows > dt {
+  order: 0;
+  margin: 0;
+  padding: 0;
+  color: #b7bfcc;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.tsWallet .pairs > dd,
+.tsWallet .pairs.pairs--rows > dd {
+  order: 1;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #e7eaf0;
+}
+.tsWallet .pairs a,
+.tsWallet .pairs.pairs--rows a {
+  color: inherit;
+}
+.tsWallet .pairs + .pairs {
+  border-left: 0;
+}
+.tsWallet .pairs.ts-gold > dd {
+  color: #f5b83d;
+}
+.tsWallet .pairs.ts-mastery > dd {
+  color: #46c9d6;
+}
+.tsWallet .pairs.ts-valor > dd {
+  color: #b26cf2;
+}
+.tsWallet .pairJustifier {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tsHero-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.tsDock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tsDock:empty {
+  display: none;
+}
+.tsDock-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 78px;
+  height: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 9px;
+  background: rgba(12, 16, 24, 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #e7eaf0;
+  text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.tsDock-tile:hover,
+.tsDock-tile:focus-visible {
+  color: #3ccbdb;
+  border-color: rgba(60, 203, 219, 0.5);
+  background: rgba(18, 40, 46, 0.75);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.tsDock-icon {
+  font-size: 17px;
+  line-height: 1;
+}
+.tsDock-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1;
+}
+.tsHero-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.tsHero-pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(12, 16, 24, 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #b7bfcc;
+}
+.tsHero-pager:empty {
+  display: none;
+}
+.tsHero-collapse {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 50%;
+  background: rgba(12, 16, 24, 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #b7bfcc;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.tsHero-collapse:hover,
+.tsHero-collapse:focus-visible {
+  color: #3ccbdb;
+  border-color: rgba(60, 203, 219, 0.5);
+}
+.tsHero.is-collapsed .tsHero-banner,
+.tsHero.is-collapsed .memberProfileBanner {
+  min-height: 0;
+}
+.tsHero.is-collapsed .tsHero-inner {
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+}
+.tsHero.is-collapsed .tsHero-top {
+  flex: 1 1 auto;
+  align-items: center;
+}
+.tsHero.is-collapsed .tsHero-name {
+  font-size: 24px;
+}
+.tsHero.is-collapsed .tsHero-meta,
+.tsHero.is-collapsed .tsHero-actions,
+.tsHero.is-collapsed .tsHero-banners,
+.tsHero.is-collapsed .tsDock {
+  display: none;
+}
+.tsHero.is-collapsed .tsWallet {
+  flex-direction: row;
+  gap: 18px;
+  padding: 6px 14px;
+  min-width: 0;
+}
+.tsHero.is-collapsed .tsHero-collapse .fa--xf,
+.tsHero.is-collapsed .tsHero-collapse i {
+  transform: rotate(180deg);
+}
+.tsProfileTabs > .block-container {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  background: #131720;
+  overflow: hidden;
+}
+.tsProfileTabs .block-tabHeader--memberTabs {
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: #131720;
+}
+.tsProfileTabs .block-tabHeader--memberTabs .tabs-tab {
+  position: relative;
+  padding: 14px 12px 13px;
+  border: 0;
+  color: #7f8a9c;
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.tsProfileTabs .block-tabHeader--memberTabs .tabs-tab::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: #3ccbdb;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+.tsProfileTabs .block-tabHeader--memberTabs .tabs-tab:hover {
+  color: #e7eaf0;
+}
+.tsProfileTabs .block-tabHeader--memberTabs .tabs-tab.is-active {
+  color: #fff;
+}
+.tsProfileTabs .block-tabHeader--memberTabs .tabs-tab.is-active::after {
+  transform: scaleX(1);
+}
+.tsProfileTabs .tabPanes > li > .block,
+.tsProfileTabs .tabPanes > li > .block > .block-container {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.tsProfileTabs .tabPanes > li > .block > .block-outer {
+  padding: 8px 14px;
+}
+.tsProfileTabs .blockMessage {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: #7f8a9c;
+}
+@media (max-width: 900px) {
+  .tsHero-banner,
+  .tsHero .memberProfileBanner {
+    min-height: 320px;
+  }
+  .tsHero-name {
+    font-size: 34px;
+  }
+}
+@media (max-width: 650px) {
+  .tsHero-banner,
+  .tsHero .memberProfileBanner {
+    min-height: 0;
+  }
+  .tsHero-inner {
+    padding: 18px 16px 14px;
+    gap: 18px;
+  }
+  .tsHero-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tsHero-name {
+    font-size: 28px;
+  }
+  .tsWallet {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 16px;
+    min-width: 0;
+  }
+  .tsWallet .pairs,
+  .tsWallet .pairs.pairs--rows {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+  .tsWallet .pairs.pairs--rows > dt {
+    font-size: 11px;
+  }
+  .tsHero-bottom {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tsDock {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tsDock::-webkit-scrollbar {
+    display: none;
+  }
+  .tsDock-tile {
+    flex: 0 0 auto;
+    width: 70px;
+    height: 56px;
+  }
+  .tsHero.is-collapsed .tsWallet {
+    display: none;
+  }
+}
+</style></head><body>
+<div class="p-body"><div class="p-body-inner">
+<div class="block tsProfile">
+ <div class="tsHero tsHero--withBanner js-tsHero">
+  <div class="memberProfileBanner tsHero-banner" style="background-image:url(../images/user-banner.jpg);background-position-y:30%">
+   <div class="tsHero-shade"></div>
+   <div class="tsHero-inner">
+    <div class="tsHero-top">
+     <div class="tsHero-identity">
+      <h1 class="tsHero-name"><span class="username">Asch</span>
+       <a class="tsHero-nameHistory" title="Username changed"><i class="fas fa-history"></i></a></h1>
+      <div class="tsHero-banners">
+       <em class="userBanner" style="background:#8e2a46;color:#fff">STAFF</em>
+       <em class="userBanner" style="background:#2a3a55;color:#cfe3ff">H</em>
+       <em class="userBanner" style="background:#2a3a55;color:#cfe3ff">E</em>
+      </div>
+      <div class="tsHero-meta">
+       <span class="tsHero-avatar"><a class="avatar avatar--s"><img src="../images/avatar.png" width="40" height="40" alt=""></a>
+        <a class="tsHero-avatarEdit" href="#"><i class="fas fa-pen"></i></a></span>
+       <div class="tsHero-metaText">
+        <div class="tsHero-blurb">Administrator</div>
+        <div class="tsHero-seen"><span>Joined <time class="u-dt">Jan 26, 2022</time></span><span class="tsHero-dot"></span><span>Last seen <a>1 minute ago</a> · Viewing member profile Asch</span></div>
+       </div>
+      </div>
+      <div class="tsHero-actions">
+       <a class="button--link button" href="#"><span class="button-text">Follow</span></a>
+       <a class="button--link button" href="#"><span class="button-text">Ignore</span></a>
+       <a class="button--link button" href="#"><span class="button-text">Start conversation</span></a>
+       <a class="button--link button" href="#"><span class="button-text">Find ▾</span></a>
+       <a class="button--link button" href="#"><span class="button-text">Report</span></a>
+       <a class="button--link button" href="#"><span class="button-text">Moderator tools ▾</span></a>
+      </div>
+     </div>
+     <div class="tsWallet">
+      <dl class="pairs pairs--rows"><dt>Messages</dt><dd>103</dd></dl>
+      <dl class="pairs pairs--rows"><dt>Fame</dt><dd>358</dd></dl>
+      <dl class="pairs pairs--rows ts-gold"><dt>Gold</dt><dd>120</dd></dl>
+      <dl class="pairs pairs--rows ts-mastery"><dt>Mastery</dt><dd>60</dd></dl>
+      <dl class="pairs pairs--rows ts-valor"><dt>Valor</dt><dd>3</dd></dl>
+     </div>
+    </div>
+    <div class="tsHero-bottom">
+     <div class="tsDock">
+      <a href="#" class="tsDock-tile"><i class="fas fa-cube tsDock-icon"></i><span class="tsDock-label">Stats</span></a>
+      <a href="#" class="tsDock-tile"><i class="fas fa-briefcase tsDock-icon"></i><span class="tsDock-label">Inventory</span></a>
+      <a href="#" class="tsDock-tile"><i class="fas fa-shopping-cart tsDock-icon"></i><span class="tsDock-label">Shop</span></a>
+      <a href="#" class="tsDock-tile"><i class="fas fa-khanda tsDock-icon"></i><span class="tsDock-label">Build</span></a>
+      <a href="#" class="tsDock-tile"><i class="fas fa-fill-drip tsDock-icon"></i><span class="tsDock-label">Banner</span></a>
+     </div>
+     <div class="tsHero-controls">
+      <div class="tsHero-pager js-tsHeroPager"><i class="fas fa-chevron-left"></i><span class="pv-dot is-on"></span><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-dot"></span><i class="fas fa-chevron-right"></i><i class="fas fa-play" style="margin-left:8px;color:#3ccbdb"></i></div>
+      <button type="button" class="tsHero-collapse js-tsHeroCollapse" title="Collapse banner"><i class="fas fa-compress-alt"></i></button>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>
+<div class="block tsProfileTabs"><div class="block-container">
+ <h2 class="block-tabHeader block-tabHeader--memberTabs tabs"><span class="hScroller-scroll">
+  <a class="tabs-tab is-active">Profile posts</a><a class="tabs-tab">Latest activity</a><a class="tabs-tab">Postings</a><a class="tabs-tab">About</a></span></h2>
+ <ul class="tabPanes"><li class="is-active"><div class="block"><div class="block-container"><div class="block-body">
+  <div class="pv-post"><img src="../images/avatar.png"><div><b>Shadow</b> <span class="pv-muted">· Today at 3:27 PM</span><p>Welcome back! The October monthly rewards are up.</p></div></div>
+  <div class="pv-post"><img src="../images/discord.png"><div><b>Dreikel</b> <span class="pv-muted">· Today at 4:52 AM</span><p>Blood Vipers comms are open again — ping me.</p></div></div>
+ </div></div></div></li></ul>
+</div></div>
+</div></div>
+<script>
+(function(){var h=document.querySelector('.js-tsHero'),b=h.querySelector('.js-tsHeroCollapse');
+b.addEventListener('click',function(){h.classList.toggle('is-collapsed');});
+if(location.hash==='#collapsed')h.classList.add('is-collapsed');})();
+</script></body></html>

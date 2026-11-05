@@ -1,0 +1,411 @@
+<xf:title page="{$page}">{$user.username}</xf:title>
+<xf:h1 hidden="true" />
+
+<xf:if is="!$user.isSearchEngineIndexable()">
+	<xf:head option="metaNoindex"><meta name="robots" content="noindex" /></xf:head>
+</xf:if>
+
+<xf:macro template="metadata_macros" name="metadata"
+	arg-shareUrl="{{ link('canonical:members', $user) }}"
+	arg-canonicalUrl="{{ link('canonical:members', $user, {'page': $page}) }}"
+	arg-imageUrl="{$user.getAvatarUrl('o', null, true)}" />
+
+<xf:page option="ldJsonHtml">
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "Person",
+		"name": "{$user.username|escape('json')}",
+		"image": "{$user.getAvatarUrl('o', null, true)|escape('json')}"
+	}
+	</script>
+</xf:page>
+
+<xf:css src="member.less" />
+<xf:css src="ts_member_view.less" />
+
+<!--
+	==========================================================
+	Terrasphere — profile hero dock
+	Set a URL to show a tile, leave it empty ("") to hide it.
+	==========================================================
+-->
+<xf:set var="$tsDockStats" value="{{ link('members/about', $user) }}" />
+<xf:set var="$tsDockInventory" value="" />
+<xf:set var="$tsDockShop" value="" />
+<xf:set var="$tsDockBuild" value="" />
+
+<xf:set var="$tsIsSelf" value="{{ $user.user_id == $xf.visitor.user_id }}" />
+
+<div class="block tsProfile">
+	<div class="tsHero {{ $user.Profile.banner_date ? 'tsHero--withBanner' : 'tsHero--noBanner' }} js-tsHero">
+		<xf:profilebanner user="$user" size="l" class="tsHero-banner" toggle="tsHero--withBanner">
+			<div class="tsHero-shade"></div>
+
+			<div class="tsHero-inner">
+
+				<!-- ===== Top row: identity + wallet ===== -->
+				<div class="tsHero-top">
+					<div class="tsHero-identity">
+						<h1 class="tsHero-name">
+							<xf:username user="{$user}" rich="true" href="" />
+							<xf:if is="$user.hasViewableUsernameHistory()">
+								<a class="tsHero-nameHistory"
+									data-xf-click="menu"
+									data-xf-init="tooltip"
+									title="{{ phrase('username_changed')|for_attr }}"
+									role="button"
+									tabindex="0"
+									aria-expanded="false"
+									aria-haspopup="true"
+									aria-label="{{ phrase('username_changed')|for_attr }}"><xf:fa icon="fa-history" /></a>
+								<div class="menu" data-menu="menu" aria-hidden="true"
+									data-href="{{ link('members/username-history', $user, {'menu': 1}) }}"
+									data-load-target=".js-usernameHistoryBody">
+									<div class="menu-content">
+										<h3 class="menu-header">{{ phrase('previous_usernames') }}</h3>
+										<div class="js-usernameHistoryBody">
+											<div class="menu-row">{{ phrase('loading...') }}</div>
+										</div>
+									</div>
+								</div>
+							</xf:if>
+						</h1>
+
+						<xf:if contentcheck="true">
+							<div class="tsHero-banners">
+								<xf:contentcheck><xf:userbanners user="$user" /></xf:contentcheck>
+							</div>
+						</xf:if>
+
+						<div class="tsHero-meta">
+							<span class="tsHero-avatar">
+								<xf:avatar user="{$user}" size="s" href="{{ $user.getAvatarUrl('o') ?: '' }}" />
+								<xf:if is="$tsIsSelf && $xf.visitor.canUploadAvatar()">
+									<a class="tsHero-avatarEdit" href="{{ link('account/avatar') }}" data-xf-click="overlay"
+										aria-label="{{ phrase('edit')|for_attr }}"><xf:fa icon="fa-pen" /></a>
+								</xf:if>
+							</span>
+							<div class="tsHero-metaText">
+								<xf:userblurb user="$user" tag="div" class="tsHero-blurb" />
+								<div class="tsHero-seen">
+									<span>{{ phrase('joined') }} <xf:date time="$user.register_date" /></span>
+									<xf:if contentcheck="true">
+										<span class="tsHero-dot" aria-hidden="true"></span>
+										<span>{{ phrase('last_seen') }}
+											<xf:contentcheck><xf:useractivity user="$user" class="pairs--plainLabel" /></xf:contentcheck>
+										</span>
+									</xf:if>
+								</div>
+							</div>
+						</div>
+
+						<!-- Follow / Ignore / Start conversation / Find + Report / Mod tools -->
+						<xf:if contentcheck="true">
+							<div class="tsHero-actions">
+								<xf:contentcheck>
+									<xf:macro template="member_macros" name="member_action_buttons"
+										arg-user="{$user}"
+										arg-context="profile" />
+
+									<xf:if is="$user.canBeReported()">
+										<xf:button href="{{ link('members/report', $user) }}"
+											class="button--link" overlay="true">
+											{{ phrase('report_verb') }}
+										</xf:button>
+									</xf:if>
+
+									<xf:if contentcheck="true">
+										<div class="buttonGroup-buttonWrapper">
+											<xf:button class="button--link menuTrigger" data-xf-click="menu" aria-expanded="false" aria-haspopup="true">{{ phrase('moderator_tools') }}</xf:button>
+											<div class="menu" data-menu="menu" aria-hidden="true">
+												<div class="menu-content">
+													<h3 class="menu-header">{{ phrase('moderator_tools') }}</h3>
+													<xf:contentcheck>
+														<xf:macro template="member_macros" name="moderator_menu_actions"
+															arg-user="{$user}"
+															arg-context="profile" />
+													</xf:contentcheck>
+												</div>
+											</div>
+										</div>
+									</xf:if>
+								</xf:contentcheck>
+							</div>
+						</xf:if>
+					</div>
+
+					<!-- Wallet card: Messages / Fame / Gold / Mastery / Valor (whatever member_stat_pairs outputs) -->
+					<xf:if contentcheck="true">
+						<div class="tsWallet">
+							<xf:contentcheck>
+								<xf:macro template="member_macros" name="member_stat_pairs"
+									arg-user="{$user}"
+									arg-context="profile" />
+							</xf:contentcheck>
+						</div>
+					</xf:if>
+				</div>
+
+				<!-- ===== Bottom row: dock + banner controls ===== -->
+				<div class="tsHero-bottom">
+					<div class="tsDock">
+						<xf:if is="$tsDockStats">
+							<a href="{$tsDockStats}" class="tsDock-tile" data-ts-tab="about">
+								<xf:fa icon="fa-cube" class="tsDock-icon" />
+								<span class="tsDock-label">Stats</span>
+							</a>
+						</xf:if>
+						<xf:if is="$tsDockInventory">
+							<a href="{$tsDockInventory}" class="tsDock-tile">
+								<xf:fa icon="fa-backpack" class="tsDock-icon" />
+								<span class="tsDock-label">Inventory</span>
+							</a>
+						</xf:if>
+						<xf:if is="$tsDockShop">
+							<a href="{$tsDockShop}" class="tsDock-tile">
+								<xf:fa icon="fa-shopping-cart" class="tsDock-icon" />
+								<span class="tsDock-label">Shop</span>
+							</a>
+						</xf:if>
+						<xf:if is="$tsDockBuild">
+							<a href="{$tsDockBuild}" class="tsDock-tile">
+								<xf:fa icon="fa-swords" class="tsDock-icon" />
+								<span class="tsDock-label">Build</span>
+							</a>
+						</xf:if>
+						<xf:if is="$tsIsSelf && $xf.visitor.canUploadProfileBanner()">
+							<a href="{{ link('account/banner') }}" class="tsDock-tile" data-xf-click="overlay">
+								<xf:fa icon="fa-fill-drip" class="tsDock-icon" />
+								<span class="tsDock-label">Banner</span>
+							</a>
+						</xf:if>
+					</div>
+
+					<div class="tsHero-controls">
+						<!-- Mount point for your banner rotator (prev / dots / next / play). Hidden while empty. -->
+						<div class="tsHero-pager js-tsHeroPager"></div>
+						<button type="button" class="tsHero-collapse js-tsHeroCollapse"
+							data-xf-init="tooltip" title="Collapse banner" aria-pressed="false">
+							<xf:fa icon="fa-compress-alt" />
+						</button>
+					</div>
+				</div>
+
+			</div>
+		</xf:profilebanner>
+	</div>
+</div>
+
+<div class="block tsProfileTabs">
+	<div class="block-container">
+		<h2 class="block-tabHeader block-tabHeader--memberTabs tabs hScroller"
+			data-xf-init="tabs h-scroller"
+			data-panes=".js-memberTabPanes"
+			data-state="replace"
+			role="tablist">
+			<span class="hScroller-scroll">
+				<!--[XF:tabs:start]-->
+				<xf:if is="$user.canViewPostsOnProfile()">
+					<a href="{{ link('members', $user) }}"
+						class="tabs-tab is-active"
+						role="tab"
+						aria-controls="profile-posts">{{ phrase('profile_posts') }}</a>
+				</xf:if>
+
+				<xf:if is="$user.canViewLatestActivity()">
+					<xf:if is="!$user.canViewPostsOnProfile()">
+						<a href="{{ link('members', $user) }}"
+							class="tabs-tab is-active"
+							role="tab"
+							aria-controls="latest-activity">{{ phrase('latest_activity') }}</a>
+					<xf:else />
+						<a href="{{ link('members/latest-activity', $user) }}"
+							rel="nofollow"
+							class="tabs-tab"
+							id="latest-activity"
+							role="tab">{{ phrase('latest_activity') }}</a>
+					</xf:if>
+				</xf:if>
+
+				<a href="{{ link('members/recent-content', $user) }}"
+					rel="nofollow"
+					class="tabs-tab"
+					id="recent-content"
+					role="tab">{{ phrase('postings') }}</a>
+
+				<!--[XF:tabs:after_recent_content]-->
+
+				<a href="{{ link('members/about', $user) }}"
+					class="tabs-tab"
+					id="about"
+					role="tab">{{ phrase('about') }}</a>
+
+				<xf:if is="$xf.visitor.canViewWarnings() && $user.warning_count">
+					<a href="{{ link('members/warnings', $user) }}"
+						class="tabs-tab"
+						id="warnings"
+						role="tab">{{ phrase('warnings') }}</a>
+				</xf:if>
+				<!--[XF:tabs:end]-->
+			</span>
+		</h2>
+
+		<xf:ad position="member_view_below_tabs" arg-user="{$user}" />
+
+		<ul class="tabPanes js-memberTabPanes">
+			<!--[XF:tab_panes:start]-->
+			<xf:if is="$user.canViewPostsOnProfile()">
+				<li class="is-active" role="tabpanel" id="profile-posts">
+					<xf:js src="xf/inline_mod.js" min="1" />
+
+					<xf:macro template="lightbox_macros" name="setup" arg-canViewAttachments="{$canViewAttachments}" />
+
+					<div class="block block--messages"
+						data-xf-init="lightbox inline-mod"
+						data-type="profile_post"
+						data-href="{{ link('inline-mod') }}">
+
+						<div class="block-container">
+							<div class="block-body js-replyNewMessageContainer">
+								<xf:if is="$user.canPostOnProfile()">
+									<xf:set var="$firstProfilePost" value="{$profilePosts|first}" />
+									<xf:macro template="profile_post_macros" name="quick_post"
+										arg-user="{$user}"
+										arg-lastDate="{{ $firstProfilePost.post_date ?: 0 }}"
+										arg-containerSelector="< .js-replyNewMessageContainer"
+										arg-attachmentData="{$attachmentData}" />
+								</xf:if>
+
+								<xf:if is="$profilePosts is not empty">
+									<xf:foreach loop="$profilePosts" value="$profilePost">
+										<xf:macro template="profile_post_macros"
+											name="{{ $profilePost.message_state == 'deleted' ? 'profile_post_deleted' : 'profile_post' }}"
+											arg-attachmentData="{$profilePostAttachData.{$profilePost.profile_post_id}}"
+											arg-profilePost="{$profilePost}" />
+									</xf:foreach>
+								<xf:else />
+									<div class="block-row js-replyNoMessages">{{ phrase('there_no_messages_on_xs_profile_yet', {'name': $user.username}) }}</div>
+								</xf:if>
+							</div>
+						</div>
+
+						<div class="block-outer block-outer--after">
+							<xf:pagenav
+								page="{$page}" perpage="{$perPage}" total="{$total}"
+								link="members" data="{$user}"
+								wrapperclass="block-outer-main" />
+							<div class="block-outer-opposite">
+								<xf:showignored />
+								<xf:if is="$canInlineMod">
+									<xf:macro template="inline_mod_macros" name="button" />
+								</xf:if>
+							</div>
+						</div>
+					</div>
+				</li>
+			</xf:if>
+
+			<xf:if is="$user.canViewLatestActivity()">
+				<xf:if is="!$user.canViewPostsOnProfile()">
+					<li class="is-active" role="tabpanel" id="latest-activity">
+						<div class="block">
+							<div class="block-container">
+								<xf:if is="$newsFeedItems is not empty">
+									<ul class="block-body js-newsFeedTarget">
+										<xf:foreach loop="$newsFeedItems" value="$item">
+											<xf:macro template="news_feed_macros" name="feed_row" arg-item="{$item}" />
+										</xf:foreach>
+									</ul>
+									<div class="block-footer js-newsFeedLoadMore">
+										<span class="block-footer-controls"><xf:button href="{{ link('members/latest-activity', $user, {'before_id': $newsFeedOldestItemId}) }}"
+											data-xf-click="inserter"
+											data-append=".js-newsFeedTarget"
+											data-replace=".js-newsFeedLoadMore">
+											{{ phrase('show_older_items') }}
+										</xf:button></span>
+									</div>
+								<xf:else />
+									<div class="block-body js-newsFeedTarget">
+										<div class="block-row">{{ phrase('news_feed_is_currently_empty') }}</div>
+									</div>
+								</xf:if>
+							</div>
+
+							<div class="block-outer block-outer--after">
+								<div class="block-outer-opposite">
+									<xf:showignored />
+								</div>
+							</div>
+						</div>
+					</li>
+				<xf:else />
+					<li data-href="{{ link('members/latest-activity', $user) }}" role="tabpanel" aria-labelledby="latest-activity">
+						<div class="blockMessage">{{ phrase('loading...') }}</div>
+					</li>
+				</xf:if>
+			</xf:if>
+
+			<li data-href="{{ link('members/recent-content', $user) }}" role="tabpanel" aria-labelledby="recent-content">
+				<div class="blockMessage">{{ phrase('loading...') }}</div>
+			</li>
+
+			<!--[XF:tab_panes:after_recent_content]-->
+
+			<li data-href="{{ link('members/about', $user) }}" role="tabpanel" aria-labelledby="about">
+				<div class="blockMessage">{{ phrase('loading...') }}</div>
+			</li>
+
+			<xf:if is="$xf.visitor.canViewWarnings() && $user.warning_count">
+				<li data-href="{{ link('members/warnings', $user) }}" role="tabpanel" aria-labelledby="warnings">
+					<div class="blockMessage">{{ phrase('loading...') }}</div>
+				</li>
+			</xf:if>
+			<!--[XF:tab_panes:end]-->
+		</ul>
+	</div>
+</div>
+
+<xf:js>
+(function ()
+{
+	var KEY = 'tsHeroCollapsed';
+	var hero = document.querySelector('.js-tsHero');
+	if (!hero) { return; }
+
+	var btn = hero.querySelector('.js-tsHeroCollapse');
+
+	function set(collapsed)
+	{
+		hero.classList.toggle('is-collapsed', collapsed);
+		if (btn) { btn.setAttribute('aria-pressed', collapsed ? 'true' : 'false'); }
+	}
+
+	try { set(window.localStorage.getItem(KEY) === '1'); } catch (e) {}
+
+	if (btn)
+	{
+		btn.addEventListener('click', function ()
+		{
+			var next = !hero.classList.contains('is-collapsed');
+			set(next);
+			try { window.localStorage.setItem(KEY, next ? '1' : '0'); } catch (e) {}
+		});
+	}
+
+	// "Stats" dock tile switches to the About tab in place instead of leaving the page.
+	var statsTile = hero.querySelector('[data-ts-tab="about"]');
+	var aboutTab = document.getElementById('about');
+	if (statsTile && aboutTab)
+	{
+		statsTile.addEventListener('click', function (e)
+		{
+			e.preventDefault();
+			aboutTab.click();
+			aboutTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		});
+	}
+})();
+</xf:js>
+
+<xf:widgetpos id="member_view_sidebar" context-user="{$user}" position="sidebar" />
