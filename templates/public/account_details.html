@@ -1,0 +1,120 @@
+<xf:title>{{ phrase('account_details') }}</xf:title>
+<xf:h1>{{ phrase('account_details') }} <span class="tsTag">{{ phrase('settings') }}</span></xf:h1>
+
+<xf:wrap template="account_wrapper" />
+<xf:css src="ts_account.less" />
+
+<xf:if is="!$xf.visitor.canEditProfile()">
+	<div class="blockMessage blockMessage--important">{{ phrase('your_full_account_details_not_currently_editable') }}</div>
+</xf:if>
+
+<!-- Profile hero -->
+<div class="block tsHero-block">
+	<div class="block-container">
+		<xf:profilebanner user="$xf.visitor" size="l" class="tsHero" toggle="tsHero--hasBanner">
+			<div class="tsHero-shade"></div>
+
+			<div class="tsHero-top">
+				<div class="tsHero-ident">
+					<div class="tsHero-name">{$xf.visitor.username}</div>
+					<xf:if contentcheck="true">
+						<div class="tsHero-banners">
+							<xf:contentcheck>
+								<xf:userbanners user="$xf.visitor" tag="div" class="message-userBanner" />
+							</xf:contentcheck>
+						</div>
+					</xf:if>
+				</div>
+
+				<xf:if is="$xf.visitor.canUploadProfileBanner()">
+					<div class="tsHero-actions">
+						<xf:button href="{{ link('account/banner') }}" overlay="true"
+							title="{{ phrase('edit_profile_banner') }}" data-xf-init="tooltip">
+							<i class="fas fa-camera" aria-hidden="true"></i><span class="button-text">{{ phrase('edit_profile_banner') }}</span>
+						</xf:button>
+					</div>
+				</xf:if>
+			</div>
+
+			<div class="tsHero-foot">
+				<span class="tsHero-avatar">
+					<span class="avatarWrapper">
+						<xf:avatar user="{$xf.visitor}" size="m" href="" notooltip="true" />
+						<xf:if is="$xf.visitor.canUploadAvatar()">
+							<a class="avatarWrapper-update" href="{{ link('account/avatar') }}" data-xf-click="overlay"><span>{{ phrase('edit') }}</span></a>
+						</xf:if>
+					</span>
+				</span>
+
+				<xf:comment>
+					Optional currency chips: drop a dl.tsHero-stats here containing one
+					div.tsHero-stat.tsHero-stat--gold (or --mastery / --valor) per value,
+					each with a dt label and a dd value from your credits add-on.
+				</xf:comment>
+			</div>
+		</xf:profilebanner>
+	</div>
+</div>
+
+<!-- Details form -->
+<xf:form action="{{ link('account/account-details') }}" ajax="true" class="block" data-force-flash-message="true">
+	<div class="block-container">
+		<div class="block-body">
+
+			<xf:formrow rowtype="button" rowclass="tsRow--icon tsRow--email"
+				label="{{ phrase('email') }}">
+
+				<xf:if is="$xf.visitor.email">
+					<span class="tsPill tsPill--mono">{$xf.visitor.email}</span>
+				<xf:else />
+					<span class="tsPill"><i>{{ phrase('none') }}</i></span>
+				</xf:if>
+				<xf:button href="{{ link('account/email') }}" class="button--link" overlay="true">{{ phrase('change') }}</xf:button>
+			</xf:formrow>
+
+			<xf:if is="{{ $xf.visitor.Profile.dob_day && $xf.visitor.Profile.dob_month && $xf.visitor.Profile.dob_year }}">
+				<xf:formrow rowclass="tsRow--icon tsRow--dob"
+					label="{{ phrase('date_of_birth') }}"
+					explain="{{ phrase('once_your_birthday_has_been_entered_it_cannot_be_changed') }}">
+
+					<xf:set var="$birthday" value="{{ $xf.visitor.Profile.getBirthday(true) }}" />
+					<span class="tsPill">{{ date($birthday.timeStamp, $birthday.format) }}</span>
+				</xf:formrow>
+			<xf:else />
+				<xf:macro template="helper_user_dob_edit" name="dob_edit" arg-dobData="{$xf.visitor.Profile}" />
+			</xf:if>
+
+			<xf:if is="$xf.visitor.canEditProfile()">
+				<xf:if is="{{ $xf.visitor.hasPermission('general', 'editCustomTitle') }}">
+					<xf:textboxrow name="user[custom_title]" value="{$xf.visitor.custom_title_}"
+						maxlength="{{ max_length($xf.visitor, 'custom_title') }}"
+						rowclass="tsRow--icon tsRow--title"
+						label="{{ phrase('custom_title') }}"
+						explain="{{ phrase('if_specified_replace_title_that_displays_under_name_in_posts') }}" />
+				</xf:if>
+
+				<hr class="formRowSep" />
+
+				<xf:macro template="custom_fields_macros" name="custom_fields_edit" arg-type="users" arg-group="personal" arg-set="{$xf.visitor.Profile.custom_fields}" />
+
+				<hr class="formRowSep" />
+
+				<xf:editorrow name="about" value="{$xf.visitor.Profile.about_}" previewable="0"
+					rowclass="tsRow--icon tsRow--about"
+					label="{{ phrase('about_you') }}" />
+			</xf:if>
+		</div>
+
+		<xf:if is="$xf.visitor.canEditProfile()">
+			<xf:if contentcheck="true">
+				<h2 class="block-formSectionHeader"><span class="block-formSectionHeader-aligner">{{ phrase('identities') }}</span></h2>
+				<div class="block-body">
+					<xf:contentcheck>
+						<xf:macro template="custom_fields_macros" name="custom_fields_edit" arg-type="users" arg-group="contact" arg-set="{$xf.visitor.Profile.custom_fields}" />
+					</xf:contentcheck>
+				</div>
+			</xf:if>
+			<xf:submitrow icon="save" sticky="true" />
+		</xf:if>
+	</div>
+</xf:form>
