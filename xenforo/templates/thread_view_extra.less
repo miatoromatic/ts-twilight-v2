@@ -1418,9 +1418,10 @@ position: relative!important;
 }
 /* =====================================================================
    Thread header (thread_view: div.titlebg.tsTh)
-   [prefixes] Title                               [Quick Reply] [Watch] [⋯]
-   (av) Started by Name · date · N posts · N views
+   [prefixes] Title
+   (av) Started by Name · date · N posts
    Same panel colours as before; layout follows the prototype.
+   The thread actions (.tsTh-actions) sit in the pagination row; see below.
    ===================================================================== */
 .titlebg{
 	display: flex;
@@ -1531,7 +1532,8 @@ position: relative!important;
 	color: #4ab3b3;
 	font-weight: 600;
 }
-/* actions: Quick Reply (accent) + the stock thread buttons, outlined */
+/* Thread actions (thread_view: "TS thread actions: START … END", in the pagination row):
+   Quick Reply (accent) + the stock thread buttons, outlined */
 .tsTh-actions{
 	display: flex;
 	flex-wrap: wrap;
@@ -1556,7 +1558,7 @@ position: relative!important;
 	display: inline-flex;
 	align-items: center;
 	gap: 7px;
-	height: 36px;
+	height: 34px;
 	padding: 0 14px;
 	border: 1px solid #2f384b !important;
 	border-radius: 8px !important;
@@ -1591,11 +1593,16 @@ position: relative!important;
 /* the ⋯ menu button: a square */
 .tsTh-actions .menuTrigger{
 	justify-content: center;
-	width: 36px;
+	width: 34px;
 	padding: 0 !important;
 	letter-spacing: -1px;
 }
 .tsTh-actions .menuTrigger::after{
+	display: none;
+}
+/* the add-on "Reply" button is moved into the ⋯ menu by the thread_view script;
+   keep it out of the button row until then so nothing jumps */
+.tsTh-actions .buttonGroup a.button[data-xf-click="scroll-to"][href$="/reply"]{
 	display: none;
 }
 /* breadcrumbs above the header: muted, current section in the accent colour */

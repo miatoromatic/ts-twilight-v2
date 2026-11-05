@@ -317,6 +317,20 @@
 			</div>
 		</xf:if>
 
+			<!-- ==================== TS thread actions: START ====================
+				Quick Reply + the thread buttons (Watch, ⋯ menu, inline mod, undelete/approve).
+				This whole block can be moved anywhere in this template; it is styled by
+				.tsTh-actions in thread_view_extra.less and needs nothing around it. -->
+			<div class="block-outer-opposite tsTh-actions">
+				<xf:if is="$thread.canReply() OR $thread.canReplyPreReg()">
+					<a href="#quick-reply" class="button tsTh-qrBtn js-tsQrJump" data-xf-click="scroll-to">
+						<xf:fa icon="far fa-reply" /><span class="button-text">Quick Reply</span>
+					</a>
+				</xf:if>
+				{$threadActionsHtml}
+			</div>
+			<!-- ==================== TS thread actions: END ==================== -->
+
 			<xf:if contentcheck="true">
 				<div class="block-outer-opposite">
 					<xf:contentcheck>{$postSortFilterHtml}</xf:contentcheck>
@@ -332,8 +346,9 @@
 			arg-forum="{$forum}"
 			arg-wrapperClass="block-outer" />
 	</xf:if>
-	<!-- Thread header: prefixes + title, "Started by · date · posts · views", and the thread actions
-		(Quick Reply, Watch, ⋯) on the right. Styled in thread_view_extra.less ("Thread header"). -->
+	<!-- Thread header: prefixes + title, then "Started by · date · posts".
+		Styled in thread_view_extra.less ("Thread header"). The thread actions sit in the
+		pagination row above (see "TS thread actions: START"). -->
 	<div class="titlebg tsTh">
 		<div class="tsTh-main">
 			<div class="tsTh-title">
@@ -356,19 +371,7 @@
 					<xf:fa icon="far fa-comment" />
 					{{ number($thread.reply_count + 1) }} {{ $thread.reply_count == 0 ? 'post' : 'posts' }}
 				</li>
-				<li>
-					<xf:fa icon="far fa-eye" />
-					{{ number_short($thread.view_count) }} {{ $thread.view_count == 1 ? 'view' : 'views' }}
-				</li>
 			</ul>
-		</div>
-		<div class="tsTh-actions">
-			<xf:if is="$thread.canReply() OR $thread.canReplyPreReg()">
-				<a href="#quick-reply" class="button tsTh-qrBtn js-tsQrJump" data-xf-click="scroll-to">
-					<xf:fa icon="far fa-reply" /><span class="button-text">Quick Reply</span>
-				</a>
-			</xf:if>
-			{$threadActionsHtml}
 		</div>
 	</div>
 	<div class="block-container lbContainer"
@@ -704,7 +707,26 @@
         });
     }
 
-    /* header "Quick Reply" button: scroll (XF scroll-to), then put the cursor in the editor */
+    /* The "Reply" button another template mod adds to the thread buttons
+       (<a href=".../reply" class="button--link button" data-xf-click="scroll-to">) goes into
+       the ⋯ menu as a normal menu row. CSS hides it in the button row until it is moved. */
+    var actions = document.querySelector('.tsTh-actions');
+    if (actions)
+    {
+        var reply = actions.querySelector('.buttonGroup a.button[data-xf-click="scroll-to"][href$="/reply"]'),
+            moreMenu = actions.querySelector('.buttonGroup-buttonWrapper .menu-content');
+
+        if (reply && moreMenu)
+        {
+            reply.className = 'menu-linkRow tsTh-replyRow';
+            reply.setAttribute('data-menu-closer', 'true');
+
+            var header = moreMenu.querySelector('.menu-header');
+            moreMenu.insertBefore(reply, header ? header.nextSibling : moreMenu.firstChild);
+        }
+    }
+
+    /* "Quick Reply" button: scroll (XF scroll-to), then put the cursor in the editor */
     var jump = document.querySelector('.js-tsQrJump');
     if (jump)
     {
