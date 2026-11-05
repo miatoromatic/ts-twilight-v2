@@ -64,23 +64,10 @@
 					</div>
 				</div>
 
-				<!-- ===== Identity: avatar + character links | name, banners, title, custom fields ===== -->
+				<!-- ===== Identity: avatar | name, banners, title, custom fields ===== -->
 				<div class="tsTip-identity">
 					<div class="tsTip-avatarCol memberTooltip-avatar">
 						<xf:avatar user="{$user}" size="m" notooltip="true" />
-						<xf:if is="$user.canShowCharacterElements()">
-							<div class="flx-container tsTip-charLinks">
-								<xf:macro template="terrasphere_core_generic_macros"
-									name="character_sheet_modal_button"
-									arg-user="{$user}" />
-								<!-- NOTE: XF still compiles xf tags inside HTML comments, so the permission check below IS active (kept as in the original) -->
-								<!--<xf:if is="$xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">-->
-									<xf:macro template="terrasphere_core_generic_macros"
-										name="character_sheet_thread_link"
-										arg-user="{$user}" />
-								<!--</xf:if>-->
-							</div>
-						</xf:if>
 					</div>
 
 					<div class="tsTip-idInfo memberTooltip-headerInfo">
@@ -151,13 +138,33 @@
 			</div>
 		</div>
 
-		<!-- ===== Actions: Follow / Ignore / Start conversation ===== -->
+		<!-- ===== Actions: Character sheet / Character thread / PM ===== -->
 		<xf:if contentcheck="true">
 			<div class="memberTooltip-actions tsTip-actions">
 				<xf:contentcheck>
-					<xf:macro template="member_macros" name="member_action_buttons"
-						arg-user="{$user}"
-						arg-context="tooltip" />
+					<xf:if is="$user.canShowCharacterElements()">
+						<span class="tsTip-act tsTip-act--sheet">
+							<xf:macro template="terrasphere_core_generic_macros"
+								name="character_sheet_modal_button"
+								arg-user="{$user}" />
+						</span>
+						<span class="tsTip-act tsTip-act--thread">
+							<!-- NOTE: XF still compiles xf tags inside HTML comments, so the permission check below IS active (kept as in the original) -->
+							<!--<xf:if is="$xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">-->
+								<xf:macro template="terrasphere_core_generic_macros"
+									name="character_sheet_thread_link"
+									arg-user="{$user}" />
+							<!--</xf:if>-->
+						</span>
+					</xf:if>
+
+					<xf:if is="$xf.visitor.canStartConversationWith($user)">
+						<a href="{{ link('conversations/add', null, {'to': $user.username}) }}"
+							class="button tsTip-btn tsTip-btn--primary">
+							<xf:fa icon="fa-paper-plane" />
+							<span class="button-text">PM</span>
+						</a>
+					</xf:if>
 				</xf:contentcheck>
 			</div>
 		</xf:if>
