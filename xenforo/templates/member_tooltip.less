@@ -1,0 +1,550 @@
+// ============================================================
+// Terrasphere · Twilight — member tooltip card
+// XenForo 2.2.x
+// ============================================================
+
+// ---- Palette (tweak here) -----------------------------------
+@_mt-bg:           #111723;
+@_mt-bgRaised:     #182031;
+@_mt-bgInset:      #0c1119;
+@_mt-border:       rgba(255, 255, 255, .07);
+@_mt-borderStrong: rgba(255, 255, 255, .11);
+@_mt-text:         #e9eef5;
+@_mt-textMuted:    #8c97aa;
+@_mt-textDim:      #5d6879;
+
+@_mt-accent:       #3cc9c9; // teal — titles, links, avatar ring
+@_mt-online:       #3ddc97;
+@_mt-staff:        #c35ee2;
+@_mt-gold:         #f2b441;
+@_mt-mastery:      #4fc6dc;
+@_mt-valor:        #a95cf2;
+
+@_mt-radius:       14px;
+@_mt-pad:          16px;
+@_mt-avatarSize:   88px;
+@_mt-avatarSizeSm: 64px;
+
+// ---- Tooltip shell ------------------------------------------
+.tooltip--member
+{
+	.tooltip-content
+	{
+		padding: 0;
+		background: @_mt-bg;
+		color: @_mt-text;
+		border: 1px solid @_mt-borderStrong;
+		border-radius: @_mt-radius;
+		box-shadow:
+			0 22px 50px -14px rgba(0, 0, 0, .7),
+			0 0 0 1px rgba(0, 0, 0, .35);
+	}
+
+	&.tooltip--top .tooltip-arrow
+	{
+		border-top-color: @_mt-borderStrong;
+		&:after { border-top-color: @_mt-bg; }
+	}
+
+	&.tooltip--bottom .tooltip-arrow
+	{
+		border-bottom-color: @_mt-borderStrong;
+		&:after { border-bottom-color: @_mt-bgRaised; }
+	}
+}
+
+.memberTooltip
+{
+	color: @_mt-text;
+	font-size: 13px;
+}
+
+// ---- Header (with or without profile banner) -----------------
+.memberTooltip-header
+{
+	position: relative;
+	display: block;
+	isolation: isolate;
+	padding: 12px @_mt-pad @_mt-pad;
+	border-radius: (@_mt-radius - 1) (@_mt-radius - 1) 0 0;
+	background-color: @_mt-bg;
+	background-image:
+		radial-gradient(120% 100% at 0% 0%, fade(@_mt-accent, 11%) 0%, transparent 55%),
+		linear-gradient(180deg, @_mt-bgRaised 0%, @_mt-bg 100%);
+	background-size: cover;
+	background-position: center 30%;
+
+	.memberTooltip--withBanner &
+	{
+		padding-top: 12px;
+
+		// readability scrim over the banner image
+		&:before
+		{
+			content: '';
+			position: absolute;
+			top: 0; right: 0; bottom: 0; left: 0;
+			z-index: -1;
+			border-radius: inherit;
+			background:
+				linear-gradient(180deg,
+					fade(@_mt-bg, 25%) 0%,
+					fade(@_mt-bg, 55%) 45%,
+					fade(@_mt-bg, 92%) 82%,
+					@_mt-bg 100%);
+		}
+	}
+}
+
+// ---- Top bar: status pill + icon buttons --------------------
+.memberTooltip-topBar
+{
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 32px;
+	margin-bottom: 14px;
+}
+
+.memberTooltip-status
+{
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 5px 11px 5px 10px;
+	border-radius: 999px;
+	background: fade(@_mt-bgInset, 82%);
+	border: 1px solid @_mt-border;
+	color: @_mt-online;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .09em;
+	line-height: 1.3;
+	text-transform: uppercase;
+	backdrop-filter: blur(6px);
+}
+
+.memberTooltip-statusDot
+{
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: @_mt-online;
+	box-shadow: 0 0 0 3px fade(@_mt-online, 18%), 0 0 8px @_mt-online;
+	animation: mt-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes mt-pulse
+{
+	0%, 100% { box-shadow: 0 0 0 3px fade(@_mt-online, 18%), 0 0 8px @_mt-online; }
+	50%      { box-shadow: 0 0 0 5px fade(@_mt-online, 6%),  0 0 12px @_mt-online; }
+}
+
+.memberTooltip-headerAction
+{
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-left: auto;
+	float: none;
+}
+
+.memberTooltip .memberTooltip-iconBtn,
+.memberTooltip .memberTooltip-headerAction .button
+{
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	min-width: 0;
+	padding: 0;
+	border-radius: 9px;
+	border: 1px solid @_mt-border;
+	background: fade(@_mt-bgInset, 82%);
+	color: @_mt-textMuted;
+	font-size: 14px;
+	line-height: 1;
+	text-decoration: none;
+	backdrop-filter: blur(6px);
+	transition: color .15s, border-color .15s, background-color .15s;
+
+	&:hover,
+	&:focus-visible,
+	&.is-menuOpen
+	{
+		color: @_mt-accent;
+		border-color: fade(@_mt-accent, 45%);
+		background: fade(@_mt-accent, 10%);
+		text-decoration: none;
+	}
+
+	.button-text { display: contents; }
+}
+
+// ---- Identity: avatar + name --------------------------------
+.memberTooltip-identity
+{
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.memberTooltip-avatar
+{
+	position: relative;
+	display: block;
+	flex: none;
+
+	.avatar
+	{
+		.m-avatarSize(@_mt-avatarSize);
+		border-radius: 16px;
+		box-shadow:
+			0 0 0 2px @_mt-accent,
+			0 0 0 5px fade(@_mt-accent, 12%),
+			0 10px 26px -8px fade(@_mt-accent, 55%);
+
+		img { border-radius: inherit; }
+	}
+
+	&--online:after
+	{
+		content: '';
+		position: absolute;
+		right: -5px;
+		bottom: -5px;
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		background: @_mt-online;
+		border: 3px solid @_mt-bg;
+		box-shadow: 0 0 10px fade(@_mt-online, 60%);
+	}
+}
+
+.memberTooltip-headerInfo
+{
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.memberTooltip-name
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 8px;
+	margin: 0;
+	padding: 0;
+	font-size: 22px;
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -.01em;
+	color: @_mt-text;
+
+	.m-hiddenLinks();
+
+	.memberTooltip-nameWrapper
+	{
+		min-width: 0;
+		overflow-wrap: anywhere;
+
+		a.username,
+		a.username:hover
+		{
+			color: @_mt-text;
+			text-decoration: none;
+		}
+	}
+
+	.memberTooltip-nameChangeIndicator
+	{
+		color: @_mt-textDim;
+		font-size: 13px;
+
+		&:hover { color: @_mt-accent; }
+	}
+
+	.memberTooltip--withBanner &
+	{
+		text-shadow: 0 2px 14px rgba(0, 0, 0, .75), 0 1px 2px rgba(0, 0, 0, .6);
+	}
+}
+
+.memberTooltip-staffBadge
+{
+	display: inline-block;
+	padding: 1px 8px;
+	border-radius: 6px;
+	border: 1px solid fade(@_mt-staff, 60%);
+	background: fade(@_mt-staff, 14%);
+	color: lighten(@_mt-staff, 14%);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .02em;
+	line-height: 1.6;
+	text-shadow: none;
+}
+
+// user title / blurb
+.memberTooltip-blurb
+{
+	margin-top: 8px;
+	font-size: 12px;
+	color: @_mt-textMuted;
+	line-height: 1.5;
+
+	a { color: @_mt-textMuted; }
+
+	.userTitle
+	{
+		display: inline-flex;
+		align-items: center;
+		padding: 3px 12px;
+		border-radius: 8px;
+		border: 1px solid fade(@_mt-accent, 45%);
+		background: fade(@_mt-accent, 10%);
+		color: @_mt-accent;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: .01em;
+	}
+}
+
+.memberTooltip-banners
+{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-top: 8px;
+
+	.userBanner { margin: 0; }
+}
+
+// character sheet buttons (terrasphere macros)
+.memberTooltip-character
+{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 14px;
+
+	.button,
+	a.button,
+	.custom-button > a
+	{
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		height: 30px;
+		padding: 0 12px;
+		border-radius: 9px;
+		border: 1px solid @_mt-border;
+		background: fade(@_mt-bgInset, 82%);
+		color: @_mt-text;
+		font-size: 12px;
+		font-weight: 600;
+		text-decoration: none;
+
+		&:hover
+		{
+			color: @_mt-accent;
+			border-color: fade(@_mt-accent, 45%);
+			background: fade(@_mt-accent, 10%);
+		}
+	}
+}
+
+// ---- Meta: joined + last activity ---------------------------
+.memberTooltip-meta
+{
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 12px @_mt-pad;
+	border-top: 1px solid @_mt-border;
+	font-size: 12.5px;
+	color: @_mt-textMuted;
+}
+
+.memberTooltip-metaItem
+{
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	min-width: 0;
+
+	> .fa--xf,
+	> i
+	{
+		flex: none;
+		width: 14px;
+		text-align: center;
+		color: @_mt-textDim;
+	}
+
+	strong
+	{
+		color: @_mt-text;
+		font-weight: 700;
+	}
+}
+
+.memberTooltip-activity
+{
+	a
+	{
+		color: @_mt-accent;
+		font-style: italic;
+		font-weight: 600;
+		text-decoration: none;
+
+		&:hover { color: lighten(@_mt-accent, 10%); }
+	}
+
+	time { color: @_mt-text; }
+}
+
+// ---- Stats ---------------------------------------------------
+.mt-statAccent(@c)
+{
+	&:before { background: @c; box-shadow: 0 0 10px fade(@c, 70%); }
+
+	> dd,
+	> dd a { color: @c; }
+}
+
+.memberTooltip-info
+{
+	padding: 12px @_mt-pad;
+	border-top: 1px solid @_mt-border;
+	background: fade(@_mt-bgInset, 55%);
+}
+
+.memberTooltip-stats .pairJustifier
+{
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
+	gap: 6px;
+
+	> dl.pairs
+	{
+		position: relative;
+		display: flex;
+		flex-direction: column-reverse;
+		justify-content: center;
+		gap: 2px;
+		margin: 0;
+		padding: 10px 4px 8px;
+		border-radius: 10px;
+		border: 1px solid @_mt-border;
+		background: @_mt-bgRaised;
+		text-align: center;
+		overflow: hidden;
+
+		&:before
+		{
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 22%;
+			right: 22%;
+			height: 2px;
+			border-radius: 0 0 2px 2px;
+			background: @_mt-borderStrong;
+		}
+
+		> dt
+		{
+			margin: 0;
+			color: @_mt-textMuted;
+			font-size: 9.5px;
+			font-weight: 600;
+			letter-spacing: .04em;
+			text-transform: uppercase;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			&:after { content: none; }
+		}
+
+		> dd
+		{
+			margin: 0;
+			color: @_mt-text;
+			font-size: 16px;
+			font-weight: 800;
+			line-height: 1.2;
+			font-variant-numeric: tabular-nums;
+
+			a { color: inherit; text-decoration: none; }
+		}
+
+		// order matches: Messages, Fame, Gold, Mastery, Valor
+		&:nth-child(3) { .mt-statAccent(@_mt-gold); }
+		&:nth-child(4) { .mt-statAccent(@_mt-mastery); }
+		&:nth-child(5) { .mt-statAccent(@_mt-valor); }
+	}
+}
+
+// ---- Actions -------------------------------------------------
+.memberTooltip-separator { display: none; }
+
+.memberTooltip-actions
+{
+	padding: 12px @_mt-pad 14px;
+	border-top: 1px solid @_mt-border;
+
+	.buttonGroup,
+	.buttonGroup-buttonWrapper
+	{
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.button
+	{
+		display: inline-flex;
+		align-items: center;
+		height: 32px;
+		margin: 0;
+		padding: 0 12px;
+		border-radius: 9px !important;
+		border: 1px solid @_mt-border;
+		background: @_mt-bgRaised;
+		color: @_mt-text;
+		font-size: 12px;
+		font-weight: 600;
+		transition: color .15s, border-color .15s, background-color .15s;
+
+		&:hover,
+		&.is-menuOpen
+		{
+			color: @_mt-accent;
+			border-color: fade(@_mt-accent, 45%);
+			background: fade(@_mt-accent, 10%);
+		}
+	}
+}
+
+// ---- Responsive / motion ------------------------------------
+@media (max-width: @xf-responsiveNarrow)
+{
+	.memberTooltip-identity { gap: 12px; }
+
+	.memberTooltip-avatar .avatar
+	{
+		.m-avatarSize(@_mt-avatarSizeSm);
+		border-radius: 12px;
+	}
+
+	.memberTooltip-name { font-size: 19px; }
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+	.memberTooltip-statusDot { animation: none; }
+}
