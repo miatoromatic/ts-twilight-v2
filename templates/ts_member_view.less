@@ -17,6 +17,7 @@
 @ts-gold:        #f5b83d;
 @ts-mastery:     #46c9d6;
 @ts-valor:       #b26cf2;
+@ts-online:      #3fd28b;
 @ts-glass:       rgba(12, 16, 24, .72);
 @ts-radius:      12px;
 @ts-radius-sm:   9px;
@@ -145,7 +146,7 @@
 	gap: 10px;
 	flex: 0 1 auto;
 	min-width: 0;
-	max-width: 100%;
+	max-width: 480px;
 	padding: 6px 14px 6px 6px;
 	border: 1px solid @ts-line-hi;
 	border-radius: @ts-radius-sm + 3px;
@@ -176,8 +177,8 @@
 .tsHero-avatarEdit
 {
 	position: absolute;
+	top: -5px;
 	right: -5px;
-	bottom: -5px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -194,10 +195,34 @@
 	&:focus { opacity: 1; text-decoration: none; }
 }
 
+.tsHero-avatar.is-online::after
+{
+	content: '';
+	position: absolute;
+	right: -3px;
+	bottom: -3px;
+	width: 11px;
+	height: 11px;
+	border: 2px solid #10141c;
+	border-radius: 50%;
+	background: @ts-online;
+}
+
 .tsHero-metaText
 {
+	flex: 1 1 auto;
 	min-width: 0;
 	line-height: 1.45;
+}
+
+// Line 1: title · joined · online
+.tsHero-metaHead
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0 8px;
+	min-width: 0;
 }
 
 .tsHero-blurb
@@ -207,14 +232,70 @@
 	font-size: 13px;
 
 	a { color: inherit; }
+
+	&:empty,
+	&:empty + .tsHero-dot { display: none; }
 }
 
+.tsHero-joined
+{
+	color: @ts-muted;
+
+	.u-dt { color: @ts-text-soft; }
+}
+
+.tsHero-online
+{
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 1px 8px 1px 6px;
+	border: 1px solid fade(@ts-online, 35%);
+	border-radius: 999px;
+	background: fade(@ts-online, 12%);
+	color: @ts-online;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.5;
+}
+
+.tsHero-onlineDot
+{
+	position: relative;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: @ts-online;
+
+	&::after
+	{
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		background: @ts-online;
+		animation: tsOnlinePulse 2s ease-out infinite;
+	}
+}
+
+@keyframes tsOnlinePulse
+{
+	0%   { transform: scale(1);   opacity: .7; }
+	70%  { transform: scale(2.6); opacity: 0; }
+	100% { transform: scale(2.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+	.tsHero-onlineDot::after { animation: none; }
+}
+
+// Line 2: last seen / current activity, one line with ellipsis
 .tsHero-seen
 {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 0 8px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 	color: @ts-muted;
 
 	.u-dt, a { color: @ts-text-soft; }
@@ -222,11 +303,24 @@
 
 .tsHero-dot
 {
+	flex: 0 0 auto;
 	width: 3px;
 	height: 3px;
 	border-radius: 50%;
-	background: currentColor;
-	opacity: .6;
+	background: @ts-muted;
+	opacity: .7;
+}
+
+// Small online dot beside the name, only shown when the hero is collapsed
+.tsHero-nameOnline
+{
+	display: none;
+	flex: 0 0 auto;
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: @ts-online;
+	box-shadow: 0 0 0 3px fade(@ts-online, 20%);
 }
 
 // ---- Wallet card (member_stat_pairs) ----
@@ -284,12 +378,8 @@
 	// Remove XF's separators between stat columns
 	.pairs + .pairs { border-left: 0; }
 
-	// Currency colours — matched by the dt label text via class hooks
-	// (add class="ts-gold" / "ts-mastery" / "ts-valor" in member_stat_pairs,
-	//  or keep whatever colouring your stat pairs already output)
-	.pairs.ts-gold > dd    { color: @ts-gold; }
-	.pairs.ts-mastery > dd { color: @ts-mastery; }
-	.pairs.ts-valor > dd   { color: @ts-valor; }
+	// Gold / Mastery / Valor colours come from extra.less:
+	// [title=Gold] + dd { color: ... !important }  (and Mastery / Valor)
 }
 
 // Kill the default pairJustifier stretch if a macro wraps it
@@ -440,6 +530,7 @@
 
 	.tsHero-top { flex: 1 1 auto; align-items: center; }
 	.tsHero-name { font-size: 24px; }
+	.tsHero-nameOnline { display: inline-block; }
 	.tsHero-meta,
 	.tsHero-banners,
 	.tsDock { display: none; }
@@ -466,21 +557,50 @@
 // =============================================================
 .tsProfileTabs > .block-container
 {
-	border: 1px solid @ts-line;
+	border: 1px solid @ts-line-hi;
 	border-radius: @ts-radius;
 	background: @ts-panel;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
 	// no overflow:hidden here, it would clip the Find / Moderator tools menus
 }
 
+// extra.less has `.p-body-inner .block-container { border-width: 0 }` (same
+// specificity, loaded later), so restate the border with a stronger selector.
+.p-body-inner .tsProfileTabs > .block-container
+{
+	border-width: 1px;
+}
+
+// One surface for tabs + toolbar
 .tsTabBar
 {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 	padding-right: 12px;
-	border-bottom: 1px solid @ts-line;
+	border-bottom: 1px solid @ts-line-hi;
 	border-radius: @ts-radius @ts-radius 0 0;
 	background: @ts-panel;
+}
+
+// The style's own tab-header background/border (style property or add-on)
+// is what made the tabs look different from the toolbar; neutralise it here.
+.tsProfileTabs .tsTabBar > .block-tabHeader.block-tabHeader--memberTabs
+{
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+
+	.hScroller-scroll { background: transparent; }
+
+	// edge-fade arrows shown when tabs overflow: fade into our bar colour
+	.hScroller-action
+	{
+		background: transparent;
+		color: @ts-text-soft;
+	}
+	.hScroller-action--start { background: linear-gradient(to right, @ts-panel 55%, fade(@ts-panel, 0%)); }
+	.hScroller-action--end   { background: linear-gradient(to left,  @ts-panel 55%, fade(@ts-panel, 0%)); }
 }
 
 .tsProfileTabs .block-tabHeader--memberTabs
@@ -617,6 +737,14 @@
 			text-decoration: none;
 		}
 
+		// Clicked buttons keep :focus (not :focus-visible); don't leave them lit
+		&:focus:not(:focus-visible):not(.is-menuOpen):not(:hover)
+		{
+			color: @ts-muted;
+			background: transparent;
+			border-color: transparent;
+		}
+
 		// XF's menu caret is noise on icon buttons
 		&.menuTrigger::after { display: none; }
 	}
@@ -628,6 +756,14 @@
 	.tsAct--report                      { .tsIconAct("\f024"); } // flag
 	.tsAct--mod                         { .tsIconAct("\f3ed"); } // shield-alt
 	.tsAct--banner                      { .tsIconAct("\f576"); } // fill-drip
+}
+
+// Panes area
+.tsProfileTabs .tabPanes
+{
+	margin: 0;
+	border-radius: 0 0 @ts-radius @ts-radius;
+	background: @ts-panel;
 }
 
 // Panes sit flush inside the tab card
@@ -692,7 +828,7 @@
 	.tsHero-bottom { flex-direction: column; align-items: stretch; }
 	.tsHero-right { flex-direction: column; align-items: stretch; margin-left: 0; }
 	.tsHero-controls { justify-content: flex-end; }
-	.tsHero-meta { align-self: flex-start; }
+	.tsHero-meta { align-self: stretch; max-width: 100%; }
 
 	// Toolbar gets its own row above the tabs
 	.tsTabBar { flex-wrap: wrap; padding-right: 0; }

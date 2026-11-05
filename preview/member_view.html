@@ -114,7 +114,7 @@ a{color:#3ccbdb;text-decoration:none}
   gap: 10px;
   flex: 0 1 auto;
   min-width: 0;
-  max-width: 100%;
+  max-width: 480px;
   padding: 6px 14px 6px 6px;
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 12px;
@@ -140,8 +140,8 @@ a{color:#3ccbdb;text-decoration:none}
 }
 .tsHero-avatarEdit {
   position: absolute;
+  top: -5px;
   right: -5px;
-  bottom: -5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,9 +159,28 @@ a{color:#3ccbdb;text-decoration:none}
   opacity: 1;
   text-decoration: none;
 }
+.tsHero-avatar.is-online::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #10141c;
+  border-radius: 50%;
+  background: #3fd28b;
+}
 .tsHero-metaText {
+  flex: 1 1 auto;
   min-width: 0;
   line-height: 1.45;
+}
+.tsHero-metaHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  min-width: 0;
 }
 .tsHero-blurb {
   color: #e7eaf0;
@@ -171,11 +190,67 @@ a{color:#3ccbdb;text-decoration:none}
 .tsHero-blurb a {
   color: inherit;
 }
-.tsHero-seen {
-  display: flex;
-  flex-wrap: wrap;
+.tsHero-blurb:empty,
+.tsHero-blurb:empty + .tsHero-dot {
+  display: none;
+}
+.tsHero-joined {
+  color: #7f8a9c;
+}
+.tsHero-joined .u-dt {
+  color: #b7bfcc;
+}
+.tsHero-online {
+  display: inline-flex;
   align-items: center;
-  gap: 0 8px;
+  gap: 5px;
+  padding: 1px 8px 1px 6px;
+  border: 1px solid rgba(63, 210, 139, 0.35);
+  border-radius: 999px;
+  background: rgba(63, 210, 139, 0.12);
+  color: #3fd28b;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.tsHero-onlineDot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3fd28b;
+}
+.tsHero-onlineDot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #3fd28b;
+  animation: tsOnlinePulse 2s ease-out infinite;
+}
+@keyframes tsOnlinePulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tsHero-onlineDot::after {
+    animation: none;
+  }
+}
+.tsHero-seen {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   color: #7f8a9c;
 }
 .tsHero-seen .u-dt,
@@ -183,11 +258,21 @@ a{color:#3ccbdb;text-decoration:none}
   color: #b7bfcc;
 }
 .tsHero-dot {
+  flex: 0 0 auto;
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: currentColor;
-  opacity: 0.6;
+  background: #7f8a9c;
+  opacity: 0.7;
+}
+.tsHero-nameOnline {
+  display: none;
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #3fd28b;
+  box-shadow: 0 0 0 3px rgba(63, 210, 139, 0.2);
 }
 .tsWallet {
   flex: 0 0 auto;
@@ -239,15 +324,6 @@ a{color:#3ccbdb;text-decoration:none}
 }
 .tsWallet .pairs + .pairs {
   border-left: 0;
-}
-.tsWallet .pairs.ts-gold > dd {
-  color: #f5b83d;
-}
-.tsWallet .pairs.ts-mastery > dd {
-  color: #46c9d6;
-}
-.tsWallet .pairs.ts-valor > dd {
-  color: #b26cf2;
 }
 .tsWallet .pairJustifier {
   display: flex;
@@ -369,6 +445,9 @@ a{color:#3ccbdb;text-decoration:none}
 .tsHero.is-collapsed .tsHero-name {
   font-size: 24px;
 }
+.tsHero.is-collapsed .tsHero-nameOnline {
+  display: inline-block;
+}
 .tsHero.is-collapsed .tsHero-meta,
 .tsHero.is-collapsed .tsHero-banners,
 .tsHero.is-collapsed .tsDock {
@@ -391,18 +470,40 @@ a{color:#3ccbdb;text-decoration:none}
   transform: rotate(180deg);
 }
 .tsProfileTabs > .block-container {
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 12px;
   background: #131720;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.p-body-inner .tsProfileTabs > .block-container {
+  border-width: 1px;
 }
 .tsTabBar {
   display: flex;
   align-items: center;
   gap: 12px;
   padding-right: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 12px 12px 0 0;
   background: #131720;
+}
+.tsProfileTabs .tsTabBar > .block-tabHeader.block-tabHeader--memberTabs {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.tsProfileTabs .tsTabBar > .block-tabHeader.block-tabHeader--memberTabs .hScroller-scroll {
+  background: transparent;
+}
+.tsProfileTabs .tsTabBar > .block-tabHeader.block-tabHeader--memberTabs .hScroller-action {
+  background: transparent;
+  color: #b7bfcc;
+}
+.tsProfileTabs .tsTabBar > .block-tabHeader.block-tabHeader--memberTabs .hScroller-action--start {
+  background: linear-gradient(to right, #131720 55%, rgba(19, 23, 32, 0));
+}
+.tsProfileTabs .tsTabBar > .block-tabHeader.block-tabHeader--memberTabs .hScroller-action--end {
+  background: linear-gradient(to left, #131720 55%, rgba(19, 23, 32, 0));
 }
 .tsProfileTabs .block-tabHeader--memberTabs {
   flex: 1 1 auto;
@@ -483,6 +584,12 @@ a{color:#3ccbdb;text-decoration:none}
   background: rgba(60, 203, 219, 0.13);
   border-color: rgba(60, 203, 219, 0.25);
   text-decoration: none;
+}
+.tsToolbar .button:focus:not(:focus-visible):not(.is-menuOpen):not(:hover),
+.tsToolbar a.button:focus:not(:focus-visible):not(.is-menuOpen):not(:hover) {
+  color: #7f8a9c;
+  background: transparent;
+  border-color: transparent;
 }
 .tsToolbar .button.menuTrigger::after,
 .tsToolbar a.button.menuTrigger::after {
@@ -754,6 +861,11 @@ a{color:#3ccbdb;text-decoration:none}
   opacity: 1;
   transform: translate(-50%, 0);
 }
+.tsProfileTabs .tabPanes {
+  margin: 0;
+  border-radius: 0 0 12px 12px;
+  background: #131720;
+}
 .tsProfileTabs .tabPanes > li > .block,
 .tsProfileTabs .tabPanes > li > .block > .block-container {
   margin: 0;
@@ -825,7 +937,8 @@ a{color:#3ccbdb;text-decoration:none}
     justify-content: flex-end;
   }
   .tsHero-meta {
-    align-self: flex-start;
+    align-self: stretch;
+    max-width: 100%;
   }
   .tsTabBar {
     flex-wrap: wrap;
@@ -855,6 +968,14 @@ a{color:#3ccbdb;text-decoration:none}
     display: none;
   }
 }
+/* --- copied from extra.less + simulated style properties (loaded after, like XF) --- */
+.block-tabHeader{background:#0b0e14;border-bottom:1px solid #1d2230}
+.block-container{background:linear-gradient(0deg,rgba(17,20,28,.95) 0%,rgba(17,20,28,.85) 100%);border:1px solid #333;border-bottom:0;border-radius:7px}
+.p-body-inner .block-container{border-width:0}
+.buttonGroup{border-radius:4px;overflow:hidden}
+[title=Mastery] + dd { color: #4fa8bb !important; }
+[title=Gold] + dd { color: #edab2d !important; }
+[title=Valor] + dd { color: #9835de !important; }
 </style></head><body>
 <div class="p-body"><div class="p-body-inner">
 <div class="block tsProfile">
@@ -864,7 +985,7 @@ a{color:#3ccbdb;text-decoration:none}
    <div class="tsHero-inner">
     <div class="tsHero-top">
      <div class="tsHero-identity">
-      <h1 class="tsHero-name"><span class="username">Asch</span></h1>
+      <h1 class="tsHero-name"><span class="username">Asch</span><span class="tsHero-nameOnline" title="Online now"></span></h1>
       <div class="tsHero-banners">
        <em class="userBanner" style="background:#8e2a46;color:#fff">STAFF</em>
        <em class="userBanner" style="background:#2a3a55;color:#cfe3ff">H</em>
@@ -874,18 +995,18 @@ a{color:#3ccbdb;text-decoration:none}
      <div class="tsWallet">
       <dl class="pairs pairs--rows"><dt>Messages</dt><dd>103</dd></dl>
       <dl class="pairs pairs--rows"><dt>Fame</dt><dd>358</dd></dl>
-      <dl class="pairs pairs--rows ts-gold"><dt>Gold</dt><dd>120</dd></dl>
-      <dl class="pairs pairs--rows ts-mastery"><dt>Mastery</dt><dd>60</dd></dl>
-      <dl class="pairs pairs--rows ts-valor"><dt>Valor</dt><dd>3</dd></dl>
+      <dl class="pairs pairs--rows ts-gold"><dt title="Gold">Gold</dt><dd>120</dd></dl>
+      <dl class="pairs pairs--rows ts-mastery"><dt title="Mastery">Mastery</dt><dd>60</dd></dl>
+      <dl class="pairs pairs--rows ts-valor"><dt title="Valor">Valor</dt><dd>3</dd></dl>
      </div>
     </div>
     <div class="tsHero-bottom">
      <div class="tsHero-meta">
-      <span class="tsHero-avatar"><a class="avatar avatar--s"><img src="../images/avatar.png" width="40" height="40" alt=""></a>
+      <span class="tsHero-avatar is-online"><a class="avatar avatar--s"><img src="../images/avatar.png" width="40" height="40" alt=""></a>
        <a class="tsHero-avatarEdit" href="#"><i class="fas fa-pen"></i></a></span>
       <div class="tsHero-metaText">
-       <div class="tsHero-blurb">Administrator</div>
-       <div class="tsHero-seen"><span>Joined <time class="u-dt">Jan 26, 2022</time></span><span class="tsHero-dot"></span><span>Last seen <a>1 minute ago</a> · Viewing member profile Asch</span></div>
+       <div class="tsHero-metaHead"><span class="tsHero-blurb"><span class="userTitle">Administrator</span></span><span class="tsHero-dot"></span><span class="tsHero-joined">Joined <time class="u-dt">Jan 26, 2022</time></span><span class="tsHero-online"><span class="tsHero-onlineDot"></span>Online now</span></div>
+       <div class="tsHero-seen js-tsLastSeen">Last seen <a>1 minute ago</a> · Viewing thread <a>(Comms) Blood Vipers - The Open Rot: Chapter Four, In Which Everything Goes Terribly Wrong</a></div>
       </div>
      </div>
      <div class="tsHero-right">
@@ -929,5 +1050,5 @@ a{color:#3ccbdb;text-decoration:none}
 <script>
 (function(){var h=document.querySelector('.js-tsHero'),b=h.querySelector('.js-tsHeroCollapse');
 b.addEventListener('click',function(){h.classList.toggle('is-collapsed');});
-if(location.hash==='#collapsed')h.classList.add('is-collapsed');})();
+if(location.hash==='#collapsed')h.classList.add('is-collapsed');var se=h.querySelector('.js-tsLastSeen');se.title=se.textContent.replace(/\\s+/g,' ').trim();})();
 </script></body></html>

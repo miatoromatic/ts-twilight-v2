@@ -35,6 +35,8 @@
 <xf:set var="$tsDockBuild" value="" />
 
 <xf:set var="$tsIsSelf" value="{{ $user.user_id == $xf.visitor.user_id }}" />
+<!-- Respects the member's "show online status" privacy setting -->
+<xf:set var="$tsOnline" value="{{ $user.canViewOnlineStatus() && $user.isOnline() }}" />
 
 <div class="block tsProfile">
 	<div class="tsHero {{ $user.Profile.banner_date ? 'tsHero--withBanner' : 'tsHero--noBanner' }} js-tsHero">
@@ -48,6 +50,9 @@
 					<div class="tsHero-identity">
 						<h1 class="tsHero-name">
 							<xf:username user="{$user}" rich="true" href="" />
+							<xf:if is="$tsOnline">
+								<span class="tsHero-nameOnline" title="Online now" aria-label="Online now"></span>
+							</xf:if>
 						</h1>
 
 						<xf:if contentcheck="true">
@@ -72,7 +77,7 @@
 				<!-- ===== Bottom row: meta | dock + banner controls ===== -->
 				<div class="tsHero-bottom">
 					<div class="tsHero-meta">
-						<span class="tsHero-avatar">
+						<span class="tsHero-avatar{{ $tsOnline ? ' is-online' : '' }}">
 							<xf:avatar user="{$user}" size="s" href="{{ $user.getAvatarUrl('o') ?: '' }}" />
 							<xf:if is="$tsIsSelf && $xf.visitor.canUploadAvatar()">
 								<a class="tsHero-avatarEdit" href="{{ link('account/avatar') }}" data-xf-click="overlay"
@@ -80,16 +85,22 @@
 							</xf:if>
 						</span>
 						<div class="tsHero-metaText">
-							<xf:userblurb user="$user" tag="div" class="tsHero-blurb" />
-							<div class="tsHero-seen">
-								<span>{{ phrase('joined') }} <xf:date time="$user.register_date" /></span>
-								<xf:if contentcheck="true">
-									<span class="tsHero-dot" aria-hidden="true"></span>
-									<span>{{ phrase('last_seen') }}
-										<xf:contentcheck><xf:useractivity user="$user" class="pairs--plainLabel" /></xf:contentcheck>
-									</span>
+							<!-- Line 1: title · joined · online pill -->
+							<div class="tsHero-metaHead">
+								<xf:userblurb user="$user" tag="span" class="tsHero-blurb" />
+								<span class="tsHero-dot" aria-hidden="true"></span>
+								<span class="tsHero-joined">{{ phrase('joined') }} <xf:date time="$user.register_date" /></span>
+								<xf:if is="$tsOnline">
+									<span class="tsHero-online"><span class="tsHero-onlineDot" aria-hidden="true"></span>Online now</span>
 								</xf:if>
 							</div>
+							<!-- Line 2: last seen, single line with ellipsis (full text on hover) -->
+							<xf:if contentcheck="true">
+								<div class="tsHero-seen js-tsLastSeen">
+									{{ phrase('last_seen') }}
+									<xf:contentcheck><xf:useractivity user="$user" class="pairs--plainLabel" /></xf:contentcheck>
+								</div>
+							</xf:if>
 						</div>
 					</div>
 
@@ -355,6 +366,10 @@
 	if (!hero) { return; }
 
 	var btn = hero.querySelector('.js-tsHeroCollapse');
+
+	// Long "Viewing thread ..." activity is truncated with an ellipsis; show it in full on hover.
+	var seen = hero.querySelector('.js-tsLastSeen');
+	if (seen) { seen.title = seen.textContent.replace(/\s+/g, ' ').trim(); }
 
 	function set(collapsed)
 	{
