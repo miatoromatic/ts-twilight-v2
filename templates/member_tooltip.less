@@ -1,0 +1,683 @@
+// =============================================================
+//  Terrasphere — member tooltip (mini profile card)
+//  Template: member_tooltip.less   (XenForo 2.2.x)
+//  Shares the palette of ts_member_view.less
+// =============================================================
+
+@ts-page:        #0f131a;
+@ts-panel:       #131720;
+@ts-panel-deep:  #10141c;
+@ts-line:        rgba(255, 255, 255, .06);
+@ts-line-hi:     rgba(255, 255, 255, .11);
+@ts-text:        #e7eaf0;
+@ts-text-soft:   #b7bfcc;
+@ts-muted:       #7f8a9c;
+@ts-accent:      #3ccbdb;
+@ts-accent-2:    #2fd3c0;
+@ts-accent-soft: rgba(60, 203, 219, .13);
+@ts-gold:        #edab2d;
+@ts-mastery:     #4fa8bb;
+@ts-valor:       #9835de;
+@ts-online:      #3fd28b;
+@ts-radius:      14px;
+@ts-radius-sm:   9px;
+@ts-mono:        "JetBrains Mono", "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+
+@_tsTip-pad:     16px;
+
+// =============================================================
+//  Tooltip shell (XF's .tooltip--member wrapper)
+// =============================================================
+.tooltip.tooltip--member
+{
+	width: 100%;
+	max-width: 460px;
+}
+
+.tooltip.tooltip--member .tooltip-content
+{
+	min-height: 0;
+	padding: 0;
+	border: 1px solid @ts-line-hi;
+	border-radius: @ts-radius;
+	background: @ts-panel-deep;
+	color: @ts-text-soft;
+	box-shadow: 0 18px 40px rgba(0, 0, 0, .55), 0 0 0 1px rgba(0, 0, 0, .25);
+}
+
+// Arrow: tooltip below the trigger → arrow sits on the (dark, veiled) header
+.tooltip.tooltip--member.tooltip--bottom .tooltip-arrow
+{
+	border-bottom-color: @ts-line-hi;
+
+	&::after { border-bottom-color: #121722; }
+}
+
+// Tooltip above the trigger → arrow sits under the actions row
+.tooltip.tooltip--member.tooltip--top .tooltip-arrow
+{
+	border-top-color: @ts-line-hi;
+
+	&::after { border-top-color: @ts-panel-deep; }
+}
+
+// =============================================================
+//  Header (banner, heavily veiled)
+// =============================================================
+.tsTip
+{
+	position: relative;
+	font-size: 13px;
+	line-height: 1.45;
+}
+
+.tsTip-header,
+.tsTip .memberTooltip-header
+{
+	position: relative;
+	display: block;
+	width: auto;
+	max-width: none;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: @ts-radius @ts-radius 0 0;
+	// Fallback when the member has no banner
+	background-color: @ts-panel;
+	background-image:
+		radial-gradient(120% 140% at 90% 0%, rgba(60, 203, 219, .12) 0%, rgba(60, 203, 219, 0) 55%),
+		radial-gradient(90% 120% at 0% 100%, rgba(152, 53, 222, .10) 0%, rgba(152, 53, 222, 0) 60%);
+	background-size: cover !important;
+	background-repeat: no-repeat !important;
+	background-position: center;
+	table-layout: auto;
+}
+
+// The veil: blur + dark wash, so the banner reads as texture behind the text
+.tsTip-veil
+{
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	background:
+		linear-gradient(180deg, rgba(12, 16, 24, .74) 0%, rgba(12, 16, 24, .84) 45%, rgba(16, 20, 28, .97) 100%);
+	-webkit-backdrop-filter: blur(5px) saturate(.85);
+	backdrop-filter: blur(5px) saturate(.85);
+}
+
+.tsTip-headerInner
+{
+	position: relative;
+	z-index: 1;
+	padding: 14px @_tsTip-pad 0;
+}
+
+// ---- Top bar ----
+.tsTip-topbar
+{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	min-height: 30px;
+}
+
+.tsTip-status
+{
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+	padding: 4px 12px;
+	border: 1px solid @ts-line-hi;
+	border-radius: 999px;
+	background: rgba(10, 13, 20, .6);
+	font-size: 12px;
+	font-weight: 600;
+	color: @ts-text-soft;
+	white-space: nowrap;
+}
+
+.tsTip-statusState
+{
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	font-weight: 700;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	font-size: 11.5px;
+
+	&--online  { color: @ts-online; }
+	&--offline { color: @ts-muted; }
+}
+
+.tsTip-statusDot
+{
+	position: relative;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: currentColor;
+
+	.tsTip-statusState--online &::after
+	{
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		background: currentColor;
+		animation: tsTipPulse 2s ease-out infinite;
+	}
+}
+
+@keyframes tsTipPulse
+{
+	0%   { transform: scale(1);   opacity: .7; }
+	70%  { transform: scale(2.6); opacity: 0; }
+	100% { transform: scale(2.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+	.tsTip-statusDot::after { animation: none !important; }
+}
+
+.tsTip-statusSep
+{
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background: @ts-muted;
+}
+
+.tsTip-location
+{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: @ts-text;
+
+	.fa--xf, i { color: @ts-accent; margin-right: 2px; }
+}
+
+.tsTip-tools
+{
+	display: flex;
+	flex: 0 0 auto;
+	gap: 6px;
+	margin-left: auto;
+	float: none;
+}
+
+.tsTip-tool,
+a.tsTip-tool,
+.tsTip-tools .button.tsTip-tool
+{
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	min-height: 0;
+	padding: 0;
+	border: 1px solid @ts-line-hi;
+	border-radius: 8px;
+	background: rgba(10, 13, 20, .6);
+	box-shadow: none;
+	color: @ts-text-soft;
+	font-size: 13px;
+	line-height: 1;
+	text-decoration: none;
+	transition: color .15s ease, border-color .15s ease, background .15s ease;
+
+	&:hover,
+	&:focus-visible,
+	&.is-menuOpen
+	{
+		color: @ts-accent;
+		border-color: rgba(60, 203, 219, .4);
+		background: rgba(18, 40, 46, .75);
+		text-decoration: none;
+	}
+
+	&.menuTrigger::after { display: none; }
+}
+
+// ---- Identity ----
+.tsTip-identity
+{
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	margin-top: 16px;
+}
+
+.tsTip-avatarCol,
+.tsTip .memberTooltip-avatar
+{
+	display: flex;
+	flex: 0 0 auto;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	width: auto;
+	padding: 0;
+
+	.avatar
+	{
+		width: 88px;
+		height: 88px;
+		border-radius: 12px;
+		box-shadow: 0 0 0 2px @ts-accent, 0 8px 22px rgba(0, 0, 0, .45);
+
+		img { border-radius: inherit; }
+	}
+}
+
+// Character sheet / thread buttons from terrasphere_core_generic_macros
+.tsTip-charLinks
+{
+	display: flex;
+	justify-content: center;
+	gap: 6px;
+	max-width: 96px;
+
+	&:empty { display: none; }
+
+	a,
+	.button
+	{
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 26px;
+		height: 24px;
+		min-height: 0;
+		padding: 0 6px;
+		border: 1px solid rgba(60, 203, 219, .35);
+		border-radius: 6px;
+		background: @ts-accent-soft;
+		box-shadow: none;
+		color: @ts-accent;
+		font-size: 11px;
+		line-height: 1;
+		text-decoration: none;
+
+		&:hover { background: rgba(60, 203, 219, .25); color: #fff; }
+	}
+}
+
+.tsTip-idInfo,
+.tsTip .memberTooltip-headerInfo
+{
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+	min-width: 0;
+	padding-top: 4px;
+}
+
+.tsTip-nameRow
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 8px;
+	min-width: 0;
+}
+
+.tsTip-name,
+.tsTip .memberTooltip-name
+{
+	margin: 0;
+	padding: 0;
+	color: #f3f5f9;
+	font-size: 22px;
+	font-weight: 800;
+	line-height: 1.1;
+	letter-spacing: .03em;
+	text-transform: uppercase;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+	word-break: break-word;
+
+	.username,
+	a { color: inherit; text-decoration: none; }
+	.username:hover { color: #fff; }
+}
+
+.tsTip-banners,
+.tsTip .memberTooltip-banners
+{
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 5px;
+	margin: 0;
+
+	.userBanner
+	{
+		margin: 0;
+		padding: 2px 6px;
+		border-radius: 5px;
+		font-size: 10.5px;
+		font-weight: 800;
+		letter-spacing: .03em;
+		line-height: 1.4;
+		top: 0 !important;
+	}
+}
+
+.tsTip-title
+{
+	.userTitle
+	{
+		display: inline-block;
+		padding: 3px 10px;
+		border: 1px solid rgba(60, 203, 219, .45);
+		border-radius: 7px;
+		background: @ts-accent-soft;
+		color: @ts-accent;
+		font-size: 12px;
+		font-weight: 700;
+		line-height: 1.35;
+	}
+}
+
+.tsTip-ooc
+{
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: @ts-text;
+	font-size: 12.5px;
+	font-weight: 600;
+}
+
+.tsTip-oocTag
+{
+	padding: 1px 6px;
+	border: 1px solid @ts-line-hi;
+	border-radius: 4px;
+	background: rgba(10, 13, 20, .6);
+	color: @ts-muted;
+	font-size: 9.5px;
+	font-weight: 800;
+	letter-spacing: .08em;
+}
+
+// ---- Facts ----
+.tsTip-facts,
+.tsTip .memberTooltip-blurbContainer
+{
+	margin: 16px -@_tsTip-pad 0;
+	padding: 12px @_tsTip-pad 14px;
+	border-top: 1px solid @ts-line;
+	background: transparent;
+}
+
+.tsTip-factRow
+{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 12.5px;
+	color: @ts-muted;
+
+	b { color: @ts-text; font-weight: 700; }
+	.fa--xf, i { margin-right: 4px; color: @ts-muted; }
+}
+
+.tsTip-ago
+{
+	white-space: nowrap;
+	color: @ts-text-soft;
+}
+
+.tsTip-activity
+{
+	margin-top: 6px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-size: 12.5px;
+	color: @ts-muted;
+
+	// the time is already shown top-right: drop it and its "·" separator
+	.u-dt:first-child,
+	.u-dt:first-child + [role="presentation"] { display: none; }
+
+	em
+	{
+		font-style: italic;
+		font-weight: 600;
+	}
+
+	a { color: @ts-accent; }
+	a:hover { color: #fff; text-decoration: none; }
+
+	// nothing left but the (hidden) time → hide the row
+	&:not(:has([role="presentation"])) { display: none; }
+}
+
+// =============================================================
+//  Stats strip
+// =============================================================
+.tsTip-stats,
+.tsTip .memberTooltip-info
+{
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid @ts-line-hi;
+	border-bottom: 1px solid @ts-line-hi;
+	background: @ts-panel-deep;
+	color: @ts-text-soft;
+}
+
+.tsTip .memberTooltip-stats
+{
+	font-size: inherit;
+}
+
+.tsTip .pairJustifier
+{
+	display: grid;
+	grid-auto-columns: minmax(0, 1fr);
+	grid-auto-flow: column;
+	margin: 0;
+}
+
+.tsTip .pairJustifier > .pairs,
+.tsTip .pairJustifier > .pairs.pairs--rows
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 3px;
+	min-width: 0;
+	margin: 0;
+	padding: 11px 6px 12px;
+	text-align: center;
+
+	& + .pairs { border-left: 1px solid @ts-line; }
+
+	> dt
+	{
+		margin: 0;
+		color: @ts-muted;
+		font-size: 10.5px;
+		font-weight: 700;
+		letter-spacing: .06em;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	> dd
+	{
+		display: block;
+		margin: 0;
+		color: @ts-text;
+		font-size: 16px;
+		font-weight: 800;
+		line-height: 1.2;
+	}
+
+	a { color: inherit; text-decoration: none; }
+}
+
+// Currency cells: tinted background, monospace value.
+// Values are coloured by extra.less: [title=Gold] + dd { color: ... !important }
+.tsTip .pairJustifier > .pairs
+{
+	&:has(> dt[title="Gold"])    { background: fade(@ts-gold, 9%);    > dt { color: fade(@ts-gold, 85%); } }
+	&:has(> dt[title="Mastery"]) { background: fade(@ts-mastery, 10%); > dt { color: lighten(@ts-mastery, 12%); } }
+	&:has(> dt[title="Valor"])   { background: fade(@ts-valor, 11%);  > dt { color: lighten(@ts-valor, 18%); } }
+}
+
+.tsTip dt[title="Gold"] + dd,
+.tsTip dt[title="Mastery"] + dd,
+.tsTip dt[title="Valor"] + dd
+{
+	font-family: @ts-mono;
+	font-size: 15px;
+	letter-spacing: -.02em;
+}
+
+// =============================================================
+//  Actions
+// =============================================================
+.tsTip-actions,
+.tsTip .memberTooltip-actions
+{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 12px @_tsTip-pad 14px;
+	border-radius: 0 0 @ts-radius @ts-radius;
+	background: @ts-panel-deep;
+
+	.buttonGroup,
+	.buttonGroup-buttonWrapper
+	{
+		display: contents;
+	}
+
+	.button,
+	a.button
+	{
+		display: inline-flex;
+		flex: 1 1 0;
+		align-items: center;
+		justify-content: center;
+		gap: 7px;
+		height: 38px;
+		min-height: 0;
+		min-width: 0;
+		padding: 0 12px;
+		border: 1px solid @ts-line-hi;
+		border-radius: @ts-radius-sm;
+		background: #171c27;
+		box-shadow: none;
+		color: @ts-text-soft;
+		font-size: 13px;
+		font-weight: 700;
+		line-height: 1;
+		white-space: nowrap;
+		transition: color .15s ease, background .15s ease, border-color .15s ease, filter .15s ease;
+
+		&::before
+		{
+			.m-faBase();
+			font-size: 12px;
+		}
+
+		&:hover,
+		&:focus-visible,
+		&.is-menuOpen
+		{
+			color: #fff;
+			border-color: rgba(60, 203, 219, .4);
+			background: #1b2330;
+			text-decoration: none;
+		}
+
+		&.menuTrigger::after { display: none; }
+
+		.button-text { overflow: hidden; text-overflow: ellipsis; }
+	}
+
+	a.button[href*="/follow"]::before            { .m-faContent("\f234"); } // user-plus
+	a.button[href*="/ignore"]::before            { .m-faContent("\f05e"); } // ban
+	.button.menuTrigger::before                  { .m-faContent("\f002"); } // search (Find)
+
+	// Primary action: Start conversation
+	a.button[href*="conversations/add"]
+	{
+		flex-grow: 1.7;
+		border-color: transparent;
+		background: linear-gradient(90deg, @ts-accent 0%, @ts-accent-2 100%);
+		color: #06222a;
+
+		&::before { .m-faContent("\f1d8"); } // paper-plane
+
+		&:hover,
+		&:focus-visible
+		{
+			color: #031a20;
+			border-color: transparent;
+			background: linear-gradient(90deg, @ts-accent 0%, @ts-accent-2 100%);
+			filter: brightness(1.08);
+		}
+	}
+}
+
+// =============================================================
+//  Narrow screens
+// =============================================================
+@media (max-width: @xf-responsiveNarrow)
+{
+	.tsTip-headerInner { padding: 12px 12px 0; }
+
+	.tsTip-identity { gap: 12px; }
+
+	.tsTip-avatarCol .avatar,
+	.tsTip .memberTooltip-avatar .avatar
+	{
+		width: 64px;
+		height: 64px;
+	}
+
+	.tsTip-name,
+	.tsTip .memberTooltip-name { font-size: 18px; }
+
+	.tsTip-facts,
+	.tsTip .memberTooltip-blurbContainer
+	{
+		margin-left: -12px;
+		margin-right: -12px;
+		padding-left: 12px;
+		padding-right: 12px;
+	}
+
+	.tsTip .pairJustifier > .pairs,
+	.tsTip .pairJustifier > .pairs.pairs--rows
+	{
+		padding: 9px 2px 10px;
+
+		> dt { font-size: 9px; letter-spacing: .03em; }
+		> dd { font-size: 14px; }
+	}
+
+	.tsTip-actions,
+	.tsTip .memberTooltip-actions { padding: 10px 12px 12px; }
+
+	.tsTip-actions a.button[href*="conversations/add"]
+	{
+		flex-basis: 100%;
+		order: -1;
+	}
+}

@@ -1,0 +1,716 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Member Tooltip Preview</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+/* --- preview-only: minimal stand-ins for XF base styles --- */
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#0f131a url(../images/background.webp) center/cover fixed;color:#e7eaf0;font:14px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif;display:flex;justify-content:center;padding:40px 16px}
+a{color:#3ccbdb;text-decoration:none}
+.tooltip{position:relative}
+.tooltip-arrow{position:absolute;top:-10px;left:40px;width:0;height:0;border:10px solid transparent;border-top:0}
+.tooltip-arrow::after{content:"";position:absolute;left:-9px;top:1px;border:9px solid transparent;border-top:0}
+.pairs{display:block}.button{display:inline-flex;cursor:pointer;text-decoration:none;font:inherit}
+.userBanner{display:inline-block;font-style:normal}
+.avatar{display:block}.avatar img{display:block;width:100%;height:100%;object-fit:cover}
+h4{margin:0}
+/* --- compiled member_tooltip.less --- */
+.tooltip.tooltip--member {
+  width: 100%;
+  max-width: 460px;
+}
+.tooltip.tooltip--member .tooltip-content {
+  min-height: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 14px;
+  background: #10141c;
+  color: #b7bfcc;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+.tooltip.tooltip--member.tooltip--bottom .tooltip-arrow {
+  border-bottom-color: rgba(255, 255, 255, 0.11);
+}
+.tooltip.tooltip--member.tooltip--bottom .tooltip-arrow::after {
+  border-bottom-color: #121722;
+}
+.tooltip.tooltip--member.tooltip--top .tooltip-arrow {
+  border-top-color: rgba(255, 255, 255, 0.11);
+}
+.tooltip.tooltip--member.tooltip--top .tooltip-arrow::after {
+  border-top-color: #10141c;
+}
+.tsTip {
+  position: relative;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.tsTip-header,
+.tsTip .memberTooltip-header {
+  position: relative;
+  display: block;
+  width: auto;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 14px 14px 0 0;
+  background-color: #131720;
+  background-image: radial-gradient(120% 140% at 90% 0%, rgba(60, 203, 219, 0.12) 0%, rgba(60, 203, 219, 0) 55%), radial-gradient(90% 120% at 0% 100%, rgba(152, 53, 222, 0.1) 0%, rgba(152, 53, 222, 0) 60%);
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center;
+  table-layout: auto;
+}
+.tsTip-veil {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(12, 16, 24, 0.74) 0%, rgba(12, 16, 24, 0.84) 45%, rgba(16, 20, 28, 0.97) 100%);
+  -webkit-backdrop-filter: blur(5px) saturate(0.85);
+  backdrop-filter: blur(5px) saturate(0.85);
+}
+.tsTip-headerInner {
+  position: relative;
+  z-index: 1;
+  padding: 14px 16px 0;
+}
+.tsTip-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 30px;
+}
+.tsTip-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(10, 13, 20, 0.6);
+  font-size: 12px;
+  font-weight: 600;
+  color: #b7bfcc;
+  white-space: nowrap;
+}
+.tsTip-statusState {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 11.5px;
+}
+.tsTip-statusState--online {
+  color: #3fd28b;
+}
+.tsTip-statusState--offline {
+  color: #7f8a9c;
+}
+.tsTip-statusDot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.tsTip-statusState--online .tsTip-statusDot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: currentColor;
+  animation: tsTipPulse 2s ease-out infinite;
+}
+@keyframes tsTipPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tsTip-statusDot::after {
+    animation: none !important;
+  }
+}
+.tsTip-statusSep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #7f8a9c;
+}
+.tsTip-location {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e7eaf0;
+}
+.tsTip-location .fa--xf,
+.tsTip-location i {
+  color: #3ccbdb;
+  margin-right: 2px;
+}
+.tsTip-tools {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  margin-left: auto;
+  float: none;
+}
+.tsTip-tool,
+a.tsTip-tool,
+.tsTip-tools .button.tsTip-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
+  background: rgba(10, 13, 20, 0.6);
+  box-shadow: none;
+  color: #b7bfcc;
+  font-size: 13px;
+  line-height: 1;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.tsTip-tool:hover,
+a.tsTip-tool:hover,
+.tsTip-tools .button.tsTip-tool:hover,
+.tsTip-tool:focus-visible,
+a.tsTip-tool:focus-visible,
+.tsTip-tools .button.tsTip-tool:focus-visible,
+.tsTip-tool.is-menuOpen,
+a.tsTip-tool.is-menuOpen,
+.tsTip-tools .button.tsTip-tool.is-menuOpen {
+  color: #3ccbdb;
+  border-color: rgba(60, 203, 219, 0.4);
+  background: rgba(18, 40, 46, 0.75);
+  text-decoration: none;
+}
+.tsTip-tool.menuTrigger::after,
+a.tsTip-tool.menuTrigger::after,
+.tsTip-tools .button.tsTip-tool.menuTrigger::after {
+  display: none;
+}
+.tsTip-identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 16px;
+}
+.tsTip-avatarCol,
+.tsTip .memberTooltip-avatar {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  padding: 0;
+}
+.tsTip-avatarCol .avatar,
+.tsTip .memberTooltip-avatar .avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 12px;
+  box-shadow: 0 0 0 2px #3ccbdb, 0 8px 22px rgba(0, 0, 0, 0.45);
+}
+.tsTip-avatarCol .avatar img,
+.tsTip .memberTooltip-avatar .avatar img {
+  border-radius: inherit;
+}
+.tsTip-charLinks {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  max-width: 96px;
+}
+.tsTip-charLinks:empty {
+  display: none;
+}
+.tsTip-charLinks a,
+.tsTip-charLinks .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 24px;
+  min-height: 0;
+  padding: 0 6px;
+  border: 1px solid rgba(60, 203, 219, 0.35);
+  border-radius: 6px;
+  background: rgba(60, 203, 219, 0.13);
+  box-shadow: none;
+  color: #3ccbdb;
+  font-size: 11px;
+  line-height: 1;
+  text-decoration: none;
+}
+.tsTip-charLinks a:hover,
+.tsTip-charLinks .button:hover {
+  background: rgba(60, 203, 219, 0.25);
+  color: #fff;
+}
+.tsTip-idInfo,
+.tsTip .memberTooltip-headerInfo {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  padding-top: 4px;
+}
+.tsTip-nameRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
+}
+.tsTip-name,
+.tsTip .memberTooltip-name {
+  margin: 0;
+  padding: 0;
+  color: #f3f5f9;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  word-break: break-word;
+}
+.tsTip-name .username,
+.tsTip .memberTooltip-name .username,
+.tsTip-name a,
+.tsTip .memberTooltip-name a {
+  color: inherit;
+  text-decoration: none;
+}
+.tsTip-name .username:hover,
+.tsTip .memberTooltip-name .username:hover {
+  color: #fff;
+}
+.tsTip-banners,
+.tsTip .memberTooltip-banners {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+}
+.tsTip-banners .userBanner,
+.tsTip .memberTooltip-banners .userBanner {
+  margin: 0;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  top: 0 !important;
+}
+.tsTip-title .userTitle {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid rgba(60, 203, 219, 0.45);
+  border-radius: 7px;
+  background: rgba(60, 203, 219, 0.13);
+  color: #3ccbdb;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.tsTip-ooc {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #e7eaf0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.tsTip-oocTag {
+  padding: 1px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 4px;
+  background: rgba(10, 13, 20, 0.6);
+  color: #7f8a9c;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.tsTip-facts,
+.tsTip .memberTooltip-blurbContainer {
+  margin: 16px -16px 0;
+  padding: 12px 16px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+}
+.tsTip-factRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12.5px;
+  color: #7f8a9c;
+}
+.tsTip-factRow b {
+  color: #e7eaf0;
+  font-weight: 700;
+}
+.tsTip-factRow .fa--xf,
+.tsTip-factRow i {
+  margin-right: 4px;
+  color: #7f8a9c;
+}
+.tsTip-ago {
+  white-space: nowrap;
+  color: #b7bfcc;
+}
+.tsTip-activity {
+  margin-top: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12.5px;
+  color: #7f8a9c;
+}
+.tsTip-activity .u-dt:first-child,
+.tsTip-activity .u-dt:first-child + [role="presentation"] {
+  display: none;
+}
+.tsTip-activity em {
+  font-style: italic;
+  font-weight: 600;
+}
+.tsTip-activity a {
+  color: #3ccbdb;
+}
+.tsTip-activity a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+.tsTip-activity:not(:has([role="presentation"])) {
+  display: none;
+}
+.tsTip-stats,
+.tsTip .memberTooltip-info {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+  background: #10141c;
+  color: #b7bfcc;
+}
+.tsTip .memberTooltip-stats {
+  font-size: inherit;
+}
+.tsTip .pairJustifier {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  margin: 0;
+}
+.tsTip .pairJustifier > .pairs,
+.tsTip .pairJustifier > .pairs.pairs--rows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  margin: 0;
+  padding: 11px 6px 12px;
+  text-align: center;
+}
+.tsTip .pairJustifier > .pairs + .pairs,
+.tsTip .pairJustifier > .pairs.pairs--rows + .pairs {
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+.tsTip .pairJustifier > .pairs > dt,
+.tsTip .pairJustifier > .pairs.pairs--rows > dt {
+  margin: 0;
+  color: #7f8a9c;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tsTip .pairJustifier > .pairs > dd,
+.tsTip .pairJustifier > .pairs.pairs--rows > dd {
+  display: block;
+  margin: 0;
+  color: #e7eaf0;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.tsTip .pairJustifier > .pairs a,
+.tsTip .pairJustifier > .pairs.pairs--rows a {
+  color: inherit;
+  text-decoration: none;
+}
+.tsTip .pairJustifier > .pairs:has(> dt[title="Gold"]) {
+  background: rgba(237, 171, 45, 0.09);
+}
+.tsTip .pairJustifier > .pairs:has(> dt[title="Gold"]) > dt {
+  color: rgba(237, 171, 45, 0.85);
+}
+.tsTip .pairJustifier > .pairs:has(> dt[title="Mastery"]) {
+  background: rgba(79, 168, 187, 0.1);
+}
+.tsTip .pairJustifier > .pairs:has(> dt[title="Mastery"]) > dt {
+  color: #7bbecc;
+}
+.tsTip .pairJustifier > .pairs:has(> dt[title="Valor"]) {
+  background: rgba(152, 53, 222, 0.11);
+}
+.tsTip .pairJustifier > .pairs:has(> dt[title="Valor"]) > dt {
+  color: #c084eb;
+}
+.tsTip dt[title="Gold"] + dd,
+.tsTip dt[title="Mastery"] + dd,
+.tsTip dt[title="Valor"] + dd {
+  font-family: "JetBrains Mono", "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+.tsTip-actions,
+.tsTip .memberTooltip-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px 14px;
+  border-radius: 0 0 14px 14px;
+  background: #10141c;
+}
+.tsTip-actions .buttonGroup,
+.tsTip .memberTooltip-actions .buttonGroup,
+.tsTip-actions .buttonGroup-buttonWrapper,
+.tsTip .memberTooltip-actions .buttonGroup-buttonWrapper {
+  display: contents;
+}
+.tsTip-actions .button,
+.tsTip .memberTooltip-actions .button,
+.tsTip-actions a.button,
+.tsTip .memberTooltip-actions a.button {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 38px;
+  min-height: 0;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 9px;
+  background: #171c27;
+  box-shadow: none;
+  color: #b7bfcc;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease, filter 0.15s ease;
+}
+.tsTip-actions .button::before,
+.tsTip .memberTooltip-actions .button::before,
+.tsTip-actions a.button::before,
+.tsTip .memberTooltip-actions a.button::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  font-size: 12px;
+}
+.tsTip-actions .button:hover,
+.tsTip .memberTooltip-actions .button:hover,
+.tsTip-actions a.button:hover,
+.tsTip .memberTooltip-actions a.button:hover,
+.tsTip-actions .button:focus-visible,
+.tsTip .memberTooltip-actions .button:focus-visible,
+.tsTip-actions a.button:focus-visible,
+.tsTip .memberTooltip-actions a.button:focus-visible,
+.tsTip-actions .button.is-menuOpen,
+.tsTip .memberTooltip-actions .button.is-menuOpen,
+.tsTip-actions a.button.is-menuOpen,
+.tsTip .memberTooltip-actions a.button.is-menuOpen {
+  color: #fff;
+  border-color: rgba(60, 203, 219, 0.4);
+  background: #1b2330;
+  text-decoration: none;
+}
+.tsTip-actions .button.menuTrigger::after,
+.tsTip .memberTooltip-actions .button.menuTrigger::after,
+.tsTip-actions a.button.menuTrigger::after,
+.tsTip .memberTooltip-actions a.button.menuTrigger::after {
+  display: none;
+}
+.tsTip-actions .button .button-text,
+.tsTip .memberTooltip-actions .button .button-text,
+.tsTip-actions a.button .button-text,
+.tsTip .memberTooltip-actions a.button .button-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tsTip-actions a.button[href*="/follow"]::before,
+.tsTip .memberTooltip-actions a.button[href*="/follow"]::before {
+  content: "\f234";
+}
+.tsTip-actions a.button[href*="/ignore"]::before,
+.tsTip .memberTooltip-actions a.button[href*="/ignore"]::before {
+  content: "\f05e";
+}
+.tsTip-actions .button.menuTrigger::before,
+.tsTip .memberTooltip-actions .button.menuTrigger::before {
+  content: "\f002";
+}
+.tsTip-actions a.button[href*="conversations/add"],
+.tsTip .memberTooltip-actions a.button[href*="conversations/add"] {
+  flex-grow: 1.7;
+  border-color: transparent;
+  background: linear-gradient(90deg, #3ccbdb 0%, #2fd3c0 100%);
+  color: #06222a;
+}
+.tsTip-actions a.button[href*="conversations/add"]::before,
+.tsTip .memberTooltip-actions a.button[href*="conversations/add"]::before {
+  content: "\f1d8";
+}
+.tsTip-actions a.button[href*="conversations/add"]:hover,
+.tsTip .memberTooltip-actions a.button[href*="conversations/add"]:hover,
+.tsTip-actions a.button[href*="conversations/add"]:focus-visible,
+.tsTip .memberTooltip-actions a.button[href*="conversations/add"]:focus-visible {
+  color: #031a20;
+  border-color: transparent;
+  background: linear-gradient(90deg, #3ccbdb 0%, #2fd3c0 100%);
+  filter: brightness(1.08);
+}
+@media (max-width: 480px) {
+  .tsTip-headerInner {
+    padding: 12px 12px 0;
+  }
+  .tsTip-identity {
+    gap: 12px;
+  }
+  .tsTip-avatarCol .avatar,
+  .tsTip .memberTooltip-avatar .avatar {
+    width: 64px;
+    height: 64px;
+  }
+  .tsTip-name,
+  .tsTip .memberTooltip-name {
+    font-size: 18px;
+  }
+  .tsTip-facts,
+  .tsTip .memberTooltip-blurbContainer {
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .tsTip .pairJustifier > .pairs,
+  .tsTip .pairJustifier > .pairs.pairs--rows {
+    padding: 9px 2px 10px;
+  }
+  .tsTip .pairJustifier > .pairs > dt,
+  .tsTip .pairJustifier > .pairs.pairs--rows > dt {
+    font-size: 9px;
+    letter-spacing: 0.03em;
+  }
+  .tsTip .pairJustifier > .pairs > dd,
+  .tsTip .pairJustifier > .pairs.pairs--rows > dd {
+    font-size: 14px;
+  }
+  .tsTip-actions,
+  .tsTip .memberTooltip-actions {
+    padding: 10px 12px 12px;
+  }
+  .tsTip-actions a.button[href*="conversations/add"] {
+    flex-basis: 100%;
+    order: -1;
+  }
+}
+/* --- global extra.less rules that stay active --- */
+[title=Mastery] + dd { color: #4fa8bb !important; }
+[title=Gold] + dd { color: #edab2d !important; }
+[title=Valor] + dd { color: #9835de !important; }
+.userBanner{cursor:help;font-size:65%}
+.NGP{background-color:#182a1f;border:1px solid #3c6426;color:#eee;border-radius:4px;padding:1px 4px}
+.buttonGroup{border-radius:4px;overflow:hidden}
+</style></head><body>
+<div class="tooltip tooltip--member tooltip--bottom">
+ <div class="tooltip-arrow"></div>
+ <div class="tooltip-content">
+<div class="tooltip-content-inner">
+ <div class="memberTooltip tsTip memberTooltip--withBanner">
+  <div class="memberProfileBanner memberTooltip-header tsTip-header" style="background-image:url(../images/user-banner.jpg);background-position-y:40%">
+   <div class="tsTip-veil"></div>
+   <div class="tsTip-headerInner">
+    <div class="tsTip-topbar">
+     <div class="tsTip-status"><span class="tsTip-statusState tsTip-statusState--online"><span class="tsTip-statusDot"></span>Online</span><span class="tsTip-statusSep"></span><span class="tsTip-location"><i class="fas fa-map-marker-alt"></i> Falderen Gala</span></div>
+     <div class="tsTip-tools memberTooltip-headerAction">
+      <a href="#" class="tsTip-tool" title="View profile"><i class="fas fa-eye"></i></a>
+      <button class="button--link button--small menuTrigger tsTip-tool button"><i class="fas fa-cog"></i></button>
+     </div>
+    </div>
+    <div class="tsTip-identity">
+     <div class="tsTip-avatarCol memberTooltip-avatar">
+      <a class="avatar avatar--m"><img src="../images/avatar.png" alt=""></a>
+      <div class="flx-container tsTip-charLinks"><a href="#"><i class="fas fa-user"></i></a><a href="#"><i class="fas fa-address-card"></i></a></div>
+     </div>
+     <div class="tsTip-idInfo memberTooltip-headerInfo">
+      <div class="tsTip-nameRow">
+       <h4 class="memberTooltip-name tsTip-name"><span class="memberTooltip-nameWrapper"><a class="username">Lune</a></span></h4>
+       <span class="tsTip-banners memberTooltip-banners"><em class="userBanner" style="background:#d9dde5;color:#1a1f2b">H</em><em class="userBanner NGP">NG+</em></span>
+      </div>
+      <div class="tsTip-title"><span class="userTitle">&lt; Ale Queen &gt;</span></div>
+      <div class="tsTip-ooc"><span class="tsTip-oocTag">OOC</span><span class="tsTip-oocName">Warwolfer</span></div>
+     </div>
+    </div>
+    <div class="tsTip-facts memberTooltip-blurbContainer">
+     <div class="tsTip-factRow">
+      <span class="tsTip-joined"><i class="far fa-calendar-check"></i> Joined: <b><time>Jun 16, 2022</time></b></span>
+      <span class="tsTip-ago"><i class="far fa-clock"></i> <time>1 minute ago</time></span>
+     </div>
+     <div class="tsTip-activity"><time class="u-dt">1 minute ago</time> <span role="presentation" aria-hidden="true">&middot;</span> Viewing thread <em><a href="#">(Comms) Blood Vipers - The Open Rot: A Very Long Thread Title That Keeps Going</a></em></div>
+    </div>
+   </div>
+  </div>
+  <div class="memberTooltip-info tsTip-stats"><div class="memberTooltip-stats"><div class="pairJustifier">
+   <dl class="pairs pairs--rows"><dt>Messages</dt><dd>947</dd></dl>
+   <dl class="pairs pairs--rows"><dt>Fame</dt><dd>527</dd></dl>
+   <dl class="pairs pairs--rows"><dt title="Gold">Gold</dt><dd>5,145</dd></dl>
+   <dl class="pairs pairs--rows"><dt title="Mastery">Mastery</dt><dd>1,070</dd></dl>
+   <dl class="pairs pairs--rows"><dt title="Valor">Valor</dt><dd>63</dd></dl>
+  </div></div></div>
+  <div class="memberTooltip-actions tsTip-actions">
+   <div class="buttonGroup">
+    <a href="/members/lune.5/follow" class="button--link button"><span class="button-text">Follow</span></a>
+    <a href="/members/lune.5/ignore" class="button--link button"><span class="button-text">Ignore</span></a>
+    <a href="/conversations/add?to=Lune" class="button--link button"><span class="button-text">Start conversation</span></a>
+   </div>
+  </div>
+ </div>
+</div>
+ </div>
+</div>
+</body></html>

@@ -1,0 +1,166 @@
+<xf:css src="member_tooltip.less" />
+
+<!--
+	==========================================================
+	Terrasphere — member tooltip (mini profile card)
+	$tsOocField: custom user field ID for the "OOC" line under the
+	user title (e.g. "ooc_name"). Leave empty ("") to hide the line.
+	==========================================================
+-->
+<xf:set var="$tsOocField" value="" />
+
+<!-- Respects the member's "show online status" privacy setting -->
+<xf:set var="$tsCanSeeStatus" value="{{ $user.canViewOnlineStatus() }}" />
+<xf:set var="$tsOnline" value="{{ $tsCanSeeStatus && $user.isOnline() }}" />
+
+<div class="tooltip-content-inner">
+	<div class="memberTooltip tsTip {{ $user.Profile.banner_date ? 'memberTooltip--withBanner' : '' }}">
+		<xf:profilebanner user="$user" size="m" class="memberTooltip-header tsTip-header" toggle="memberTooltip--withBanner">
+			<div class="tsTip-veil" aria-hidden="true"></div>
+
+			<div class="tsTip-headerInner">
+
+				<!-- ===== Top bar: status / location | tools ===== -->
+				<div class="tsTip-topbar">
+					<xf:if contentcheck="true">
+						<div class="tsTip-status">
+							<xf:contentcheck>
+								<xf:if is="$tsOnline">
+									<span class="tsTip-statusState tsTip-statusState--online"><span class="tsTip-statusDot" aria-hidden="true"></span>Online</span>
+								<xf:elseif is="$tsCanSeeStatus" />
+									<span class="tsTip-statusState tsTip-statusState--offline"><span class="tsTip-statusDot" aria-hidden="true"></span>Offline</span>
+								</xf:if>
+								<xf:if is="$user.Profile.location">
+									<span class="tsTip-statusSep" aria-hidden="true"></span>
+									<span class="tsTip-location"><xf:fa icon="fa-map-marker-alt" /> {$user.Profile.location}</span>
+								</xf:if>
+							</xf:contentcheck>
+						</div>
+					</xf:if>
+
+					<div class="tsTip-tools memberTooltip-headerAction">
+						<a href="{{ link('members', $user) }}" class="tsTip-tool"
+							data-xf-init="tooltip" title="View profile" aria-label="View profile"><xf:fa icon="fa-eye" /></a>
+
+						<!--[XF:header_action_start]-->
+						<xf:if contentcheck="true">
+							<xf:button class="button--link button--small menuTrigger tsTip-tool"
+								data-xf-click="menu"
+								aria-label="{{ phrase('more_options') }}"
+								aria-expanded="false"
+								aria-haspopup="true">
+								<xf:fa icon="fa-cog" />
+							</xf:button>
+
+							<div class="menu" data-menu="menu" aria-hidden="true">
+								<div class="menu-content">
+									<h3 class="menu-header">{{ phrase('moderator_tools') }}</h3>
+									<xf:contentcheck>
+										<xf:macro template="member_macros" name="moderator_menu_actions"
+											arg-user="{$user}"
+											arg-context="tooltip" />
+									</xf:contentcheck>
+								</div>
+							</div>
+						</xf:if>
+						<!--[XF:header_action_end]-->
+					</div>
+				</div>
+
+				<!-- ===== Identity: avatar + character links | name, banners, title, OOC ===== -->
+				<div class="tsTip-identity">
+					<div class="tsTip-avatarCol memberTooltip-avatar">
+						<xf:avatar user="{$user}" size="m" notooltip="true" />
+						<xf:if is="$user.canShowCharacterElements()">
+							<div class="flx-container tsTip-charLinks">
+								<xf:macro template="terrasphere_core_generic_macros"
+									name="character_sheet_modal_button"
+									arg-user="{$user}" />
+								<!-- NOTE: XF still compiles xf tags inside HTML comments, so the permission check below IS active (kept as in the original) -->
+								<!--<xf:if is="$xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">-->
+									<xf:macro template="terrasphere_core_generic_macros"
+										name="character_sheet_thread_link"
+										arg-user="{$user}" />
+								<!--</xf:if>-->
+							</div>
+						</xf:if>
+					</div>
+
+					<div class="tsTip-idInfo memberTooltip-headerInfo">
+						<div class="tsTip-nameRow">
+							<h4 class="memberTooltip-name tsTip-name">
+								<span class="memberTooltip-nameWrapper">
+									<xf:username user="$user" rich="true" notooltip="true" />
+								</span>
+							</h4>
+							<xf:if contentcheck="true">
+								<span class="tsTip-banners memberTooltip-banners">
+									<xf:contentcheck><xf:userbanners user="$user" /></xf:contentcheck>
+								</span>
+							</xf:if>
+						</div>
+
+						<xf:if contentcheck="true">
+							<div class="tsTip-title">
+								<xf:contentcheck><xf:usertitle user="$user" /></xf:contentcheck>
+							</div>
+						</xf:if>
+
+						<xf:if is="$tsOocField && $user.Profile.custom_fields.{$tsOocField}">
+							<div class="tsTip-ooc">
+								<span class="tsTip-oocTag">OOC</span>
+								<span class="tsTip-oocName">{$user.Profile.custom_fields.{$tsOocField}}</span>
+							</div>
+						</xf:if>
+					</div>
+				</div>
+
+				<!-- ===== Facts: joined | last active, then current activity ===== -->
+				<div class="tsTip-facts memberTooltip-blurbContainer">
+					<div class="tsTip-factRow">
+						<span class="tsTip-joined">
+							<xf:fa icon="fa-calendar-check" />
+							{{ phrase('joined') }}: <b><xf:date time="$user.register_date" /></b>
+						</span>
+						<xf:if is="$tsCanSeeStatus && $user.last_activity">
+							<span class="tsTip-ago" title="{{ phrase('last_seen')|for_attr }}">
+								<xf:fa icon="fa-clock" />
+								<xf:date time="$user.last_activity" />
+							</span>
+						</xf:if>
+					</div>
+
+					<!-- useractivity outputs "<time> · Viewing thread <title>"; the leading time is hidden in CSS -->
+					<xf:if contentcheck="true">
+						<div class="tsTip-activity">
+							<xf:contentcheck><xf:useractivity user="$user" /></xf:contentcheck>
+						</div>
+					</xf:if>
+				</div>
+
+			</div>
+		</xf:profilebanner>
+
+		<!-- ===== Stats strip: Messages / Fame / Gold / Mastery / Valor ===== -->
+		<div class="memberTooltip-info tsTip-stats">
+			<div class="memberTooltip-stats">
+				<div class="pairJustifier">
+					<xf:macro template="member_macros" name="member_stat_pairs"
+						arg-user="{$user}"
+						arg-context="tooltip" />
+				</div>
+			</div>
+		</div>
+
+		<!-- ===== Actions: Follow / Ignore / Start conversation ===== -->
+		<xf:if contentcheck="true">
+			<div class="memberTooltip-actions tsTip-actions">
+				<xf:contentcheck>
+					<xf:macro template="member_macros" name="member_action_buttons"
+						arg-user="{$user}"
+						arg-context="tooltip" />
+				</xf:contentcheck>
+			</div>
+		</xf:if>
+	</div>
+</div>
