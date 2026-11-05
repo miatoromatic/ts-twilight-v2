@@ -339,7 +339,8 @@ a.tsTip-tool,
 
 .tsTip-title
 {
-	// No title (or an empty one) → no empty pill
+	// The template only outputs .tsTip-title when the title has visible text;
+	// these two lines are a fallback in case an add-on injects a title here.
 	&:not(:has(.userTitle:not(:empty))) { display: none; }
 
 	.userTitle:empty { display: none; }
@@ -575,7 +576,7 @@ a.tsTip-tool,
 }
 
 // =============================================================
-//  Actions: Follow / Character sheet / PM
+//  Actions: Follow / Sheet / PM
 //  One row; whichever buttons the viewer is allowed to see share the width.
 // =============================================================
 .tsTip-actions,
@@ -625,7 +626,7 @@ a.tsTip-tool,
 	text-decoration: none;
 }
 
-// Follow + PM (our own markup). The .tsTip .tsTip-actions prefix beats XF's
+// Follow, Sheet + PM (our own markup). The .tsTip .tsTip-actions prefix beats XF's
 // core `.button.button--link` / `a.button` rules regardless of load order.
 .tsTip .tsTip-actions .tsTip-btn
 {
@@ -647,58 +648,13 @@ a.tsTip-tool,
 	color: @ts-accent;
 }
 
-// Character sheet: the Terrasphere macro renders its own link/button, so the
-// wrapper *is* the button and the macro's link is stretched over it.
-// Works whatever markup the macro outputs.
-.tsTip .tsTip-actions .tsTip-act
+// Follow / Sheet icons in the accent colour
+.tsTip .tsTip-actions .tsTip-btn--sheet .fa,
+.tsTip .tsTip-actions .tsTip-btn--sheet .fas,
+.tsTip .tsTip-actions .tsTip-btn--sheet i
 {
-	.tsTip-btnBase();
-	cursor: pointer;
-
-	// nothing rendered (no sheet) → no empty button
-	&:not(:has(a, button)) { display: none; }
-
-	// flatten whatever the macro outputs (!important beats inline styles), so the
-	// stretched link below is measured against this button, not an inner wrapper
-	*
-	{
-		position: static !important;
-	}
-
-	a,
-	button,
-	.button
-	{
-		display: inline-flex;
-		align-items: center;
-		width: auto;
-		height: auto;
-		min-height: 0;
-		margin: 0;
-		padding: 0;
-		border: 0;
-		background: none;
-		box-shadow: none;
-		color: @ts-accent;
-		font-size: 13px;
-		line-height: 1;
-
-		// stretch the macro's link over the whole button
-		&::after
-		{
-			content: '';
-			position: absolute;
-			inset: 0;
-			z-index: 1;
-			border-radius: inherit;
-		}
-	}
-
-	&:hover,
-	&:focus-within { .tsTip-btnHover(); }
+	color: @ts-accent;
 }
-
-.tsTip .tsTip-actions .tsTip-act--sheet::after { content: "Character sheet"; }
 
 // PM: primary
 .tsTip .tsTip-actions .tsTip-btn.tsTip-btn--primary
@@ -719,35 +675,19 @@ a.tsTip-tool,
 	}
 }
 
-// ---- Character thread link inside the cog (moderator tools) menu ----
-.tsTip-menuThread
+// ---- Character thread row in the cog (moderator tools) menu ----
+// It's a normal .menu-linkRow (so it picks up your menu styles); this only adds
+// the icon spacing and a divider before the moderator actions.
+.menu-linkRow.tsTip-menuThread
 {
-	padding: 2px 0 4px;
-	border-bottom: 1px solid @ts-line;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 	margin-bottom: 4px;
+	border-bottom: 1px solid @ts-line;
 
-	a
-	{
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		padding: 6px 15px;
-		border-radius: 4px;
-		color: @ts-text;
-		font-size: 13px;
-		text-decoration: none;
-
-		&::after { content: "Character thread"; }
-
-		&:hover
-		{
-			background: @ts-accent-soft;
-			color: @ts-accent;
-			text-decoration: none;
-		}
-
-		.fa--xf, i { color: @ts-accent; }
-	}
+	i { color: @ts-accent; }
+	&:hover i { color: inherit; }
 }
 
 // =============================================================
@@ -793,13 +733,11 @@ a.tsTip-tool,
 	// still one row; shorter labels and tighter padding
 	.tsTip .tsTip-actions { gap: 6px; }
 
-	.tsTip .tsTip-actions .tsTip-btn,
-	.tsTip .tsTip-actions .tsTip-act
+	.tsTip .tsTip-actions .tsTip-btn
 	{
 		gap: 5px;
 		padding: 0 8px;
 		font-size: 12px;
 	}
 
-	.tsTip .tsTip-actions .tsTip-act--sheet::after { content: "Sheet"; }
 }

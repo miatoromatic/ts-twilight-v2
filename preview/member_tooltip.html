@@ -576,73 +576,10 @@ a.tsTip-tool.menuTrigger::after,
   font-size: 12px;
   color: #3ccbdb;
 }
-.tsTip .tsTip-actions .tsTip-act {
-  position: relative;
-  display: inline-flex;
-  flex: 1 1 0;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-width: 0;
-  height: 38px;
-  min-height: 0;
-  margin: 0;
-  padding: 0 12px;
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  border-radius: 9px;
-  background: #171c27;
-  box-shadow: none;
-  color: #b7bfcc;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-decoration: none;
-  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease, filter 0.15s ease;
-  cursor: pointer;
-}
-.tsTip .tsTip-actions .tsTip-act:not(:has(a, button)) {
-  display: none;
-}
-.tsTip .tsTip-actions .tsTip-act * {
-  position: static !important;
-}
-.tsTip .tsTip-actions .tsTip-act a,
-.tsTip .tsTip-actions .tsTip-act button,
-.tsTip .tsTip-actions .tsTip-act .button {
-  display: inline-flex;
-  align-items: center;
-  width: auto;
-  height: auto;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  box-shadow: none;
+.tsTip .tsTip-actions .tsTip-btn--sheet .fa,
+.tsTip .tsTip-actions .tsTip-btn--sheet .fas,
+.tsTip .tsTip-actions .tsTip-btn--sheet i {
   color: #3ccbdb;
-  font-size: 13px;
-  line-height: 1;
-}
-.tsTip .tsTip-actions .tsTip-act a::after,
-.tsTip .tsTip-actions .tsTip-act button::after,
-.tsTip .tsTip-actions .tsTip-act .button::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  border-radius: inherit;
-}
-.tsTip .tsTip-actions .tsTip-act:hover,
-.tsTip .tsTip-actions .tsTip-act:focus-within {
-  color: #fff;
-  border-color: rgba(60, 203, 219, 0.4);
-  background: #1b2330;
-  text-decoration: none;
-}
-.tsTip .tsTip-actions .tsTip-act--sheet::after {
-  content: "Character sheet";
 }
 .tsTip .tsTip-actions .tsTip-btn.tsTip-btn--primary {
   border-color: transparent;
@@ -660,32 +597,18 @@ a.tsTip-tool.menuTrigger::after,
   background: linear-gradient(90deg, #3ccbdb 0%, #2fd3c0 100%);
   filter: brightness(1.08);
 }
-.tsTip-menuThread {
-  padding: 2px 0 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  margin-bottom: 4px;
-}
-.tsTip-menuThread a {
+.menu-linkRow.tsTip-menuThread {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 15px;
-  border-radius: 4px;
-  color: #e7eaf0;
-  font-size: 13px;
-  text-decoration: none;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-.tsTip-menuThread a::after {
-  content: "Character thread";
-}
-.tsTip-menuThread a:hover {
-  background: rgba(60, 203, 219, 0.13);
+.menu-linkRow.tsTip-menuThread i {
   color: #3ccbdb;
-  text-decoration: none;
 }
-.tsTip-menuThread a .fa--xf,
-.tsTip-menuThread a i {
-  color: #3ccbdb;
+.menu-linkRow.tsTip-menuThread:hover i {
+  color: inherit;
 }
 @media (max-width: 480px) {
   .tsTip-headerInner {
@@ -730,14 +653,10 @@ a.tsTip-tool.menuTrigger::after,
   .tsTip .tsTip-actions {
     gap: 6px;
   }
-  .tsTip .tsTip-actions .tsTip-btn,
-  .tsTip .tsTip-actions .tsTip-act {
+  .tsTip .tsTip-actions .tsTip-btn {
     gap: 5px;
     padding: 0 8px;
     font-size: 12px;
-  }
-  .tsTip .tsTip-actions .tsTip-act--sheet::after {
-    content: "Sheet";
   }
 }
 /* --- global extra.less rules that stay active --- */
@@ -752,6 +671,7 @@ a.tsTip-tool.menuTrigger::after,
 .menu-content{background:#181c26;color:#999;border-top:3px solid #30adbb;border-radius:4px;padding:6px 0;width:220px}
 .menu-header{color:#30adbb;font-weight:600;margin:5px 15px;font-size:1.1em}
 .menu-linkRow{display:block;padding:6px 15px;color:#ddd}
+.menu-linkRow:hover{background:#30adbb!important;color:#eee!important}
 .custom-button a{background-color:#282f42;padding:1px 7px;border-radius:4px;color:#348c91f5;display:inline-block;border:1px solid #282f42}
 .pairs.pairs--columns{display:inline}
 </style></head><body>
@@ -801,7 +721,7 @@ a.tsTip-tool.menuTrigger::after,
   </div></div></div>
   <div class="memberTooltip-actions tsTip-actions">
    <a href="/members/lune.5/follow" class="button--link tsTip-btn tsTip-btn--follow button" data-xf-click="switch"><span class="button-text">Follow</span></a>
-   <span class="tsTip-act tsTip-act--sheet"><div class="cs-wrap" style="position:relative"><a href="#" class="button button--small"><i class="fas fa-user"></i></a></div></span>
+   <a href="/members/lune.5/charactersheet" class="button tsTip-btn tsTip-btn--sheet" data-xf-click="overlay"><i class="fas fa-user" aria-hidden="true"></i><span class="button-text">Sheet</span></a>
    <a href="/conversations/add?to=Lune" class="button tsTip-btn tsTip-btn--primary"><i class="fas fa-paper-plane"></i><span class="button-text">PM</span></a>
   </div>
  </div>
@@ -832,7 +752,7 @@ a.tsTip-tool.menuTrigger::after,
        <h4 class="memberTooltip-name tsTip-name"><span class="memberTooltip-nameWrapper"><a class="username">Dreikel</a></span></h4>
        <span class="tsTip-banners memberTooltip-banners"><em class="userBanner" style="background:#d9dde5;color:#1a1f2b">H</em><em class="userBanner NGP">NG+</em></span>
       </div>
-      <div class="tsTip-title"><span class="userTitle"></span></div>
+      
       
      </div>
     </div>
@@ -860,6 +780,6 @@ a.tsTip-tool.menuTrigger::after,
  </div>
 </div>
 <div class="menu-content pv-menu"><h3 class="menu-header">Moderator tools</h3>
- <div class="tsTip-menuThread"><a href="#"><i class="fas fa-address-card"></i></a></div>
+ <a href="#" class="menu-linkRow tsTip-menuThread"><i class="far fa-id-badge" aria-hidden="true"></i> Character thread</a>
  <a class="menu-linkRow" href="#">Warn</a><a class="menu-linkRow" href="#">Spam clean</a><a class="menu-linkRow" href="#">Edit</a></div></div>
 </body></html>

@@ -53,16 +53,11 @@
 								<div class="menu-content">
 									<h3 class="menu-header">{{ phrase('moderator_tools') }}</h3>
 									<xf:contentcheck>
-										<!-- Character thread link (moved here from the card).
-											 Same conditions as before: character elements + terrasphere_cm_review.
-											 Written as a real xf:if now; the old HTML-comment-wrapped xf:if was
-											 already active, so who sees it does not change. -->
+										<!-- Character thread (same link as terrasphere_core_generic_macros::character_sheet_thread_link) -->
 										<xf:if is="$user.canShowCharacterElements() && $xf.visitor.hasPermission('terrasphere', 'terrasphere_cm_review')">
-											<div class="tsTip-menuThread">
-												<xf:macro template="terrasphere_core_generic_macros"
-													name="character_sheet_thread_link"
-													arg-user="{$user}" />
-											</div>
+											<a href="{{ link('members/characterthread', $user) }}" class="menu-linkRow tsTip-menuThread">
+												<i class="far fa-id-badge" aria-hidden="true"></i> Character thread
+											</a>
 										</xf:if>
 										<xf:macro template="member_macros" name="moderator_menu_actions"
 											arg-user="{$user}"
@@ -95,10 +90,12 @@
 							</xf:if>
 						</div>
 
-						<xf:if contentcheck="true">
-							<div class="tsTip-title">
-								<xf:contentcheck><xf:usertitle user="$user" /></xf:contentcheck>
-							</div>
+						<!-- User title pill: only when the title has visible text. Catches titles that
+							 are blank, a space, &nbsp; or only HTML (e.g. an empty ladder/group title). -->
+						<xf:set var="$tsTitle"><xf:usertitle user="$user" /></xf:set>
+						<xf:set var="$tsTitleText" value="{{ $tsTitle|strip_tags|replace('&nbsp;', '')|replace(' ', '') }}" />
+						<xf:if is="$tsTitleText">
+							<div class="tsTip-title">{$tsTitle}</div>
 						</xf:if>
 
 						<!-- Custom user fields: same set as in posts ("Display in messages"). See README to change. -->
@@ -163,12 +160,14 @@
 						</xf:button>
 					</xf:if>
 
+					<!-- Character sheet (same link as terrasphere_core_generic_macros::character_sheet_modal_button) -->
 					<xf:if is="$user.canShowCharacterElements()">
-						<span class="tsTip-act tsTip-act--sheet">
-							<xf:macro template="terrasphere_core_generic_macros"
-								name="character_sheet_modal_button"
-								arg-user="{$user}" />
-						</span>
+						<a href="{{ link('members/charactersheet', $user) }}"
+							class="button tsTip-btn tsTip-btn--sheet"
+							data-xf-click="overlay">
+							<i class="fas fa-user" aria-hidden="true"></i>
+							<span class="button-text">Sheet</span>
+						</a>
 					</xf:if>
 
 					<xf:if is="$xf.visitor.canStartConversationWith($user)">
